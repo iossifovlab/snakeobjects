@@ -14,14 +14,14 @@ setup(
     author="Ivan Iossifov",
     author_email='iossifov@cshl.edu',
     url='https://github.com/iossifovlab/pipes',
-    packages=['pipes'],
+    packages=['iippl'],
     entry_points={
         'console_scripts': [
-            'pipes=pipes.cli:cli'
+            'iippl=iippl.cli:cli'
         ]
     },
     install_requires=requirements,
-    keywords='pipes',
+    keywords='pipes','iippl'
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',

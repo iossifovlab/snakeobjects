@@ -42,8 +42,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = ""
     cfg.tag_prefix = ""
-    cfg.parentdir_prefix = "pipes-"
-    cfg.versionfile_source = "pipes/_version.py"
+    cfg.parentdir_prefix = "iippl-"
+    cfg.versionfile_source = "iippl/_version.py"
     cfg.verbose = False
     return cfg
 
