@@ -1,0 +1,7 @@
+[report]
+omit =
+    setup.py
+    pipes/__main__.py
+    pipes/_version.py
+    versioneer.py
+    tests/*
