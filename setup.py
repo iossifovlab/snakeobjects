@@ -21,7 +21,7 @@ setup(
         ]
     },
     install_requires=requirements,
-    keywords='pipes','iippl'
+    keywords=['pipes','iippl'],
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',
