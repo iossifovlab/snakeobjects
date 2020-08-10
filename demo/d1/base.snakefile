@@ -1,21 +1,24 @@
-shell.prefix("set -o pipefail; ")
-configfile: "OG.json"
-
-rule all:
-  input:
-    "objLinks/base/o/obj.flag"
 
 rule build_a:
   output:
-    "objLinks/base/o/a.txt"
+    t = T("t.txt")
+  shell:
+    "touch {output.t}; "
+
+rule build_ab:
+  output:
+    T("a.txt"), T("b.txt")
+  shell:
+    "touch {output[0]}; "
+    "touch {output[1]}; "
+
+rule base_obj:
+  input:
+    T("a.txt"), T("b.txt"), T("t.txt")
+  output:
+    T("obj.flag")
   shell:
     "touch {output}"
 
-rule obj_flag:
-  input:
-    "objLinks/base/o/a.txt"
-  output:
-    "objLinks/base/o/obj.flag"
-  shell:
-    "touch {output}"
+
 
