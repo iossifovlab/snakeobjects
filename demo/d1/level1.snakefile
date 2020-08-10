@@ -3,8 +3,9 @@ rule l1_big:
         lambda wc: DT(wc,"a.txt")
   output:
     T('B.txt')
+  log:  **(EFS('B.txt'))
   shell:
-    "touch {output}"
+    "(time touch {output}) 2> {log.T}"
 
 rule level1_obj:
   input: 
