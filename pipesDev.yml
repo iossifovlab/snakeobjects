@@ -1,0 +1,11 @@
+name: pipes
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - cookiecutter
+  - ipython
+  - setuptools
+  - snakemake-minimal>5.20
+
