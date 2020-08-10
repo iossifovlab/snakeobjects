@@ -25,7 +25,7 @@ def EFS(t):
         'O': a + '-out.txt',
         'T': a + '-time.txt'
     }
-    print("EFS with", t, "returns", r)
+    # print("EFS with", t, "returns", r)
     return r
  
 def T(t): 
