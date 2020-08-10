@@ -1,6 +1,7 @@
 import traceback 
 
-_targetPrefix = "objLinks/"
+# _targetPrefix = "objLinks/"
+_targetPrefix = ""
 _config = None
 
 def _find_object_type():
@@ -17,6 +18,18 @@ def set_config(config):
  
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
+
+def DT(wc,t,dot=None): 
+    print("AAAA: DT called with =", wc, " and t=", t)
+    ok = "%s.%s" % (wc.oid,_find_object_type())
+    dp = _config[ok]["deps_local"]
+    if dot:
+        dp = [d for d in dp if d.startswith(dot)]
+    r = ["%s%s/%s" % (_targetPrefix,d,t) for d in dp]
+    # r = "objLinks/base/o/" + t
+    print("    : returning: ", r)
+    return r
+    
 
 def all_obj_types():
     return {atts['type'] for atts in _config.values() if 'type' in atts}

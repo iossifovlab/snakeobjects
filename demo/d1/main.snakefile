@@ -1,7 +1,7 @@
 shell.prefix("set -o pipefail; ")
-configfile: "OG.json"
+configfile: "../OG.json"
 pipeline = os.environ["PIPELINE_DIR"]
-from iippl.snakeUtils import set_config, T, all_obj_ids, all_obj_dirs, all_obj_types
+from iippl.snakeUtils import set_config, all_obj_ids, all_obj_dirs, all_obj_types, T, DT
 
 set_config(config)
 
