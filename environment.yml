@@ -1,11 +1,11 @@
-name: pipes
+name: pipesDev
 channels:
   - bioconda
   - conda-forge
   - defaults
 dependencies:
-  - cookiecutter
   - ipython
   - setuptools
+  - pytest-cov
   - snakemake-minimal>5.20
 

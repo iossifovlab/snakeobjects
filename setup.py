@@ -15,6 +15,7 @@ setup(
     author_email='iossifov@cshl.edu',
     url='https://github.com/iossifovlab/pipes',
     packages=['iippl'],
+    include_package_data=True,
     scripts = ['bin/run_snake.sh'], 
     entry_points={
         'console_scripts': [
