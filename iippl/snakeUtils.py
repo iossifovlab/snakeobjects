@@ -27,14 +27,37 @@ def EFS(t):
     }
     # print("EFS with", t, "returns", r)
     return r
+
+def DP(p,dot=None):
+    ot = _find_object_type()
+    def _DP(wc):
+        ok = "%s.%s" % (wc.oid,ot)
+        dp = _config[ok]["deps_local"]
+        if dot:
+            dp = [d for d in dp if d.startswith(dot)]
+        r = []
+        for d in dp:
+            dok = ".".join((reversed(d.split("/"))))
+            # print("DDDDDD",d,dok)
+            r.append(_config[dok]['params'][p])
+        return r
+    return _DP
  
+def P(p):
+    ot = _find_object_type()
+    def _P(wc):
+        ok = "%s.%s" % (wc.oid,ot)
+        # print("AAAAAA",wc.oid,ot,ok,_config[ok]['params'][p])
+        return _config[ok]['params'][p]
+    return _P
+
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
 
 def DT(t,dot=None): 
     # print("AAAA: DT called with =", wc, " and t=", t)
     ot = _find_object_type()
-    def f(wc):
+    def _DT(wc):
         ok = "%s.%s" % (wc.oid,ot)
         dp = _config[ok]["deps_local"]
         if dot:
@@ -43,7 +66,7 @@ def DT(t,dot=None):
         # r = "objLinks/base/o/" + t
         # print("    : returning: ", r)
         return r
-    return f
+    return _DT 
     
 
 def all_obj_types():

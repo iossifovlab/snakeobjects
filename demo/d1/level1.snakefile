@@ -4,8 +4,9 @@ rule l1_big:
   output:
     T('B.txt')
   log:  **(EFS('B.txt'))
+  params: thea=DP('a')
   shell:
-    "(time touch {output}) 2> {log.T}"
+    "(time echo {params.thea} > {output}) 2> {log.T}"
 
 rule level1_obj:
   input: 

@@ -155,6 +155,7 @@ class ObjectGraph:
         for k in sorted(self.params):
             v = params[k] if params[k].isdecimal() else "\""+params[k]+"\""
             out += "\t\t\""+k+"\":" + v +",\n"
+
         f.write(out[:-2]+"\n")
         f.write("\t},\n\n")
             

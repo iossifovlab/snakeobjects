@@ -3,9 +3,9 @@ rule build_a:
   output:
      t = T("t.txt")
   log:  **(EFS('t.txt'))
+  params: a=P('a')
   shell:
-    "(time touch {output.t} \
-           > {log.O}  \
+    "(time echo {params.a}  > {output.t} \
            2> {log.E} \
      ) 2> {log.T}"
 
