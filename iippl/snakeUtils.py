@@ -32,7 +32,7 @@ def DP(p,dot=None):
     ot = _find_object_type()
     def _DP(wc):
         ok = "%s.%s" % (wc.oid,ot)
-        dp = _config[ok]["deps_local"]
+        dp = _config[ok]["deps_local"] if "deps_local" in _config[ok] else []
         if dot:
             dp = [d for d in dp if d.startswith(dot)]
         r = []
@@ -59,7 +59,7 @@ def DT(t,dot=None):
     ot = _find_object_type()
     def _DT(wc):
         ok = "%s.%s" % (wc.oid,ot)
-        dp = _config[ok]["deps_local"]
+        dp = _config[ok]["deps_local"] if "deps_local" in _config[ok] else []
         if dot:
             dp = [d for d in dp if d.startswith(dot)]
         r = ["%s%s/%s" % (_targetPrefix,d,t) for d in dp]

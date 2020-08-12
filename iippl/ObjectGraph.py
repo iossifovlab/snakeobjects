@@ -39,11 +39,9 @@ class ObjectGraph:
             P.close()
         except:
             pass
-    
-    def createDirs(self):
+   
+    def createGlblMakefiel(self): 
         GLBL = open(self.baseDir + '/glbl.makefile', 'w')
-        if not os.path.exists(self.baseDir + "/log"):
-            os.makedirs(self.baseDir + '/log')        
         GLBL.write('all: \\\n')
         for tp,tpOs in sorted(self.O.items()):
             for ogo in list(tpOs.values()):
@@ -51,6 +49,31 @@ class ObjectGraph:
                 GLBL.write('\t' + ogo.dir + '/obj.flag \\\n')
         
         GLBL.write('\n')
+        for tp,tpOs in sorted(self.O.items()):
+            for ogo in list(tpOs.values()):
+                GLBL.write(ogo.dir + '/obj.flag:')
+                for d in ogo.deps:
+                   GLBL.write(' ' + d.dir + '/obj.flag')
+                GLBL.write('\n')
+                GLBL.write('\tcd `dirname $@`; qqq_job.sh\n\n')
+        GLBL.close()
+
+    def createDirs(self):
+        for tp,tpOs in sorted(self.O.items()):
+            for ogo in list(tpOs.values()):
+                if not os.path.exists(ogo.dir + "/log"):
+                    os.makedirs(ogo.dir + '/log')
+
+
+                for k,v in list(ogo.params.items()):
+                    if not k.startswith("symlink."):
+                        continue
+                    dst = ogo.dir + "/" + k[8:]
+                    src = v
+                    os.system("ln -sf %s %s" % (src,dst))
+                    # os.symlink(src,dst)
+
+    def createParamsFiles(self):
         for tp,tpOs in sorted(self.O.items()):
             for ogo in list(tpOs.values()):
                 if not os.path.exists(ogo.dir + "/log"):
@@ -66,20 +89,7 @@ class ObjectGraph:
                 PF.write("deps=" + " ".join([dep.dir for dep in ogo.deps]) + "\n")
                 PF.write("parents=" + " ".join([par.dir for par in ogo.parents]) + "\n")
 
-                for k,v in list(ogo.params.items()):
-                    if not k.startswith("symlink."):
-                        continue
-                    dst = ogo.dir + "/" + k[8:]
-                    src = v
-                    os.system("ln -sf %s %s" % (src,dst))
-                    # os.symlink(src,dst)
                 PF.close()
-                GLBL.write(ogo.dir + '/obj.flag:')
-                for d in ogo.deps:
-                   GLBL.write(' ' + d.dir + '/obj.flag')
-                GLBL.write('\n')
-                GLBL.write('\tcd `dirname $@`; qqq_job.sh\n\n')
-        GLBL.close()
         
     def fillHash(self, line, h):
         p = re.compile('^(.*)=(.*)$')
