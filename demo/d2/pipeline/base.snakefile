@@ -21,10 +21,5 @@ rule base_obj:
   input:
     T("a.txt"), T("b.txt"), T("t.txt")
   output:
-    T("obj.flag")
-  log:  **(EFS('obj.txt'))
-  shell:
-    "touch {output}"
-
-
+    touch(T("obj.flag"))
 

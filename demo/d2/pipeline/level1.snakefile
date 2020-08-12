@@ -1,6 +1,6 @@
 rule l1_big:
   input: 
-        lambda wc: DT(wc,"a.txt")
+        DT("a.txt")
   output:
     T('B.txt')
   log:  **(EFS('B.txt'))
@@ -9,12 +9,10 @@ rule l1_big:
 
 rule level1_obj:
   input: 
-        lambda wc: DT(wc,"obj.flag"),
+        DT("obj.flag"),
         T('B.txt')
   output:
-    T("obj.flag")
-  shell:
-    "touch {output}"
+    touch(T("obj.flag"))
 
 
 
