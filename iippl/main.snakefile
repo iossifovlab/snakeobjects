@@ -7,6 +7,8 @@ from iippl.snakeUtils import set_config, all_obj_ids, all_obj_dirs, all_obj_type
 
 set_config(config)
 
+GP = config['parameters']
+
 for t in all_obj_types():
     tsfn = pipeline + "/" + t + ".snakefile"
     if not os.path.isfile(tsfn):

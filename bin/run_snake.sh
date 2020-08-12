@@ -13,6 +13,11 @@ echo "WITH PIPELINE" $PIPELINE_DIR
 
 mkdir -p $PROJECT_DIR/objLinks
 cd $PROJECT_DIR/objLinks
-snakemake --snakefile <(iippl main.snakefile)  $*
+
+if [ ! -f main.snakefile ]; then
+    iippl main.snakefile > main.snakefile
+fi
+
+snakemake --snakefile main.snakefile  $*
 
 # --profile $BIN_DIR/SLURM.nygc $*
