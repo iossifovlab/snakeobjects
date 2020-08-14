@@ -8,9 +8,9 @@ OG = ObjectGraph(".")
 OG.addObject(OGO("base","o", {"a":"alabala nica"}))
 
 for i in range(2):
-    OG.addObject(OGO("sample","sample%d" % (i),{"g":"value%d" % (i)},[OG.O["base"]["o"]]))
+    OG.addObject(OGO("sample","sample%d" % (i),{"g":"value%d" % (i)},[OG["base","o"]]))
 
-OG.addObject(OGO("report","o", {}, list(OG.O["sample"].values())))
+OG.addObject(OGO("report","o", {}, OG["sample"]))
 
 OG.execARGVcommands(sys.argv)
 

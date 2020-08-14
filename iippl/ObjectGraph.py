@@ -24,6 +24,7 @@ class ObjectGraph:
         self.req = {}
         self.objectsByKey = {}
         self.O = {}
+        self.oOrder = {}
         self.baseDir = baseDir 
         self.params = {}
         try:
@@ -39,10 +40,23 @@ class ObjectGraph:
             P.close()
         except:
             pass
-   
+
+    def __getitem__(self,key):
+        if len(key) == 2:
+            ot,oi = key
+            return self.O[ot][oi]
+        else:
+            return self.oOrder[key]
+
+    def getO(self, o_type,o_name):
+        return self.O[o_type][o_name]
+
+    def getAll(self, o_type):
+        return self.O[o_type].values()
+
     def createGlblMakefiel(self): 
         GLBL = open(self.baseDir + '/glbl.makefile', 'w')
-        GLBL.write('all: \\\n')
+        GLBL.write('al: \\\n')
         for tp,tpOs in sorted(self.O.items()):
             for ogo in list(tpOs.values()):
                 ogo.dir = str(self.baseDir) + "/objLinks/" + str(ogo.type) + "/" + str(ogo.name)
@@ -112,10 +126,14 @@ class ObjectGraph:
                    raise
         self.objectsByKey[key] = ob;
         if ob.type in self.O:
+            self.tOrder.append(ob.type)
+            self.oOrder[ob.type].append(ob)
             self.O[ob.type][ob.name] = ob
         else:
             self.O[ob.type] = {}
+            self.tOrder = [ob.type]
             self.O[ob.type][ob.name] = ob
+            self.oOrder[ob.type] = [ob]
 
     def objDir(self, o):
         patt = self.params["obj.dir.pattern"]
