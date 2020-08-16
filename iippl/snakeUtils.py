@@ -17,7 +17,6 @@ def set_config(config):
     _config = config
 
 
-
 def EFS(t):
     a = _targetPrefix + _find_object_type() + "/{oid}/log/" + t 
     r = {
@@ -50,6 +49,9 @@ def P(p):
         # print("AAAAAA",wc.oid,ot,ok,_config[ok]['params'][p])
         return _config[ok]['params'][p]
     return _P
+
+def PP(p):
+    return _config['parameters'][p]
 
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t

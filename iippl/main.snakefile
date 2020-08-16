@@ -3,7 +3,7 @@ configfile: "../OG.json"
 pipeline = os.environ["PIPELINE_DIR"]
 import os
 
-from iippl.snakeUtils import set_config, all_obj_ids, all_obj_dirs, all_obj_types, T, DT, EFS, P, DP
+from iippl.snakeUtils import set_config, all_obj_ids, all_obj_dirs, all_obj_types, T, DT, EFS, P, DP, PP
 
 set_config(config)
 
