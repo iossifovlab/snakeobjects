@@ -1,4 +1,5 @@
 import traceback 
+from collections import OrderedDict
 
 # _targetPrefix = "objLinks/"
 _targetPrefix = ""
@@ -56,12 +57,25 @@ def PP(p):
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
 
-def DT(t,dot=None): 
+def deps(dp, level=0, mode=False):
+    if level == 0:
+        return dp
+    if mode:
+        for d in dp:
+            ob = ".".join(d.split("/")[::-1])
+            dp += deps(_config[ob]["deps_local"] 
+                       if "deps_local" in _config[ob] else [], 
+                       level - 1, mode)
+        return dp
+
+def DT(t,dot=None, level=1, mode=False): 
     # print("AAAA: DT called with =", wc, " and t=", t)
     ot = _find_object_type()
     def _DT(wc):
         ok = "%s.%s" % (wc.oid,ot)
         dp = _config[ok]["deps_local"] if "deps_local" in _config[ok] else []
+        dp = deps(dp, level-1, mode)
+        dp = list(OrderedDict.fromkeys(dp))
         if dot:
             dp = [d for d in dp if d.startswith(dot)]
         r = ["%s%s/%s" % (_targetPrefix,d,t) for d in dp]

@@ -1,16 +1,18 @@
 rule F_b:
   input:
-    DT('b.txt',)
+    DT('b.txt', level=2, mode=True)
   output: 
     T('b.txt')
   run:
     correct = {
-        "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt"],
-        "F/2/b.txt": ["P/3/b.txt", "P/4/b.txt"]
+        "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt", "B/o/b.txt"],
+        "F/2/b.txt": ["P/3/b.txt", "P/4/b.txt", "B/o/b.txt"]
     }
     assert output[0] in correct
     assert input[0] == correct[output[0]][0]
     assert input[1] == correct[output[0]][1]
+    assert input[2] == correct[output[0]][2]
+
     shell("echo {input} >{output}")
 
 
