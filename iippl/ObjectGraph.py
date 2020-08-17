@@ -25,6 +25,7 @@ class ObjectGraph:
         self.objectsByKey = {}
         self.O = {}
         self.oOrder = {}
+        self.tOrder = []
         self.baseDir = baseDir 
         self.params = {}
         try:
@@ -56,7 +57,7 @@ class ObjectGraph:
 
     def createGlblMakefiel(self): 
         GLBL = open(self.baseDir + '/glbl.makefile', 'w')
-        GLBL.write('al: \\\n')
+        GLBL.write('all: \\\n')
         for tp,tpOs in sorted(self.O.items()):
             for ogo in list(tpOs.values()):
                 ogo.dir = str(self.baseDir) + "/objLinks/" + str(ogo.type) + "/" + str(ogo.name)
@@ -126,12 +127,11 @@ class ObjectGraph:
                    raise
         self.objectsByKey[key] = ob;
         if ob.type in self.O:
-            self.tOrder.append(ob.type)
             self.oOrder[ob.type].append(ob)
             self.O[ob.type][ob.name] = ob
         else:
             self.O[ob.type] = {}
-            self.tOrder = [ob.type]
+            self.tOrder.append(ob.type)
             self.O[ob.type][ob.name] = ob
             self.oOrder[ob.type] = [ob]
 
@@ -153,23 +153,25 @@ class ObjectGraph:
         # ORIGINAL WRONG: for o in sorted(self.objectsByKey.values()):
         # variatn 1 (GOOD): for o in sorted(self.objectsByKey.values(),key=lambda x:x.name):
         #for oName,o in sorted([(x.name,x) for x in self.objectsByKey.values()]):
-        for o in sorted(list(self.objectsByKey.values()),key=lambda x:x.name):
-            f.write("OBJECT\n")
-            f.write("id="+str(o.name)+"\n")
-            f.write("type="+str(o.type)+"\n")
-            f.write("dir="+str(o.dir)+"\n")
-            if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
-                f.write("parents=" + " ".join([par.dir for par in o.parents]) + "\n")
-            else:
-                f.write("parents=" + " ".join([par for par in o.parents]) + "\n")
-            if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
-                f.write("deps="  +  " ".join([dep.dir for dep in o.deps]) + "\n" )
-            else:
-                f.write("deps="  +  " ".join([dep for dep in o.deps]) + "\n" )
-            f.write("PARAMS\n")
-            for p,v in sorted(o.params.items()):
-                f.write(p+"="+str(v)+"\n")
-            f.write("\n")
+        #for o in sorted(list(self.objectsByKey.values()),key=lambda x:x.name):
+        for ot in self.tOrder:
+            for o in self.oOrder[ot]:
+                f.write("OBJECT\n")
+                f.write("id="+str(o.name)+"\n")
+                f.write("type="+str(o.type)+"\n")
+                f.write("dir="+str(o.dir)+"\n")
+                if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
+                    f.write("parents=" + " ".join([par.dir for par in o.parents]) + "\n")
+                else:
+                    f.write("parents=" + " ".join([par for par in o.parents]) + "\n")
+                if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
+                    f.write("deps="  +  " ".join([dep.dir for dep in o.deps]) + "\n" )
+                else:
+                    f.write("deps="  +  " ".join([dep for dep in o.deps]) + "\n" )
+                f.write("PARAMS\n")
+                for p,v in sorted(o.params.items()):
+                    f.write(p+"="+str(v)+"\n")
+                f.write("\n")
             
         f.write("END\n")
         f.close()
@@ -191,34 +193,36 @@ class ObjectGraph:
         # variatn 1 (GOOD): for o in sorted(self.objectsByKey.values(),key=lambda x:x.name):
         #for oName,o in sorted([(x.name,x) for x in self.objectsByKey.values()]):
         #for o in sorted(list(self.objectsByKey.values()),key=lambda x:x.name):
-        for o in sorted(list(self.objectsByKey.values()),key=lambda x:(x.type,x.name)):
-            f.write("\t\""+str(o.name)+"."+str(o.type)+ "\": {\n")
-            f.write("\t\t\"id\": \""+str(o.name)+"\",\n")
-            f.write("\t\t\"type\": \""+str(o.type)+"\",\n")
-            f.write("\t\t\"dir\": \""+str(o.dir)+"\",\n")
-            if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
-                f.write("\t\t\"parents\":\"" + ",".join([par.dir for par in o.parents]) + "\",\n")
-            else:
-                f.write("\t\t\"parents\":\"" + ",".join([par for par in o.parents]) + "\",\n")
-            if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
-                f.write("\t\t\"deps\":\""  +  ",".join([dep.dir for dep in o.deps]) + "\",\n" )
-                f.write("\t\t\"deps_local\":["  +  ",".join(["\""+dep.type+"/"+dep.name+"\"" for dep in o.deps]) + "],\n" )
-                f.write("\t\t\"deps_type\":\""  + "/".join([dep.dir for dep in o.deps][0].split("/")[:-1]) + "\",\n" )
-                f.write("\t\t\"deps_objs\":["  +  ",".join(["\""+dep.name+"\"" for dep in o.deps]) + "],\n" )                
-            else:
-                f.write("\t\t\"deps\":\""  +  ",".join([dep for dep in o.deps]) + "\",\n" )
-            f.write("\t\t\"params\": {\n")
-            out = ""
-            for p,v in sorted(o.params.items()):
-                w = "\""+str(v)+"\""
-                out += "\t\t\t\""+p+"\": "+w+",\n"
-            f.write(out[:-2]+"\n")
-            f.write("\t\t}\n")
-            f.write("\t},\n\n")
+        #for o in sorted(list(self.objectsByKey.values()),key=lambda x:(x.type,x.name)):
+        for ot in self.tOrder:
+            for o in self.oOrder[ot]:
+                f.write("\t\""+str(o.name)+"."+str(o.type)+ "\": {\n")
+                f.write("\t\t\"id\": \""+str(o.name)+"\",\n")
+                f.write("\t\t\"type\": \""+str(o.type)+"\",\n")
+                f.write("\t\t\"dir\": \""+str(o.dir)+"\",\n")
+                if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
+                    f.write("\t\t\"parents\":\"" + ",".join([par.dir for par in o.parents]) + "\",\n")
+                else:
+                    f.write("\t\t\"parents\":\"" + ",".join([par for par in o.parents]) + "\",\n")
+                if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
+                    f.write("\t\t\"deps\":\""  +  ",".join([dep.dir for dep in o.deps]) + "\",\n" )
+                    f.write("\t\t\"deps_local\":["  +  ",".join(["\""+dep.type+"/"+dep.name+"\"" for dep in o.deps]) + "],\n" )
+                    f.write("\t\t\"deps_type\":\""  + "/".join([dep.dir for dep in o.deps][0].split("/")[:-1]) + "\",\n" )
+                    f.write("\t\t\"deps_objs\":["  +  ",".join(["\""+dep.name+"\"" for dep in o.deps]) + "],\n" )                
+                else:
+                    f.write("\t\t\"deps\":\""  +  ",".join([dep for dep in o.deps]) + "\",\n" )
+                f.write("\t\t\"params\": {\n")
+                out = ""
+                for p,v in sorted(o.params.items()):
+                    w = "\""+str(v)+"\""
+                    out += "\t\t\t\""+p+"\": "+w+",\n"
+                f.write(out[:-2]+"\n")
+                f.write("\t\t}\n")
+                f.write("\t},\n\n")
         f.write("\t\"dummy\": \"dummy\"\n")
         f.write("}\n")
         f.close()
-       
+
     def loadFile(self,fname):
         hf = open(fname)
 
