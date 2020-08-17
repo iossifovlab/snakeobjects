@@ -13,9 +13,9 @@ def _find_object_type():
             # print("FOUND OT", ot)
             return ot
    
-def set_config(config):
-    global _config
-    _config = config
+def set_object_graph(OG):
+    global _OG
+    _OG = OG 
 
 
 def EFS(t):
@@ -25,37 +25,18 @@ def EFS(t):
         'O': a + '-out.txt',
         'T': a + '-time.txt'
     }
-    # print("EFS with", t, "returns", r)
     return r
 
-def DP(p,dot=None):
-    ot = _find_object_type()
-    def _DP(wc):
-        ok = "%s.%s" % (wc.oid,ot)
-        dp = _config[ok]["deps_local"] if "deps_local" in _config[ok] else []
-        if dot:
-            dp = [d for d in dp if d.startswith(dot)]
-        r = []
-        for d in dp:
-            dok = ".".join((reversed(d.split("/"))))
-            # print("DDDDDD",d,dok)
-            r.append(_config[dok]['params'][p])
-        return r
-    return _DP
  
 def P(p):
     ot = _find_object_type()
-    def _P(wc):
-        ok = "%s.%s" % (wc.oid,ot)
-        # print("AAAAAA",wc.oid,ot,ok,_config[ok]['params'][p])
-        return _config[ok]['params'][p]
-    return _P
-
-def PP(p):
-    return _config['parameters'][p]
+    return lambda wc: return _OG[ot,wc.oid].param[p]
 
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
+
+def all_obj_types():
+    return _OG.tOrder
 
 def deps(dp, level=0, mode=False):
     if level == 0:
@@ -83,19 +64,24 @@ def DT(t,dot=None, level=1, mode=False):
         # print("    : returning: ", r)
         return r
     return _DT 
+
+def DP(p,dot=None):
+    ot = _find_object_type()
+    def _DP(wc):
+        ok = "%s.%s" % (wc.oid,ot)
+        dp = _config[ok]["deps_local"] if "deps_local" in _config[ok] else []
+        if dot:
+            dp = [d for d in dp if d.startswith(dot)]
+        r = []
+        for d in dp:
+            dok = ".".join((reversed(d.split("/"))))
+            # print("DDDDDD",d,dok)
+            r.append(_config[dok]['params'][p])
+        return r
+    return _DP
     
-
-def all_obj_types():
-    return {atts['type'] for atts in _config.values() if 'type' in atts}
-
-def all_obj_ids(otype):
-    # print('ALL TYPES:',all_obj_types())
-    return sorted([x[:-(len(otype)+1)] for x in _config if x.endswith("." + otype)])
 
 def all_obj_dirs(otype=None):
     if otype:
-        return [_targetPrefix + otype + "/" + oid 
-                    for oid in all_obj_ids(otype)]
-    return [_targetPrefix + otype + "/" + oid 
-                    for otype in all_obj_types() 
-                            for oid in all_obj_ids(otype)]
+        return [_targetPrefix + otype + "/" + oid for oid in _OG[otype]]
+    return [_targetPrefix + otype + "/" + oid for otype in all_obj_types() for oid in _OG[otype]]
