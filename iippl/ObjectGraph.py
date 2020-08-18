@@ -18,9 +18,17 @@ class OGO:
             if isinstance(dep,(OGO)):
                 dep.parents.append(ogo) 
 
+class ObjectGraphException(Exception):
+    pass
+
 class ObjectGraph:
 
-    def __init__(self,baseDir):
+    def __init__(self,baseDir=None):
+        if not baseDir:
+            try:
+                baseDir = os.environ['PROJECT_DIR']
+            except KeyError:
+                baseDir = '.'
         self.req = {}
         self.objectsByKey = {}
         self.O = {}
@@ -116,15 +124,21 @@ class ObjectGraph:
         for nn in list(h.keys()):
             print(nn+"="+h[nn])
 
-        
+    def get_object_types(self):
+        return self.tOrder
+    
+    def add(self,ot,oi,params=None,deps=None):
+        o = OGO(ot,oi,params,deps)
+        self.addObject(o)
+        return o
+ 
     def addObject(self, ob):
         ob.OG = self
         ob.dir = str(self.baseDir) + "/objLinks/" + str(ob.type) + "/" + str(ob.name)
         key = str(ob.type)+":"+str(ob.name)
 
         if key in self.objectsByKey:
-                   print("The object " + key + " is already added\n");
-                   raise
+            raise ObjectGraphException(f"The object of type {ob.type} and key {ob.name} is already added\n");
         self.objectsByKey[key] = ob;
         if ob.type in self.O:
             self.oOrder[ob.type].append(ob)
