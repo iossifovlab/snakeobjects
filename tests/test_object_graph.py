@@ -1,5 +1,5 @@
 import pytest, os
-from iippl.ObjectGraph import ObjectGraph,ObjectGraphException,load_object_graph, load_object_graph_json
+from iippl.ObjectGraph import ObjectGraph,ObjectGraphException,load_object_graph
 
 @pytest.fixture
 def OG():
@@ -62,7 +62,7 @@ def test_save_load_json(tmp_path):
     b = OG.add("B","3",deps=OG['A'])
     c = OG.add("C","o",deps=OG['B'])
     OG.writeObjectGraphJson('a.json')
-    OG1 = load_object_graph_json(tmp_path / 'a.json')
+    OG1 = load_object_graph(tmp_path / 'a.json')
     OG1.writeObjectGraphJson('b.json')
     assert os.system('diff %s %s' % (str(tmp_path / 'a.json'),str(tmp_path / 'b.json'))) == 0
 

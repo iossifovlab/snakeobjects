@@ -309,7 +309,7 @@ def load_object_graph_json(fname):
             OG.add(ot,oi, params, [OG[ot,oi] for ot,oi in dt])
         return OG
 
-def load_object_graph(fname):
+def load_object_graph_og(fname):
     def fillHash(line, h):
         p = re.compile('^(.*)=(.*)$')
         m = p.match(line)
@@ -357,6 +357,15 @@ def load_object_graph(fname):
                 fillHash(line, pars);
     return OG
 
+def load_object_graph(fname):
+    fn = os.path.basename(fname)
+    if fn.endswith(".OG"):
+        return load_object_graph_og(fname)
+    elif fn.endswith(".json"):
+        return load_object_graph_json(fname)
+    else:
+        print("load_object_graph: wrong file", fname)
+        exit()
 
 if __name__ == "__main__":        
 
