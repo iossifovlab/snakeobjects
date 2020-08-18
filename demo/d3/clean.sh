@@ -1,1 +1,1 @@
-rm -rf OG.json objLinks sample.snakefile base.snakefile report.snakefile
+rm -rf OG.json OG.OG objLinks sample.snakefile base.snakefile report.snakefile

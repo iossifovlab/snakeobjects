@@ -3,7 +3,7 @@
 from iippl.ObjectGraph import ObjectGraph
 import yaml,os
 
-CF = open(os.envirno["PROJECT_DIR"] + "/parameters.yaml", 'r')
+CF = open(os.environ["PROJECT_DIR"] + "/parameters.yaml", 'r')
 config = yaml.safe_load(CF)
 CF.close()
 
