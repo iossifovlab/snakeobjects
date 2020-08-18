@@ -32,23 +32,14 @@ rule part:
     "echo 'this is part' {wildcards.c} > {output}; "
     "echo {input} >> {output}"
 
-# rule mergedI:
-#   input:
-#     # expand(T('part-{c}.txt'),c=chrs)
-#     lambda wc: [T('part-%s.txt' % (c)) for c in chrs]
-#   output:
-#     T('merged.txt')
-#   shell:
-#     "cat {input} > {output}"
-
-rule merged:
+rule mergedI:
   input:
-    expand("level2/{{oid}}/part-{c}.txt",c=chrs)
-    # lambda wc: ["level2/{oid}/part-%s.txt" % (c) for c in chrs]
+    expand(TE('part-{c}.txt'),c=chrs)
   output:
-    "level2/{oid}/merged.txt"
+    T('merged.txt')
   shell:
     "cat {input} > {output}"
+
 
 rule level2_obj:
   input: 
