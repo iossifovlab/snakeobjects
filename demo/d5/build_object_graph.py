@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph
+from iippl.ObjectGraph import ObjectGraph, load_object_graph_json
+
 
 OG = ObjectGraph()
 

@@ -5,6 +5,8 @@ import sys
 import copy
 import re
 import os 
+import json
+from collections import OrderedDict
 
 class OGO:
     def __init__(ogo,tp,name,params=None,deps=None):
@@ -216,28 +218,12 @@ class ObjectGraph:
         f.write(out[:-2]+"\n")
         f.write("\t},\n\n")
             
-        # ORIGINAL WRONG: for o in sorted(self.objectsByKey.values()):
-        # variatn 1 (GOOD): for o in sorted(self.objectsByKey.values(),key=lambda x:x.name):
-        #for oName,o in sorted([(x.name,x) for x in self.objectsByKey.values()]):
-        #for o in sorted(list(self.objectsByKey.values()),key=lambda x:x.name):
-        #for o in sorted(list(self.objectsByKey.values()),key=lambda x:(x.type,x.name)):
         for ot in self.tOrder:
             for o in self.oOrder[ot]:
                 f.write("\t\""+str(o.name)+"."+str(o.type)+ "\": {\n")
                 f.write("\t\t\"id\": \""+str(o.name)+"\",\n")
                 f.write("\t\t\"type\": \""+str(o.type)+"\",\n")
-                f.write("\t\t\"dir\": \""+str(o.dir)+"\",\n")
-                if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
-                    f.write("\t\t\"parents\":\"" + ",".join([par.dir for par in o.parents]) + "\",\n")
-                else:
-                    f.write("\t\t\"parents\":\"" + ",".join([par for par in o.parents]) + "\",\n")
-                if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
-                    f.write("\t\t\"deps\":\""  +  ",".join([dep.dir for dep in o.deps]) + "\",\n" )
-                    f.write("\t\t\"deps_local\":["  +  ",".join(["\""+dep.type+"/"+dep.name+"\"" for dep in o.deps]) + "],\n" )
-                    f.write("\t\t\"deps_type\":\""  + "/".join([dep.dir for dep in o.deps][0].split("/")[:-1]) + "\",\n" )
-                    f.write("\t\t\"deps_objs\":["  +  ",".join(["\""+dep.name+"\"" for dep in o.deps]) + "],\n" )                
-                else:
-                    f.write("\t\t\"deps\":\""  +  ",".join([dep for dep in o.deps]) + "\",\n" )
+                f.write("\t\t\"deps\":["  +  ",".join(["\""+d.type+"/"+d.name+"\"" for d in o.deps]) + "],\n" )
                 f.write("\t\t\"params\": {\n")
                 out = ""
                 for p,v in sorted(o.params.items()):
@@ -305,6 +291,24 @@ class ObjectGraph:
         else:
             print("unkown command:", cmd)
 
+def load_object_graph_json(fname):
+    with open(fname) as f:
+        OD = json.load(f, object_pairs_hook=OrderedDict)
+        baseDir = dict(OD['parameters'])['baseDir']
+        OG = ObjectGraph(baseDir)
+        OD.pop('parameters')
+        for k in OD:
+            if k == "dummy":
+                break
+            og = dict(OD[k])
+            oi = og['id']
+            ot = og['type']
+            params = og['params'] if 'params' in og else []
+            deps = og['deps'] if 'deps' in og else []
+            dt = [d.split('/') for d in deps]
+            OG.add(ot,oi, params, [OG[ot,oi] for ot,oi in dt])
+        return OG
+
 def load_object_graph(fname):
     def fillHash(line, h):
         p = re.compile('^(.*)=(.*)$')
@@ -352,6 +356,7 @@ def load_object_graph(fname):
             else:
                 fillHash(line, pars);
     return OG
+
 
 if __name__ == "__main__":        
 
