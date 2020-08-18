@@ -1,5 +1,5 @@
-import pytest
-from iippl.ObjectGraph import ObjectGraph,ObjectGraphException
+import pytest, os
+from iippl.ObjectGraph import ObjectGraph,ObjectGraphException,load_object_graph
 
 @pytest.fixture
 def OG():
@@ -42,4 +42,47 @@ def test_otype_order(OG):
         OG.add(t,'o')
     assert OG.get_object_types() == inOrder    
         
+def test_save_load(tmp_path):
+    OG = ObjectGraph(str(tmp_path))
+    a = OG.add("A","o",{"gosho":"pesho","opaa":"3"})
+    b = OG.add("B","1",deps=OG['A'])
+    b = OG.add("B","2",deps=OG['A'])
+    b = OG.add("B","3",deps=OG['A'])
+    c = OG.add("C","o",deps=OG['B'])
+    OG.writeObjectGraph('a.OG')
+    OG1 = load_object_graph(tmp_path / 'a.OG')
+    OG1.writeObjectGraph('b.OG')
+    assert os.system('diff %s %s' % (str(tmp_path / 'a.OG'),str(tmp_path / 'b.OG'))) == 0
+
+
+def test_deepDeps(OG):
+    def p(name,ol):
+        return print(name,",".join([f"{o.type}:{o.name}" for o in ol]))
+    def s(ol):
+        return ",".join([f"{o.type}:{o.name}" for o in ol])
+
+    OG = ObjectGraph()
+    a = OG.add("A","o")
+    b = OG.add("B","1",deps=OG['A'])
+    b = OG.add("B","2",deps=OG['A'])
+    b = OG.add("B","3",deps=OG['A'])
+    c = OG.add("C","o",deps=OG['B'])
+
+    assert s(a.deepDeps()) == ""
+    assert s(b.deepDeps()) == "A:o"
+    assert s(c.deepDeps()) == "B:1,B:2,B:3"
+    assert s(c.deepDeps(level=1,mode='equal')) == "B:1,B:2,B:3"
+    assert s(c.deepDeps(level=1,mode='lessOrEqual')) == "B:1,B:2,B:3"
+
+    assert s(c.deepDeps(level=2)) == "A:o"
+    assert s(c.deepDeps(level=2,mode='equal')) == "A:o"
+    assert s(c.deepDeps(level=2,mode='lessOrEqual')) == "B:1,B:2,B:3,A:o"
+    assert s(c.deepDeps(dot="A",level=2,mode='lessOrEqual')) == "A:o"
+    assert s(c.deepDeps(dot="B",level=2,mode='lessOrEqual')) == "B:1,B:2,B:3"
+
+    assert s(c.deepDeps(level=3)) == ""
+    assert s(c.deepDeps(level=3,mode='equal')) == ""
+    assert s(c.deepDeps(level=3,mode='lessOrEqual')) == "B:1,B:2,B:3,A:o"
+    assert s(c.deepDeps(dot="A",level=3,mode='lessOrEqual')) == "A:o"
+    assert s(c.deepDeps(dot="B",level=3,mode='lessOrEqual')) == "B:1,B:2,B:3"
 

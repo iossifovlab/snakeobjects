@@ -8,7 +8,7 @@ rule P_b:
     thea = DP('a'),
     name = P('name'),
     dob  = P('dob'),
-    ref  = PP('ref')
+    ref  = GP('ref')
   run:
     assert input[0] == "B/o/a.txt"
     correct = {

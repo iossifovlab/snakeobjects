@@ -1,6 +1,6 @@
 rule F_b:
   input:
-    DT('b.txt', level=2, mode=True)
+    DT('b.txt', level=2, mode='lessOrEqual')
   output: 
     T('b.txt')
   run:
@@ -8,12 +8,12 @@ rule F_b:
         "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt", "B/o/b.txt"],
         "F/2/b.txt": ["P/3/b.txt", "P/4/b.txt", "B/o/b.txt"]
     }
-    assert output[0] in correct
-    assert input[0] == correct[output[0]][0]
-    assert input[1] == correct[output[0]][1]
-    assert input[2] == correct[output[0]][2]
+    o = str(output)
+    print("OOOOOO",o,correct[o],input,file=sys.stderr)
+    assert o in correct
+    assert input == correct[o]
 
-    shell("echo {input} >{output}")
+    shell("echo {input} > {output}")
 
 
 rule F_obj:

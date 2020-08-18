@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 
 
 import sys
@@ -17,6 +17,29 @@ class OGO:
         for dep in ogo.deps:
             if isinstance(dep,(OGO)):
                 dep.parents.append(ogo) 
+
+    def k(o):
+        return (o.type,o.name)
+
+    def deepDeps(o, dot=None, level=1, mode='equal'):
+        dps = []
+        queue = []
+        seen = set()
+        for d in o.deps:
+            queue.append((d,1))
+        while queue:
+            x,xl = queue.pop(0)
+
+            if x.k() in seen: continue
+            seen.add(x.k())
+            if (mode == 'lessOrEqual' and xl <= level) or \
+               (mode == 'equal' and xl == level):
+                dps.append(x)
+            for y in x.deps:
+                queue.append((y,xl+1)) 
+        if dot:
+            dps = [dp for dp in dps if dp.type == dot]    
+        return dps
 
 class ObjectGraphException(Exception):
     pass
@@ -51,7 +74,7 @@ class ObjectGraph:
             pass
 
     def __getitem__(self,key):
-        if len(key) == 2:
+        if type(key) == tuple  and len(key) == 2:
             ot,oi = key
             return self.O[ot][oi]
         else:
@@ -114,11 +137,6 @@ class ObjectGraph:
 
                 PF.close()
         
-    def fillHash(self, line, h):
-        p = re.compile('^(.*)=(.*)$')
-        m = p.match(line)
-        if m:
-            h[m.group()[:m.group().index("=")]] = m.group()[m.group().index("=")+1:]
 
     def printH(self, h):
         for nn in list(h.keys()):
@@ -158,10 +176,13 @@ class ObjectGraph:
     def writeObjectGraph(self,outFile):
         f=open(self.baseDir + "/" + outFile, "w") 
         f.write("OBJECT_GRAPH\n")
+        '''
         params = self.params
         params["baseDir"] = self.baseDir
         for k in sorted(self.params):
             f.write(k+"="+params[k]+"\n")
+        '''
+        f.write(self.baseDir + "\n")
         f.write("\n")
             
         # ORIGINAL WRONG: for o in sorted(self.objectsByKey.values()):
@@ -173,15 +194,7 @@ class ObjectGraph:
                 f.write("OBJECT\n")
                 f.write("id="+str(o.name)+"\n")
                 f.write("type="+str(o.type)+"\n")
-                f.write("dir="+str(o.dir)+"\n")
-                if len(o.parents) > 0 and isinstance(o.parents[0],(OGO)):
-                    f.write("parents=" + " ".join([par.dir for par in o.parents]) + "\n")
-                else:
-                    f.write("parents=" + " ".join([par for par in o.parents]) + "\n")
-                if len(o.deps) > 0 and isinstance(o.deps[0],(OGO)):
-                    f.write("deps="  +  " ".join([dep.dir for dep in o.deps]) + "\n" )
-                else:
-                    f.write("deps="  +  " ".join([dep for dep in o.deps]) + "\n" )
+                f.write("deps="  +  " ".join([f'{d.type}:{d.name}' for d in o.deps]) + "\n" )
                 f.write("PARAMS\n")
                 for p,v in sorted(o.params.items()):
                     f.write(p+"="+str(v)+"\n")
@@ -237,60 +250,6 @@ class ObjectGraph:
         f.write("}\n")
         f.close()
 
-    def loadFile(self,fname):
-        hf = open(fname)
-
-        done = 0
-        if hf.readline().rstrip() != 'OBJECT_GRAPH':
-            print("Not an OBJECT_GRAPH")
-            raise
-        for line in  hf:
-            line = line.rstrip()
-            if line == "":
-                break
-            self.fillHash(line, self.params);
-
-        self.baseDir = self.params["baseDir"];
-        
-        for line in hf:
-            line = line.rstrip()
-            if line == "":
-                done = 0;
-                parents = []
-                if req["parents"] != "":
-                        parents = req["parents"].split(" ")
-                deps = []
-                if req['deps'] != "":
-                        deps = req["deps"].split(" ")
-                name = req['id']
-                type = req["type"]
-                ob = OGO(type,name)
-                ob.dir = req["dir"]
-                ob.deps = deps
-                ob.parents = parents
-                ob.params = pars
-                
-                # ob = { "name":req["id"], "type":req["type"], "dir":req["dir"], \
-                #        "parents":parents, "deps":deps, "pars":pars, "NNN":req["NNN"] }
-                
-                self.addObject(ob)
-            elif line == "OBJECT":
-                req = {}
-                pars = {}
-                ob = {}
-                continue
-            elif line == "PARAMS":
-                done = 1
-                continue
-            elif line == "END":
-                pass
-                # print "END\n"
-            elif not done :
-                self.fillHash(line, req);
-            else:
-                self.fillHash(line, pars);
-                #self.printH(self.pars)
-        hf.close()
 
     def printStats(OG):
         print("baseDir:", OG.baseDir)
@@ -302,7 +261,10 @@ class ObjectGraph:
             print("\t", tp, ":", len(tpOs)) 
     
 
-    def execARGVcommands(OG, ARGV):
+    def execARGVcommands(OG, ARGV=None):
+        if not ARGV:
+            ARGV = sys.argv
+
         if len(ARGV) < 2:
             OG.printStats()
             return
@@ -315,7 +277,8 @@ class ObjectGraph:
             OG.printStats()
         elif cmd == 'createDirs':
             OG.createDirs()
-            OG.writeObjectGraphJson("OG.json")
+            # OG.writeObjectGraphJson("OG.json")
+            OG.writeObjectGraph("OG.OG")
         elif cmd == 'saveAs':
             if len(ARGV) < 3:
                 print("missing output file name")
@@ -342,32 +305,122 @@ class ObjectGraph:
         else:
             print("unkown command:", cmd)
 
+def load_object_graph(fname):
+    def fillHash(line, h):
+        p = re.compile('^(.*)=(.*)$')
+        m = p.match(line)
+        if m:
+            h[m.group()[:m.group().index("=")]] = m.group()[m.group().index("=")+1:]
+        else:
+            raise
+
+    with open(fname) as hf:
+        if hf.readline().rstrip() != 'OBJECT_GRAPH':
+            print("Not an OBJECT_GRAPH")
+            raise
+        baseDir = hf.readline().rstrip()
+        if hf.readline().rstrip() != "": 
+            raise
+
+        OG = ObjectGraph(baseDir)
+        done = 0
+        for line in hf:
+            line = line.rstrip()
+            # print("LLLL",line)
+            if line == "":
+                deps = []
+                if req["deps"] != "":
+                    for dpk in req["deps"].split(" "):
+                        t,n = dpk.split(":")
+                        deps.append(OG[t,n])
+                n = req['id']
+                t = req["type"]
+                OG.add(t,n,pars,deps)
+                done = 0
+            elif line == "OBJECT":
+                req = {}
+                pars = {}
+                ob = {}
+                continue
+            elif line == "PARAMS":
+                done = 1
+                continue
+            elif line == "END":
+                pass
+            elif not done :
+                fillHash(line, req);
+            else:
+                fillHash(line, pars);
+    return OG
 
 if __name__ == "__main__":        
+
+    def p(name,ol):
+        print(name,",".join([f"{o.type}:{o.name}" for o in ol]))
+
+    '''
+    OG = ObjectGraph()
+    a = OG.add("A","o")
+    b = OG.add("B","1",deps=OG['A'])
+    b = OG.add("B","2",deps=OG['A'])
+    b = OG.add("B","3",deps=OG['A'])
+    c = OG.add("C","o",deps=OG['B'])
+
+    p("b",b.deepDeps())
+    p("a",a.deepDeps())
+    p("c1",c.deepDeps())
+
+    p("c2e",c.deepDeps(level=2))
+    p("c2l",c.deepDeps(level=2,mode='lessOrEqual'))
+    p("c2lA",c.deepDeps(dot="A",level=2,mode='lessOrEqual'))
+    p("c2lB",c.deepDeps(dot="B",level=2,mode='lessOrEqual'))
+
+    p("c3e",c.deepDeps(level=3))
+    p("c3l",c.deepDeps(level=3,mode='lessOrEqual'))
+    p("c3lA",c.deepDeps(dot="A",level=3,mode='lessOrEqual'))
+    p("c3lB",c.deepDeps(dot="B",level=3,mode='lessOrEqual'))
+    '''
+
+
+    '''
+    OG = ObjectGraph()
+
+    OG.add("B","o", {"a":"alabala nica"})
+
+    OG.add('P','1',{'name':'Peter','dob':"3/10/2000"},OG['B'])
+    OG.add('P','2',{'name':'Paul' ,'dob':"4/20/2001"},OG['B'])
+    OG.add('P','3',{'name':'Mary' ,'dob':"5/30/2002"},OG['B'])
+    OG.add('P','4',{'name':'John' ,'dob':"6/11/2003"},OG['B'])
+
+    OG.add('AP','o',{},OG['P'])
+
+    OG.add('F','1',{'state':'happy'},[OG['P','1'],OG['P','2']])
+    OG.add('F','2',{'state':'  sad'},[OG['P','3'],OG['P','4']])
+
+    OG.add('AF','o',{},OG['F'] + OG['B'])
+
+    OG['P','1'].deepDeps()
+    '''
+
+    # OG.execARGVcommands()
+
     OG = ObjectGraph(".")
+    OG.add("B","o", {"a":"alabala nica"})
+    OG.add('P','1',{'name':'Peter','dob':"3/10/2000"},OG['B'])
+    OG.add('P','2',{'name':'Paul' ,'dob':"4/20/2001"},OG['B'])
+    OG.add('P','3',{'name':'Mary' ,'dob':"5/30/2002"},OG['B'])
+    OG.add('P','4',{'name':'John' ,'dob':"6/11/2003"},OG['B'])
 
-    OG.addObject(OGO("mIndelBT","o"))
+    OG.add('AP','o',{},OG['P'])
 
-    OG.addObject(OGO("mSnvDAE","o"))
+    OG.add('F','1',{'state':'happy'},[OG['P','1'],OG['P','2']])
+    OG.add('F','2',{'state':'  sad'},[OG['P','3'],OG['P','4']])
 
-    OG.addObject(OGO("fDesc","o"))
+    OG.add('AF','o',{},OG['F'] + OG['B'])
 
-    fmIds = ["F_" + x for x in "a b c d e f".split()]
-    for fmId in fmIds:
-        OG.addObject(OGO("mIndelNucFam",fmId,
-                        {"symlink.mainNucFam.txt": "/alabalaba/" + fmId },
-                        [OG.O["mIndelBT"]["o"]]))
-        
-    OG.addObject(OGO("mIndelDAE","o",deps=list(OG.O["mIndelNucFam"].values())))
-    OG.addObject(OGO("mDAE","o",deps= [OG.O["mIndelDAE"]["o"], OG.O["mSnvDAE"]["o"]]))
-
-    OG.execARGVcommands(sys.argv)
-
-
-    # OG.createDirs()
-    # home work for Boris
-    # OG.saveFile("V1.OG")
-    # OG2 = loadFile("V1.OG")
-    # OG2.saveFile("V2.OG")
+    OG.writeObjectGraph("V1.OG")
+    OG2 = load_object_graph("V1.OG")
+    OG2.writeObjectGraph("V2.OG")
+    os.system('diff V1.OG V2.OG')
     # assert diff sais noting for diff V1.OG V2.OG
 
