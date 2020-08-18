@@ -8,7 +8,7 @@ rule P_b:
     thea = DP('a'),
     name = P('name'),
     dob  = P('dob'),
-    ref  = PP('ref')
+    ref  = GP('ref')
   run:
     assert input[0] == "B/o/a.txt"
     correct = {
@@ -25,18 +25,46 @@ rule P_b:
     shell("(time echo 'thea:' {params.thea}, 'name:' {params.name}, \
           'dob: {params.dob}'> {output}) 2> {log.T}")
 
+
+chrs = ['chr1', 'chr2', 'chr3', 'chr4']
+
+rule beg:
+  output:
+    T('beg-{c}.txt')
+  shell:
+    "echo 'this is beg' {wildcards.oid} {wildcards.c} > {output}"
+
+rule part:
+  input:
+    T('beg-{c}.txt')
+  output:
+    T('part-{c}.txt')
+  shell:
+    "echo 'this is part' {wildcards.oid} {wildcards.c} > {output}; "
+    "echo {input} >> {output}"
+
+rule mergedI:
+  input:
+    expand(TE('part-{c}.txt'),c=chrs)
+  output:
+    T('merged.txt')
+  shell: 
+    "cat {input} > {output}"
+
+
 rule P_obj:
   input: 
     DT("obj.flag"),
-    T('b.txt')
+    T('b.txt'),
+    T('merged.txt')
   output:
     touch(T("obj.flag"))
   run:
     correct = {
-    "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt"],
-    "P/2/obj.flag": ["B/o/obj.flag", "P/2/b.txt"],
-    "P/3/obj.flag": ["B/o/obj.flag", "P/3/b.txt"],
-    "P/4/obj.flag": ["B/o/obj.flag", "P/4/b.txt"]
+    "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],
+    "P/2/obj.flag": ["B/o/obj.flag", "P/2/b.txt", "P/2/merged.txt"],
+    "P/3/obj.flag": ["B/o/obj.flag", "P/3/b.txt", "P/3/merged.txt"],
+    "P/4/obj.flag": ["B/o/obj.flag", "P/4/b.txt", "P/4/merged.txt"]
     }
     assert output[0] in correct
     assert input == correct[output[0]]

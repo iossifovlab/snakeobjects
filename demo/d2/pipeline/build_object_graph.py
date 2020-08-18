@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph, OGO
-import os,sys
+from iippl.ObjectGraph import ObjectGraph
+import yaml,os
 
-OG = ObjectGraph(os.environ['PROJECT_DIR'])
-n1 = int(OG.params['n1'])
+CF = open(os.environ["PROJECT_DIR"] + "/parameters.yaml", 'r')
+config = yaml.safe_load(CF)
+CF.close()
 
-OG.addObject(OGO("base","o", {}))
+OG = ObjectGraph()
+
+n1 = int(config['n1'])
+
+OG.add("base","o")
 
 for i in range(n1):
-    OG.addObject(OGO("level1",str(i),{},[OG["base","o"]]))
+    OG.add("level1",str(i),{},OG["base"])
 
-OG.addObject(OGO("level2","o", {}, [OG["base","o"]] + OG["level1"]))
+OG.add("level2","o", {}, OG["base"] + OG["level1"])
 
-OG.execARGVcommands(sys.argv)
+OG.execARGVcommands()
 

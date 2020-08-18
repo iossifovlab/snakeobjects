@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph, OGO
-import sys
+from iippl.ObjectGraph import ObjectGraph
 
-OG = ObjectGraph(".")
+OG = ObjectGraph()
 
-OG.addObject(OGO("base","o", {"a":"alabala nica"}))
+OG.add("base","o", {"a":"alabala nica"})
 
 for i in range(2):
-    OG.addObject(OGO("sample","sample%d" % (i),{"g":"value%d" % (i)},[OG["base","o"]]))
+    OG.add("sample","sample%d" % (i),{"g":"value%d" % (i)},OG["base"])
 
-OG.addObject(OGO("report","o", {}, OG["sample"]))
+OG.add("report","o", {}, OG["sample"])
 
-OG.execARGVcommands(sys.argv)
+OG.execARGVcommands()
 

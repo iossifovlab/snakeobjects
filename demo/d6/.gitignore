@@ -2,5 +2,5 @@
 objLinks/
 .snakemake/
 OG.json
-*.OG
 glbl.makefile
+*.snakefile

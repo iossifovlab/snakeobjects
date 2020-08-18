@@ -1,13 +1,25 @@
 shell.prefix("set -o pipefail; ")
-configfile: "../OG.json"
-pipeline = os.environ["PIPELINE_DIR"]
 import os
+from iippl.snakeUtils import set_object_graph, all_obj_dirs, all_obj_types, T, TE, DT, EFS, P, DP
+from iippl.ObjectGraph import load_object_graph
 
-from iippl.snakeUtils import set_config, all_obj_ids, all_obj_dirs, all_obj_types, T, DT, EFS, P, DP, PP
+pipeline = os.environ["PIPELINE_DIR"]
 
-set_config(config)
+if os.path.exists("../parameters.yaml"):
+    configfile: "../parameters.yaml"
+else:
+    config = {}
 
-GP = config['parameters']
+
+
+objectGraphFile = "../OG.OG"
+if 'objectGraphFile' in config: 
+    objectGraphFile = config['objectGraphFile']
+OG = load_object_graph(objectGraphFile) 
+set_object_graph(OG)
+
+def GP(parameter):
+    return config[parameter]
 
 for t in all_obj_types():
     tsfn = pipeline + "/" + t + ".snakefile"
