@@ -263,8 +263,8 @@ class ObjectGraph:
             OG.printStats()
         elif cmd == 'createDirs':
             OG.createDirs()
-            # OG.writeObjectGraphJson("OG.json")
-            OG.writeObjectGraph("OG.OG")
+            OG.writeObjectGraphJson("OG.json")
+            # OG.writeObjectGraph("OG.OG")
         elif cmd == 'saveAs':
             if len(ARGV) < 3:
                 print("missing output file name")
@@ -358,6 +358,7 @@ def load_object_graph_og(fname):
     return OG
 
 def load_object_graph(fname):
+    print (fname)
     fn = os.path.basename(fname)
     if fn.endswith(".OG"):
         return load_object_graph_og(fname)

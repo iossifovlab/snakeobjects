@@ -12,7 +12,7 @@ else:
 
 
 
-objectGraphFile = "../OG.OG"
+objectGraphFile = "../OG.json"
 if 'objectGraphFile' in config: 
     objectGraphFile = config['objectGraphFile']
 OG = load_object_graph(objectGraphFile) 

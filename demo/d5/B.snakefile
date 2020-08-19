@@ -7,6 +7,9 @@ rule build_a:
   run:
     assert output[0] == "B/o/t.txt"
     assert params.a == "alabala nica"
+    assert log.O == "B/o/log/t.txt-out.txt"
+    assert log.E == "B/o/log/t.txt-err.txt"
+    assert log.T == "B/o/log/t.txt-time.txt"
     shell("echo {params.a} > {output.t}")
 
 rule build_ab:
@@ -16,6 +19,9 @@ rule build_ab:
   run:
     assert output[0] == "B/o/a.txt"
     assert output[1] == "B/o/b.txt"
+    assert log.O == "B/o/log/b.txt-out.txt"
+    assert log.E == "B/o/log/b.txt-err.txt"
+    assert log.T == "B/o/log/b.txt-time.txt"
     shell("touch {output[0]}")
     shell("touch {output[1]}")
 
