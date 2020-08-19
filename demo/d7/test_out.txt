@@ -1,0 +1,58 @@
+objLinks/P/1:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+
+objLinks/P/2:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+test dependency of obj.flag on new target
+objLinks/P/2:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 c.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+
+objLinks/P/1:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 c.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+objLinks/P/1:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+
+objLinks/P/2:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+test dependency of old target on the new one
+objLinks/P/2:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 c.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
+
+objLinks/P/1:
+total 1
+drwxrwsr-x 2 byamrom iilab 4096 Aug 19 11:39 log
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 a.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 c.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 b.txt
+-rw-rw-r-- 1 byamrom iilab    0 Aug 19 11:39 obj.flag
