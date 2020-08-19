@@ -3,16 +3,21 @@ rule F_b:
     DT('b.txt', level=2, mode='lessOrEqual')
   output: 
     T('b.txt')
+  params:
+    DP('name', "P")
   run:
     correct = {
-        "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt", "B/o/b.txt"],
-        "F/2/b.txt": ["P/3/b.txt", "P/4/b.txt", "B/o/b.txt"]
+        "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt", "B/o/b.txt", "Peter", "Paul"],
+        "F/2/b.txt": ["P/3/b.txt", "P/4/b.txt", "B/o/b.txt", "Mary", "John"]
     }
     o = str(output)
-    print("OOOOOO",o,correct[o],input,file=sys.stderr)
+    p1 = eval(str(params))[0]
+    p2 = eval(str(params))[1]
+    print("OOOOOO",o,correct[o],input,p1, p2,file=sys.stderr)
     assert o in correct
-    assert input == correct[o]
-
+    assert input == correct[o][:3]
+    assert p1 == correct[o][3]
+    assert p2 == correct[o][4]
     shell("echo {input} > {output}")
 
 
