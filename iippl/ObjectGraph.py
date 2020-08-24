@@ -119,6 +119,7 @@ class ObjectGraph:
                     dst = ogo.dir + "/" + k[8:]
                     src = v
                     os.system("ln -sf %s %s" % (src,dst))
+                    os.system("touch -h -r %s %s" % (src,dst))
                     # os.symlink(src,dst)
 
     def createParamsFiles(self):
