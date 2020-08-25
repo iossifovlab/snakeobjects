@@ -1,7 +1,7 @@
 rule l2_allB:
   input:
-    DT('B.txt',"level1"),
-    DT('a.txt',"base")
+    DT('B2.txt',"level1"),
+    DT('a2.txt',"base")
   params: 
         allGs=DP('g',"level1"),
         theA=DP('a',"base")
