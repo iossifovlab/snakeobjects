@@ -359,7 +359,7 @@ def load_object_graph_og(fname):
     return OG
 
 def load_object_graph(fname):
-    print (fname)
+    print (fname,file=sys.stderr)
     fn = os.path.basename(fname)
     if fn.endswith(".OG"):
         return load_object_graph_og(fname)
