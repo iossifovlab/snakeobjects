@@ -26,6 +26,9 @@ def EFS(t):
     }
     return r
 
+def B(t):
+    a = _targetPrefix + _find_object_type() + "/{oid}/log/" + t 
+    return a + '-bmk.txt'
 
 def T(t): 
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
@@ -36,6 +39,9 @@ def TE(t):
 def P(p):
     ot = _find_object_type()
     return lambda wc: _OG[ot,wc.oid].params[p]
+
+def PP(p):
+    return _OG.params[p]
 
 def all_obj_types():
     return _OG.tOrder
