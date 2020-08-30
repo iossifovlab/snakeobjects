@@ -11,15 +11,16 @@ rule build_a:
 
 rule build_ab:
   output:
-    T("a.txt"), T("b.txt")
+    T("a1.txt"), T("a2.txt"), T("b.txt")
   log:  **(EFS('b.txt'))
   shell:
     "touch {output[0]}; "
     "touch {output[1]}; "
+    "touch {output[2]}; "
 
 rule base_obj:
   input:
-    T("a.txt"), T("b.txt"), T("t.txt")
+    T("a1.txt"), T("a2.txt"), T("b.txt"), T("t.txt")
   output:
     touch(T("obj.flag"))
 

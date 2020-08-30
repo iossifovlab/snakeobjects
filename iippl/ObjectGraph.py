@@ -119,6 +119,7 @@ class ObjectGraph:
                     dst = ogo.dir + "/" + k[8:]
                     src = v
                     os.system("ln -sf %s %s" % (src,dst))
+                    os.system("touch -h -r %s %s" % (src,dst))
                     # os.symlink(src,dst)
 
     def createParamsFiles(self):
@@ -358,7 +359,7 @@ def load_object_graph_og(fname):
     return OG
 
 def load_object_graph(fname):
-    print (fname)
+    print (fname,file=sys.stderr)
     fn = os.path.basename(fname)
     if fn.endswith(".OG"):
         return load_object_graph_og(fname)
