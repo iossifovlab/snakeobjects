@@ -18,8 +18,8 @@ def cli(args=None):
 
     args = p.parse_args(args)
 
-    if args.command == "main.snakefile":
-        print(importlib_resources.read_text(__package__,'main.snakefile'),end='')
+    if args.command == "header.snakefile":
+        print(importlib_resources.read_text(__package__,'header.snakefile'),end='')
     else:
         print("Don't know the command:", args.command)
         return 1

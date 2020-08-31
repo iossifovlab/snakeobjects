@@ -85,8 +85,8 @@ class ObjectGraph:
     def getO(self, o_type,o_name):
         return self.O[o_type][o_name]
 
-    def getAll(self, o_type):
-        return self.O[o_type].values()
+    def names(self, o_type):
+        return [o.name for o in self.O[o_type].values()]
 
     def createGlblMakefiel(self): 
         GLBL = open(self.baseDir + '/glbl.makefile', 'w')
@@ -237,7 +237,33 @@ class ObjectGraph:
         f.write("}\n")
         f.close()
 
+    def createSnakefile(self,ot,sfile):
+        with open(sfile, 'w') as f:
+            f.write("rule "+ ot + ":\n")
+            f.write("  input:\n")
+            f.write("    DT('obj.flag')\n") 
+            f.write("  output:\n") 
+            f.write("    touch(T('obj.flag'))\n\n")
+ 
+    def writeMainSnakefile(self):
+        pdir=os.environ["PROJECT_DIR"]
+        with open(pdir+'/objLinks/main.snakefile', 'w') as f:
+            f.write("include: \""+ pdir +"/header.snakefile\"\n\n")
+            f.write("rule all_main:\n")
+            f.write("  input:\n")
+            f.write("    expand(\"{od}/obj.flag\", od=all_obj_dirs())\n\n")
 
+            for ot in self.tOrder:
+                sfile = pdir + "/" + ot + ".snakefile"
+                if not os.path.exists(sfile):
+                    self.createSnakefile(ot,sfile)
+                f.write("include: \""+pdir+"/" + ot + ".snakefile\"\n\n")
+                f.write("rule all_" + ot + ":\n")
+                f.write("  input:\n")
+                f.write("    expand(\"" + ot + 
+                        "/{o}/obj.flag\", o=OG.names(\""+ ot + "\"))\n\n")
+
+     
     def printStats(OG):
         print("baseDir:", OG.baseDir)
         print("Parameters:")
@@ -264,6 +290,7 @@ class ObjectGraph:
             OG.printStats()
         elif cmd == 'createDirs':
             OG.createDirs()
+            OG.writeMainSnakefile()
             OG.writeObjectGraphJson("OG.json")
             # OG.writeObjectGraph("OG.OG")
         elif cmd == 'saveAs':

@@ -14,8 +14,9 @@ echo "WITH PIPELINE" $PIPELINE_DIR
 mkdir -p $PROJECT_DIR/objLinks
 cd $PROJECT_DIR/objLinks
 
-if [ ! -f main.snakefile ]; then
-    iippl main.snakefile > main.snakefile
+if [ ! -f header.snakefile ]; then
+
+    iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
 snakemake --snakefile main.snakefile  $*

@@ -10,8 +10,6 @@ if os.path.exists("../parameters.yaml"):
 else:
     config = {}
 
-
-
 objectGraphFile = "../OG.json"
 if 'objectGraphFile' in config: 
     objectGraphFile = config['objectGraphFile']
@@ -21,7 +19,4 @@ set_object_graph(OG)
 def GP(parameter):
     return config[parameter]
 
-rule all_main:
-  input:
-    expand("{od}/obj.flag", od=all_obj_dirs())
 

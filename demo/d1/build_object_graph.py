@@ -11,5 +11,7 @@ for i in range(2):
 
 OG.add("level2","o", {}, OG["base"] + OG["level1"] )
 
+OG.add("level3", "o", {}, [OG["level2","o"]] )
+
 OG.execARGVcommands()
 
