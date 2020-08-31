@@ -1,6 +1,6 @@
 shell.prefix("set -o pipefail; ")
 import os
-from iippl.snakeUtils import set_object_graph, all_obj_dirs, all_obj_types, T, TE, DT, EFS, P, DP, PP
+from iippl.snakeUtils import set_object_graph, all_obj_dirs, all_obj_types, T, TE, DT, EFS, P, DP, PP, B
 from iippl.ObjectGraph import load_object_graph
 
 pipeline = os.environ["PIPELINE_DIR"]
