@@ -248,6 +248,8 @@ class ObjectGraph:
     def writeMainSnakefile(self):
         pdir=os.environ["PROJECT_DIR"]
         with open(pdir+'/objLinks/main.snakefile', 'w') as f:
+            local='localrules: '+','.join(['all_'+ o for o in self.tOrder])
+            f.write(local+"\n\n")
             f.write("include: \""+ pdir +"/header.snakefile\"\n\n")
             f.write("rule all_main:\n")
             f.write("  input:\n")
@@ -291,6 +293,7 @@ class ObjectGraph:
         elif cmd == 'createDirs':
             OG.createDirs()
             OG.writeMainSnakefile()
+            os.system("mkdir -p log")
             OG.writeObjectGraphJson("OG.json")
             # OG.writeObjectGraph("OG.OG")
         elif cmd == 'saveAs':
