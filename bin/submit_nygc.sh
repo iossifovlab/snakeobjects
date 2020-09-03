@@ -3,7 +3,7 @@
 # the first argument is the name of the project (no '/', '.'  in it)
 # the next argument may be '--profile profile_name', where profile_name
 # is a folder in $HOME/.config/snakemake/
-# profile_name can be slurm_profile and sge_profile
+# profile_name should be slurm profile
 # following the profile you can have the name of a rule or a target
 #
 
