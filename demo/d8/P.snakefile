@@ -1,4 +1,4 @@
-localrules: split, beg
+localrules: split
 chunkN = 7
 
 rule P_b:
@@ -39,32 +39,27 @@ rule split:
   input: 
     DT("a.txt", "B")
   output:
-    f=T("split.flag"),
+    f=T("split.flag")
   shell:
-    " split -a 5 -d -n l/{chunkN} {input} `dirname {output}`/beg- && touch {output} "
-
-rule beg:
-  output:
-    touch(T('beg-{p}'))
-  priority: 10
+    " split -a 5 -d -n l/{chunkN} {input} `dirname {output.f}`/part- && touch {output} "
 
 rule part:
   input:
     f=T("split.flag"),
-    i=T('beg-{p}')
   output:
     T('part-{p}.txt')
   shell:
-    "(echo 'this is part' {wildcards.oid} {wildcards.p}; cat {input.i}) > {output} "
+    "(echo 'this is part' {wildcards.oid} {wildcards.p}; cat `dirname {input.f}`/part-{wildcards.p}) > {output} && cp {output}  `dirname {input.f}`/c.txt "
 
 rule mergedI:
   input:
     expand(TE('part-{p}.txt'),p=P_list)
   output:
-    T('merged.txt')
+    m=T('merged.txt'),
+    c=touch(T("c.txt"))
   shell: 
-    "cat {input} > {output}"
-
+    "cat {input} > {output.m} "
+   
 rule P_obj:
   input: 
     DT("obj.flag"),
