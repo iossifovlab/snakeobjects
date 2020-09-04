@@ -39,17 +39,17 @@ rule split:
   input: 
     DT("a.txt", "B")
   output:
-    f=T("split.flag")
+    touch(T("split.flag"))
   shell:
-    " split -a 5 -d -n l/{chunkN} {input} `dirname {output.f}`/part- && touch {output} "
+    " split -a 5 -d -n l/{chunkN} {input} `dirname {output}`/part- "
 
 rule part:
   input:
-    f=T("split.flag"),
+    T("split.flag")
   output:
     T('part-{p}.txt')
   shell:
-    "(echo 'this is part' {wildcards.oid} {wildcards.p}; cat `dirname {input.f}`/part-{wildcards.p}) > {output} && cp {output}  `dirname {input.f}`/c.txt "
+    "(echo 'this is part' {wildcards.oid} {wildcards.p}; cat `dirname {input}`/part-{wildcards.p}) > {output} && cp {output}  `dirname {input}`/c.txt "
 
 rule mergedI:
   input:
