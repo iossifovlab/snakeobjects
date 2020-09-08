@@ -19,7 +19,7 @@ if [ ! -f header.snakefile ]; then
     iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
-default_options=`grep default_snakemake_args ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
+default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
 
 if [ -z "$default_options" ]; then
 
