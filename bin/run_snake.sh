@@ -19,6 +19,11 @@ if [ ! -f header.snakefile ]; then
     iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
+default_opetions=`grep default_snakemake_args parameters.yaml |cut -d'=' -f2`
+if [ -z "$default_options" ]; then
 snakemake --snakefile main.snakefile  $*
+else
+snakemake --snakefile main.snakefile  $default_options $*
+fi
 
 # --profile $BIN_DIR/SLURM.nygc $*
