@@ -22,8 +22,12 @@ fi
 default_opetions=`grep default_snakemake_args parameters.yaml |cut -d':' -f2`
 
 if [ -z "$default_options" ]; then
+
+echo "snakemake --snakefile main.snakefile  $*"
 snakemake --snakefile main.snakefile  $*
 else
+
+echo "snakemake --snakefile main.snakefile  $default_options $*"
 snakemake --snakefile main.snakefile  $default_options $*
 fi
 
