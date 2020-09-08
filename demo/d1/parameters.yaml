@@ -1,1 +1,1 @@
-default_snakemake_args=--profile SLURM.nygc --keepgoing
+default_snakemake_args: --profile SLURM.nygc --keepgoing
