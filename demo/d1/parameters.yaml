@@ -1,6 +1,6 @@
 default_snakemake_args: --profile SLURM.nygc --keep-going
-cluster: sbatch --mem=4000 --cpus-per-task=1 -e log/run_snake-err.txt -o log/run_snake-out.txt 
+#cluster: sbatch --mem=4000 --cpus-per-task=1 -e log/run_snake-err.txt -o log/run_snake-out.txt 
 #default_snakemake_args: --profile SGE.nygc --keep-going
-#cluster: qsub -N "run_snake" -cwd -V -b yes -pe smp 1 -l mem_free=4000M -o "log/run_snake-out.txt" -e "log/run_snake-err"
+#cluster: qsub -N run_snake -cwd -V -b yes -pe smp 1 -l mem_free=4000M -o log/run_snake-out.txt -e log/run_snake-err
 a: b
 
