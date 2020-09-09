@@ -19,7 +19,7 @@ setup(
         "iippl": ["*.snakefile"],
     },
     include_package_data=True,
-    scripts = ['bin/run_snake.sh'], 
+    scripts = ['bin/run_snake.sh','bin/submit_snake.sh', 'bin/jscript.sh'], 
     entry_points={
         'console_scripts': [
             'iippl=iippl.cli:cli'
