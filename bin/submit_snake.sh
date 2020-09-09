@@ -20,9 +20,12 @@ if [ ! -f header.snakefile ]; then
     iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
+echo "AAA"
 default_args=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` 
+echo $default_args
 
 input=($default_args)
+echo ${input[@]}
 
 N=`echo ${input[@]}|wc -w`
 profile=""
