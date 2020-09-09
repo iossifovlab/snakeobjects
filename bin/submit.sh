@@ -29,7 +29,7 @@ if [ -z "$cmd" ]; then
 	run_snake.sh -j1 $* 2> tmp &
 else
 	echo "$cmd $PROJECT_DIR/jscript.sh $default_args $* 2>tmp &"
-	$cmd $PROJECT_DIR/jscript.sh $default_args $* 2> tmp &
+	$cmd jscript.sh $default_args $* 2> tmp &
 fi
 
 
