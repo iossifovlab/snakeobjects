@@ -20,16 +20,18 @@ if [ ! -f header.snakefile ]; then
     iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
-default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
+cmd=`grep -P "^cluster" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
+echo $cmd
+default_args=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` 
 
-if [ -z "$default_options" ]; then
-
-echo "snakemake --snakefile main.snakefile  $*"
-snakemake --snakefile main.snakefile  $*
+if [ -z "$cmd" ]; then
+    echo "run_snake.sh -j1 $*"
+	run_snake.sh -j1 $* 2> tmp &
 else
-
-echo "snakemake --snakefile main.snakefile  $default_options $*"
-snakemake --snakefile main.snakefile  $default_options $*
+	echo "$cmd $PROJECT_DIR/jscript.sh $default_args $* 2>tmp &"
+	$cmd $PROJECT_DIR/jscript.sh $default_args $* 2> tmp &
 fi
 
-# --profile $BIN_DIR/SLURM.nygc $*
+
+
+
