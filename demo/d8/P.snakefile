@@ -67,6 +67,8 @@ rule P_obj:
     T('merged.txt')
   output:
     touch(T("obj.flag"))
+  log:
+    **(EFS("obj.flag"))
   run:
     correct = {
     "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],
