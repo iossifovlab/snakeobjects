@@ -20,16 +20,15 @@ if [ ! -f header.snakefile ]; then
     iippl header.snakefile > $PROJECT_DIR/header.snakefile
 fi
 
-echo "AAA"
 default_args=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` 
-echo $default_args
 
 input=($default_args)
 echo ${input[@]}
 
 N=`echo ${input[@]}|wc -w`
 profile=""
-for n in `seq 1  $N`
+
+for n in `seq 0  $N`
 do
 	if [[ ${input[$n]} ==  "--profile" ]]; then
 		let k=$n+1
@@ -41,7 +40,7 @@ if [ -z $profile ]; then
 	echo "no profile specified"
 	exit 1
 else
-	echo $profile
+	echo "profile $profile"
 fi
 
 cmd=""
@@ -55,14 +54,19 @@ if [ ! -f $HOME/.config/snakemake/$profile/config.yaml ]; then
 		cmd=`grep -P "^cluster\:" $profile/config.yaml|cut -d':' -f2`
     fi
 else
-cmd=`grep -P "^cluster\:" $HOME/.config/snakemake/$profile/config.yaml|cut -d':' -f -2`
+    profile=$HOME/.config/snakemake/$profile
+	cmd=`grep -P "^cluster:" $profile/config.yaml|cut -d':' -f 2`
+	echo "cmd: $cmd"
 fi
 
 if [ -z "$cmd" ]; then
     echo "no cluster specified in profile config.yaml file"
 	exit 1
 else
-	echo "$cmd $PROJECT_DIR/jscript.sh $default_args $* 2>tmp &"
-	$cmd jscript.sh $default_args $*  &
+    s1=`cat $profile/jscript.sh` 
+    s2=`echo "$default_args $* && exit 0 || exit 1"`
+    tmpfile=$(mktemp /tmp/`basename $PROJECT_DIR`.XXXXX)
+    echo "$s1 $s2" >$tmpfile
+    $cmd $tmpfile &
 fi
 
