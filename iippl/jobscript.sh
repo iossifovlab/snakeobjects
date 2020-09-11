@@ -9,4 +9,3 @@
 --wrapper-prefix https://github.com/snakemake/snakemake-wrappers/raw/ \
 --nocolor --notemp --no-hooks --nolock \
 --mode 2  \
- 
