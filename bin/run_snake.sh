@@ -13,7 +13,7 @@ echo "WITH PIPELINE" $PIPELINE_DIR
 
 mkdir -p $PROJECT_DIR/objLinks
 cd $PROJECT_DIR/objLinks
-mkdir -p log
+#mkdir -p log
 
 default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
 
