@@ -10,7 +10,7 @@ if os.path.exists("../parameters.yaml"):
 else:
     config = {}
 
-objectGraphFile = ".snakemake/OG.json"
+objectGraphFile = ".pipes/OG.json"
 if 'objectGraphFile' in config: 
     objectGraphFile = config['objectGraphFile']
 OG = load_object_graph(objectGraphFile) 
