@@ -247,8 +247,12 @@ class ObjectGraph:
  
     def writeMainSnakefile(self):
         pdir=os.environ["PROJECT_DIR"]
-        with open(pdir+'/objLinks/main.snakefile', 'w') as f:
-            f.write("include: \""+ pdir +"/header.snakefile\"\n\n")
+        hf=os.path.dirname(__file__)+'/header.snakefile'
+        mf=pdir+'/objLinks/.pipes/main.snakefile'
+        with open(mf, 'w') as f:
+            with open(hf, 'r') as g:
+                for l in g:
+                    f.write(l)
             f.write("rule all_main:\n")
             f.write("  input:\n")
             f.write("    expand(\"{od}/obj.flag\", od=all_obj_dirs())\n\n")
@@ -290,10 +294,9 @@ class ObjectGraph:
             OG.printStats()
         elif cmd == 'createDirs':
             OG.createDirs()
+            os.system("mkdir -p objLinks/.pipes")
             OG.writeMainSnakefile()
-            os.system("mkdir -p log")
-            OG.writeObjectGraphJson("OG.json")
-            # OG.writeObjectGraph("OG.OG")
+            OG.writeObjectGraphJson("objLinks/.pipes/OG.json")
         elif cmd == 'saveAs':
             if len(ARGV) < 3:
                 print("missing output file name")

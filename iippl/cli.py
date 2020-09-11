@@ -20,6 +20,8 @@ def cli(args=None):
 
     if args.command == "header.snakefile":
         print(importlib_resources.read_text(__package__,'header.snakefile'),end='')
+    elif args.command == "jobscript.sh":
+        print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
     else:
         print("Don't know the command:", args.command)
         return 1

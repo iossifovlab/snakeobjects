@@ -15,11 +15,6 @@ mkdir -p $PROJECT_DIR/objLinks
 cd $PROJECT_DIR/objLinks
 mkdir -p log
 
-if [ ! -f header.snakefile ]; then
-
-    iippl header.snakefile > $PROJECT_DIR/header.snakefile
-fi
-
 default_args=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` 
 
 input=($default_args)
@@ -63,10 +58,8 @@ if [ -z "$cmd" ]; then
     echo "no cluster specified in profile config.yaml file"
 	exit 1
 else
-    s1=`cat $profile/jscript.sh` 
-    s2=`echo "$default_args $* && exit 0 || exit 1"`
-    tmpfile=$(mktemp /tmp/`basename $PROJECT_DIR`.XXXXX)
-    echo "$s1 $s2" >$tmpfile
-    $cmd $tmpfile &
+    iippl jobscript.sh >$PROJECT_DIR/jobscript.sh
+    echo "$default_args $* && exit 0 || exit 1" >>$PROJECT_DIR/jobscript.sh
+    $cmd $PROJECT_DIR/jobscript.sh &
 fi
 

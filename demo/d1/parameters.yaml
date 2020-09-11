@@ -1,4 +1,4 @@
 #default_snakemake_args: --profile SLURM.nygc --keep-going
-default_snakemake_args: --profile SGE.nygc --keep-going
+#default_snakemake_args: --profile SGE.nygc --keep-going
 a: b
 
