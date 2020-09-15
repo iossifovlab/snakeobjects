@@ -11,13 +11,13 @@ fi
 echo "WORKING ON PROJECT" $PROJECT_DIR 
 echo "WITH PIPELINE" $PIPELINE_DIR
 
-mkdir -p $PROJECT_DIR/objLinks
 cd $PROJECT_DIR/objLinks
 
+if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then
+    default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
+fi
 
-default_args=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` 
-
-input=($default_args)
+input=($default_options)
 echo ${input[@]}
 
 N=`echo ${input[@]}|wc -w`
@@ -40,18 +40,11 @@ fi
 
 cmd=""
 
-if [ ! -f $HOME/.config/snakemake/$profile/config.yaml ]; then
-	echo "no config.yaml in the profile $HOME/.config/snakemake/$profile"
-	if [ ! -f $profile/config.yaml ]; then
-		echo "no config.yaml in the profile $profile"
-		exit 1
-	else
-		cmd=`grep -P "^cluster\:" $profile/config.yaml|cut -d':' -f2`
-    fi
+if [ ! -f $profile/config.yaml ]; then
+	echo "no config.yaml in the profile $profile"
+    exit 1
 else
-    profile=$HOME/.config/snakemake/$profile
-	cmd=`grep -P "^cluster:" $profile/config.yaml|cut -d':' -f 2`
-	echo "cmd: $cmd"
+	cmd=`grep -P "^cluster\:" $profile/config.yaml|cut -d':' -f2`
 fi
 
 if [ -z "$cmd" ]; then
@@ -59,7 +52,7 @@ if [ -z "$cmd" ]; then
 	exit 1
 else
     iippl jobscript.sh >$PROJECT_DIR/jobscript.sh
-    echo "$default_args $* && exit 0 || exit 1" >>$PROJECT_DIR/jobscript.sh
+    echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/jobscript.sh
     $cmd $PROJECT_DIR/jobscript.sh &
 fi
 
