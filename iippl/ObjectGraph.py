@@ -246,7 +246,7 @@ class ObjectGraph:
             f.write("    touch(T('obj.flag'))\n\n")
  
     def writeMainSnakefile(self):
-        pdir=os.environ["PROJECT_DIR"]
+        pdir=self.baseDir
         hf=os.path.dirname(__file__)+'/header.snakefile'
         mf=pdir+'/objLinks/.pipes/main.snakefile'
         with open(mf, 'w') as f:
@@ -261,7 +261,7 @@ class ObjectGraph:
                 sfile = pdir + "/" + ot + ".snakefile"
                 if not os.path.exists(sfile):
                     self.createSnakefile(ot,sfile)
-                f.write("include: \""+pdir+"/" + ot + ".snakefile\"\n\n")
+                f.write("include: pipeline + \"/" + ot + ".snakefile\"\n\n")
                 f.write("rule all_" + ot + ":\n")
                 f.write("  input:\n")
                 f.write("    expand(\"" + ot + 
@@ -390,7 +390,7 @@ def load_object_graph_og(fname):
     return OG
 
 def load_object_graph(fname):
-    print (fname,file=sys.stderr)
+    # print (fname,file=sys.stderr)
     fn = os.path.basename(fname)
     if fn.endswith(".OG"):
         return load_object_graph_og(fname)

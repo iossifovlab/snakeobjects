@@ -1,3 +1,2 @@
-default_snakemake_args: --profile SLURM.nygc
 ref: ref.fa
 refi: ref.fai

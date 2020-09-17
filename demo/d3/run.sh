@@ -1,2 +1,2 @@
 ./build_object_graph.py createDirs
-run_snake.sh -j 1
+run_snake.sh -j
