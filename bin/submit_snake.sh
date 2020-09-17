@@ -17,6 +17,7 @@ if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then
     default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
 fi
 
+### this part extracts profile path from $default_options ####
 input=($default_options)
 echo ${input[@]}
 
@@ -30,12 +31,13 @@ do
 		profile=${input[$k]}
 	fi
 done
+### 
 
 if [ -z $profile ]; then
 	echo "no profile specified"
 	exit 1
 else
-	echo "profile $profile"
+	echo "profile found: $profile"
 fi
 
 cmd=""
