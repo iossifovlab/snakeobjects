@@ -1,3 +1,6 @@
-default_snakemake_args: --profile /mnt/wigclust8/data/safe/iossifov/snakeprofiles/SGE.wigclust
+# uncomment appropriate line to run ./run.sh
+#default_snakemake_args: --profile /mnt/wigclust8/data/safe/iossifov/snakeprofiles/sge-wigclust
+#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/sge-nygc
+#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
 ref: ref.fa
 refi: ref.fai
