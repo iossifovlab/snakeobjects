@@ -9,6 +9,8 @@ rule P_b:
     name = P('name'),
     dob  = P('dob'),
     ref  = GP('ref')
+  resources: 
+    mem_mb=500
   run:
     assert input[0] == "B/o/a.txt"
     logs = ['log/b.txt-' + x for x in "out.txt err.txt time.txt".split(" ")]
@@ -35,6 +37,8 @@ chrs = ['chr1', 'chr2', 'chr3', 'chr4']
 rule beg:
   output:
     T('beg-{c}.txt')
+  resources: 
+    mem_mb=500
   shell:
     "echo 'this is beg' {wildcards.oid} {wildcards.c} > {output}"
 
@@ -43,6 +47,8 @@ rule part:
     T('beg-{c}.txt')
   output:
     T('part-{c}.txt')
+  resources: 
+    mem_mb=500
   shell:
     "echo 'this is part' {wildcards.oid} {wildcards.c} > {output}; "
     "echo {input} >> {output}"
@@ -52,6 +58,8 @@ rule mergedI:
     expand(TE('part-{c}.txt'),c=chrs)
   output:
     T('merged.txt')
+  resources: 
+    mem_mb=500
   shell: 
     "cat {input} > {output}"
 
@@ -63,6 +71,8 @@ rule P_obj:
     T('merged.txt')
   output:
     touch(T("obj.flag"))
+  resources: 
+    mem_mb=500
   run:
     correct = {
     "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],

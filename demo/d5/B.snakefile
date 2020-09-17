@@ -4,6 +4,8 @@ rule build_a:
      t = T("t.txt")
   log:  **(EFS('t.txt'))
   params: a=P('a')
+  resources: 
+    mem_mp=500
   run:
     assert output[0] == "B/o/t.txt"
     assert params.a == "alabala nica"
@@ -16,6 +18,8 @@ rule build_ab:
   output:
     T("a.txt"), T("b.txt")
   log:  **(EFS('b.txt'))
+  resources: 
+    mem_mb=500
   run:
     assert output[0] == "B/o/a.txt"
     assert output[1] == "B/o/b.txt"
@@ -30,6 +34,8 @@ rule base_obj:
     T("a.txt"), T("b.txt"), T("t.txt")
   output:
     touch(T("obj.flag"))
+  resources: 
+    mem_mb=500
   run:
     assert input[0]  == "B/o/a.txt"
     assert input[1]  == "B/o/b.txt"

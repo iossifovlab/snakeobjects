@@ -5,6 +5,8 @@ rule F_b:
     T('b.txt')
   params:
     DP('name', "P")
+  resources: 
+    mem_mb=500
   run:
     correct = {
         "F/1/b.txt": ["P/1/b.txt", "P/2/b.txt", "B/o/b.txt", "Peter", "Paul"],
@@ -29,6 +31,8 @@ rule F_obj:
     touch(T('obj.flag'))
   params:
     state = P('state')
+  resources: 
+    mem_mb=500
   run:
     correct = {
         "F/1/obj.flag": ["happy", "P/1/obj.flag", "P/2/obj.flag", "F/1/b.txt"],

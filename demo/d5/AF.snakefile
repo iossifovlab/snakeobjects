@@ -3,6 +3,8 @@ rule AF_obj:
     DT('obj.flag')
   output: 
     touch(T('obj.flag'))
+  resources: 
+    mem_mb=500
   run:
     assert output[0] == "AF/o/obj.flag"
     for i in range(2):
