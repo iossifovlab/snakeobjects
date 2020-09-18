@@ -53,8 +53,10 @@ if [ -z "$cmd" ]; then
     echo "no cluster specified in profile config.yaml file"
 	exit 1
 else
-    iippl jobscript.sh >$PROJECT_DIR/jobscript.sh
-    echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/jobscript.sh
-    $cmd $PROJECT_DIR/jobscript.sh &
+	if [ ! -f $PROJECT_DIR/objLinks/.pipes/jobscript.sh ]; then
+		iippl jobscript.sh >$PROJECT_DIR/objLinks/.pipes/jobscript.sh
+		echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/objLinks/.pipes/jobscript.sh
+	fi
+    $cmd $PROJECT_DIR/objLinks/.pipes/jobscript.sh &
 fi
 
