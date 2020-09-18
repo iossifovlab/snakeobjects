@@ -258,7 +258,12 @@ class ObjectGraph:
             f.write("    expand(\"{od}/obj.flag\", od=all_obj_dirs())\n\n")
 
             for ot in self.tOrder:
-                sfile = pdir + "/" + ot + ".snakefile"
+                try:
+                    pipeDir = os.environ['PIPELINE_DIR']
+                except KeyError:
+                    pipeDir = pdir
+                
+                sfile = pipeDir + "/" + ot + ".snakefile"
                 if not os.path.exists(sfile):
                     self.createSnakefile(ot,sfile)
                 f.write("include: pipeline + \"/" + ot + ".snakefile\"\n\n")

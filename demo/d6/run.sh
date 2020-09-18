@@ -1,3 +1,5 @@
+#!/bin/bash
+cd $(dirname "$0")
 . ./setenv.sh
 ./build_object_graph.py 5 createDirs
 run_snake.sh -j

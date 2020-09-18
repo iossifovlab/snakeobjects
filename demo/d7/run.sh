@@ -1,3 +1,5 @@
+#!/bin/bash
+cd $(dirname "$0")
 . setenv.sh
 
 rm test_out.txt
