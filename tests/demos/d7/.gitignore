@@ -1,0 +1,7 @@
+# Byte-compiled / optimized / DLL files
+objLinks/
+.snakemake/
+OG.json
+*.OG
+glbl.makefile
+test_out.txt

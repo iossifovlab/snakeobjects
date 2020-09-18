@@ -47,7 +47,7 @@ def test_d8():
 def test_d2():
     os.chdir('demo/d2')
     os.system('./clean.sh')
-    os.system('./runAll.sh')
+    os.system('./run.sh')
     for prj in ['projA', 'projB']:
         os.chdir(prj)
         os.chdir('test-out')
