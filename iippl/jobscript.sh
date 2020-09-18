@@ -4,8 +4,7 @@
 python \
 -m snakemake --snakefile $PROJECT_DIR/objLinks/.pipes/main.snakefile \
 --force -j --keep-target-files --keep-remote \
---latency-wait 40 \
 --attempt 1 --force-use-threads \
 --wrapper-prefix https://github.com/snakemake/snakemake-wrappers/raw/ \
---nocolor --notemp --no-hooks --nolock \
+--nocolor --notemp --no-hooks \
 --mode 2  \
