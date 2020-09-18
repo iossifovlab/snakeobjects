@@ -1,0 +1,8 @@
+this is part 2 chr1
+P/2/beg-chr1.txt
+this is part 2 chr2
+P/2/beg-chr2.txt
+this is part 2 chr3
+P/2/beg-chr3.txt
+this is part 2 chr4
+P/2/beg-chr4.txt
