@@ -21,6 +21,22 @@ def demo_test(d):
 def test_d1():
     demo_test('d1')
 
+def test_d2():
+    os.chdir('demo/d2')
+    os.system('./clean.sh')
+    os.system('./run.sh')
+    for prj in ['projA', 'projB']:
+        os.chdir(prj)
+        os.chdir('test-out')
+        fnames = glob('*/*/*')
+        os.chdir('..')
+        D = ' objLinks/'
+        for fn in fnames:
+            assert os.system('diff test-out/' + fn + D + fn) == 0
+        os.chdir('..')
+    os.system('./clean.sh')
+    os.chdir('../..')
+
 def test_d3():
     demo_test('d3')
 
@@ -44,18 +60,4 @@ def test_d7():
 def test_d8():
     demo_test('d8')
 
-def test_d2():
-    os.chdir('demo/d2')
-    os.system('./clean.sh')
-    os.system('./run.sh')
-    for prj in ['projA', 'projB']:
-        os.chdir(prj)
-        os.chdir('test-out')
-        fnames = glob('*/*/*')
-        os.chdir('..')
-        D = ' objLinks/'
-        for fn in fnames:
-            assert os.system('diff test-out/' + fn + D + fn) == 0
-        os.chdir('..')
-    os.system('./clean.sh')
-    os.chdir('../..')
+
