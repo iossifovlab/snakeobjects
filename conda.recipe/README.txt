@@ -1,3 +1,4 @@
 Shold run: 
-conda build meta.yaml -c biocoda
+conda build . -c bioconda -c conda-forge
+
 
