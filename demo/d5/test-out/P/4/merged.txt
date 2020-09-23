@@ -1,8 +1,0 @@
-this is part 4 chr1
-P/4/beg-chr1.txt
-this is part 4 chr2
-P/4/beg-chr2.txt
-this is part 4 chr3
-P/4/beg-chr3.txt
-this is part 4 chr4
-P/4/beg-chr4.txt

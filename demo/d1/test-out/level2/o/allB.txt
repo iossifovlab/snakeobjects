@@ -1,3 +1,0 @@
-the inputs:  level1/0/B2.txt level1/1/B2.txt base/o/a2.txt
-allGs: value0 value1
-theA:  alabala nica
