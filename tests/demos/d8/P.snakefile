@@ -45,10 +45,10 @@ rule split:
     with open(input[0]) as f:
       data=f.readlines()
     N = len(data)
-    n = N // chunkN
+    n = (N // chunkN)+1
     for k in range(chunkN):
       s = dn+"/part-%05i" % k
-      r=[k*n, min((k+1)*n,N+1)]
+      r=[k*n, min((k+1)*n,N)]
       with open(s, 'w') as f:
         for l in range(r[0],r[1]):
           f.write(data[l])
