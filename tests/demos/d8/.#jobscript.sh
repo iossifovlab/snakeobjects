@@ -1,1 +1,0 @@
-byamrom@mumdel.c.nygenome.org.128660:1587140759

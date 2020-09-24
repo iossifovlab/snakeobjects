@@ -16,7 +16,7 @@ setup(
     url='https://github.com/iossifovlab/pipes',
     packages=['iippl'],
     package_data={
-        "iippl": ["*.snakefile"],
+        "iippl": ["jobscript.sh","header.snakefile"],
     },
     include_package_data=True,
     scripts = ['bin/run_snake.sh','bin/submit_snake.sh'], 

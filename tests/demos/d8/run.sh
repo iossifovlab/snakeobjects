@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 cd $(dirname "$0")
 . ./setenv.sh
 ./build_object_graph.py createDirs

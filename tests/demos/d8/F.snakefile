@@ -13,7 +13,7 @@ rule F_b:
     o = str(output)
     p1 = eval(str(params))[0]
     p2 = eval(str(params))[1]
-    print("OOOOOO",o,correct[o],input,p1, p2,file=sys.stderr)
+    # print("OOOOOO",o,correct[o],input,p1, p2,file=sys.stderr)
     assert o in correct
     assert input == correct[o][:3]
     assert p1 == correct[o][3]

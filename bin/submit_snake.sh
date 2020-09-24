@@ -18,7 +18,7 @@ if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then
 fi
 
 ### this part extracts profile path from $default_options ####
-input=($default_options)
+input=($default_options $*) 
 echo ${input[@]}
 
 N=`echo ${input[@]}|wc -w`
@@ -46,17 +46,19 @@ if [ ! -f $profile/config.yaml ]; then
 	echo "no config.yaml in the profile $profile"
     exit 1
 else
-	cmd=`grep -P "^cluster\:" $profile/config.yaml|cut -d':' -f2`
+	cmd=`grep -P "^cluster\:" $profile/config.yaml|cut -d':' -f2 | sed 's/^\s*//'`
 fi
 
 if [ -z "$cmd" ]; then
     echo "no cluster specified in profile config.yaml file"
 	exit 1
-else
-	if [ ! -f $PROJECT_DIR/objLinks/.pipes/jobscript.sh ]; then
-		iippl jobscript.sh >$PROJECT_DIR/objLinks/.pipes/jobscript.sh
-		echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/objLinks/.pipes/jobscript.sh
-	fi
-    $cmd $PROJECT_DIR/objLinks/.pipes/jobscript.sh &
 fi
+
+iippl jobscript.sh >$PROJECT_DIR/objLinks/.pipes/jobscript.sh
+if [ "$?" != "0" ]; then
+    echo "iippl jobscript.sh failed"
+    exit 1
+fi
+echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/objLinks/.pipes/jobscript.sh
+$profile/$cmd $PROJECT_DIR/objLinks/.pipes/jobscript.sh &
 
