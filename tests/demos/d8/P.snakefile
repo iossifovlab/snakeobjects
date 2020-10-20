@@ -21,11 +21,12 @@ rule P_b:
         "P/3/b.txt": ['Mary' , "5/30/2002"]+['P/3/' + x for x in logs],
         "P/4/b.txt": ['John' , "6/11/2003"]+['P/4/' + x for x in logs]
     }
+    prDir = os.environ['PROJECT_DIR']
     assert output[0] in correct
     assert params.thea[0] == "alabala nica"
     assert params.name == correct[output[0]][0]
     assert params.dob  == correct[output[0]][1]
-    assert params.ref == "ref.fa"
+    assert params.ref == prDir+"/ref.fa"
     assert log.O == correct[output[0]][2]
     assert log.E == correct[output[0]][3]
     assert log.T == correct[output[0]][4]
