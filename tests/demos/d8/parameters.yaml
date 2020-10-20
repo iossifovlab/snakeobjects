@@ -1,2 +1,2 @@
-ref: ref.fa
-refi: ref.fai
+ref: "[E:PROJECT_DIR]/ref.fa"
+refi: "[E:PROJECT_DIR]/ref.fai"
