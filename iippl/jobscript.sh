@@ -7,4 +7,3 @@ python \
 --attempt 1 --force-use-threads \
 --wrapper-prefix https://github.com/snakemake/snakemake-wrappers/raw/ \
 --nocolor --notemp --no-hooks \
---mode 2  \
