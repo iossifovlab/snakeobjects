@@ -5,7 +5,7 @@ import sys
 import copy
 import re
 import os 
-import json
+import json,yaml
 from collections import OrderedDict
 
 class OGO:
@@ -404,6 +404,31 @@ def load_object_graph(fname):
     else:
         print("load_object_graph: wrong file", fname)
         exit()
+
+def load_project_params(fname):
+  if os.path.exists(fname):
+    CF = open(fname, 'r')
+    if CF:
+      config = yaml.safe_load(CF)
+    CF.close()
+  else:
+    return {}
+
+  ptn = re.compile(r'(^\[E\:)(.*)(\])')
+  for k,v in config.items():
+    if type(v) != str:
+      continue
+    m = ptn.match(v)
+    if m:
+      s = m.span()
+      name = m.groups(0)[1]
+      n = os.environ[name]
+      if n:
+        config[k] = v.replace(v[s[0]:s[1]],n)
+      else:
+        print('Varianble %s is not defined' % name, file=sys.stderr)
+        exit(1) 
+  return config  
 
 if __name__ == "__main__":        
 
