@@ -14,7 +14,7 @@ def cli(args=None):
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
     elif command == "run":
         if 'PROJECT_DIR' not in os.environ:
-            os.environ['PROJECT_DIR'] = os.cwd()
+            os.environ['PROJECT_DIR'] = os.getcwd()
         if 'PIPELINE_DIR' not in os.environ:
             os.environ['PIPELINE_DIR'] = os.environ['PROJECT_DIR'] 
         print("WORKING ON PROJECT",os.environ['PROJECT_DIR'])
