@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph
+from snakeobjects.ObjectGraph import ObjectGraph
 import sys
 
 n = int(sys.argv[1])

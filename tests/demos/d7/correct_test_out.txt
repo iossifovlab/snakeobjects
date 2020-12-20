@@ -1,23 +1,23 @@
 BASELINE
-objLinks/P/1:
+objects/P/1:
 a.txt
 b.txt
 obj.flag
 
-objLinks/P/2:
+objects/P/2:
 a.txt
 b.txt
 obj.flag
 
 
 test dependency of obj.flag on new target
-objLinks/P/1:
+objects/P/1:
 a.txt
 b.txt
 c.txt
 obj.flag
 
-objLinks/P/2:
+objects/P/2:
 a.txt
 b.txt
 c.txt
@@ -25,25 +25,25 @@ obj.flag
 
 
 BASELINE
-objLinks/P/1:
+objects/P/1:
 a.txt
 b.txt
 obj.flag
 
-objLinks/P/2:
+objects/P/2:
 a.txt
 b.txt
 obj.flag
 
 
 test dependency of old target on the new one
-objLinks/P/1:
+objects/P/1:
 a.txt
 b.txt
 c.txt
 obj.flag
 
-objLinks/P/2:
+objects/P/2:
 a.txt
 b.txt
 c.txt

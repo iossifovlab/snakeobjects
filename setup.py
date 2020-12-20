@@ -6,27 +6,27 @@ requirements = [
 ]
 
 setup(
-    name='pipes',
+    name='snakeobjects',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     description="Our pipeline infrastructure.",
     license="MIT",
     author="Ivan Iossifov",
     author_email='iossifov@cshl.edu',
-    url='https://github.com/iossifovlab/pipes',
-    packages=['iippl'],
+    url='https://github.com/iossifovlab/snakeobjects',
+    packages=['snakeobjects'],
     package_data={
-        "iippl": ["jobscript.sh","header.snakefile"],
+        "snakeobjects": ["jobscript.sh","header.snakefile"],
     },
     include_package_data=True,
     scripts = ['bin/run_snake.sh','bin/submit_snake.sh'], 
     entry_points={
         'console_scripts': [
-            'iippl=iippl.cli:cli'
+            'sobjects=snakeobjects.cli:cli'
         ]
     },
     install_requires=requirements,
-    keywords=['pipes','iippl'],
+    keywords=['snakeobjects','snakemake','workflow managment'],
     classifiers=[
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.6',

@@ -1,5 +1,5 @@
 import pytest, os
-from iippl.ObjectGraph import ObjectGraph,ObjectGraphException,load_object_graph
+from snakeobjects.ObjectGraph import ObjectGraph,ObjectGraphException,load_object_graph
 
 @pytest.fixture
 def OG():

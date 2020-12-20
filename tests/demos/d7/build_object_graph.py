@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph
+from snakeobjects.ObjectGraph import ObjectGraph
 import sys
 
 OG = ObjectGraph()

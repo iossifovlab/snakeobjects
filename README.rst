@@ -1,14 +1,13 @@
 ===============================
-iossifovlab pipes
+iossifovlab snakeobjects 
 ===============================
 
-
-.. image:: https://img.shields.io/travis/iossifovlab/pipes.svg
-        :target: https://travis-ci.org/iossifovlab/pipes
-.. image:: https://circleci.com/gh/iossifovlab/pipes.svg?style=svg
-    :target: https://circleci.com/gh/iossifovlab/pipes
-.. image:: https://codecov.io/gh/iossifovlab/pipes/branch/master/graph/badge.svg
-   :target: https://codecov.io/gh/iossifovlab/pipes
-
-
 Our pipeline infrastructure.
+
+Setting up developement environment
++++++++++++++++++++++++++++++++++++
+git clone git@github.com:iossifovlab/snakeobjects.git
+cd snakeobjects
+conda env create environment.yml
+conda activate snakeobjectsDev
+pip install -e .

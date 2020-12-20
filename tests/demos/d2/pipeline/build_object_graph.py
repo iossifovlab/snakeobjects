@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from iippl.ObjectGraph import ObjectGraph
+from snakeobjects.ObjectGraph import ObjectGraph
 import yaml,os
 
 CF = open(os.environ["PROJECT_DIR"] + "/parameters.yaml", 'r')

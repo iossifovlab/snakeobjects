@@ -11,7 +11,7 @@ fi
 echo "WORKING ON PROJECT" $PROJECT_DIR 
 echo "WITH PIPELINE" $PIPELINE_DIR
 
-cd $PROJECT_DIR/objLinks
+cd $PROJECT_DIR/objects
 
 if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then
     default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
@@ -54,11 +54,11 @@ if [ -z "$cmd" ]; then
 	exit 1
 fi
 
-iippl jobscript.sh >$PROJECT_DIR/objLinks/.pipes/jobscript.sh
+sobjects jobscript.sh >$PROJECT_DIR/objects/.snakeobjects/jobscript.sh
 if [ "$?" != "0" ]; then
-    echo "iippl jobscript.sh failed"
+    echo "sobjects jobscript.sh failed"
     exit 1
 fi
-echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/objLinks/.pipes/jobscript.sh
-$profile/$cmd $PROJECT_DIR/objLinks/.pipes/jobscript.sh &
+echo "$default_options $* && exit 0 || exit 1" >>$PROJECT_DIR/objects/.snakeobjects/jobscript.sh
+$profile/$cmd $PROJECT_DIR/objects/.snakeobjects/jobscript.sh &
 

@@ -1,4 +1,4 @@
-name: pipesDev
+name: snakeobjectsDev
 channels:
   - bioconda
   - conda-forge
@@ -7,5 +7,6 @@ dependencies:
   - ipython
   - setuptools
   - pytest-cov
+  - sphinx
   - snakemake-minimal>5.20
 
