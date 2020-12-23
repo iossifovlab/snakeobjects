@@ -4,7 +4,8 @@
 git tag -a 2.rc1 -m 'first 2 release candidate'
 git push origin 2.rc1
 
-Shold run: 
+To build the package:
 conda build . -c bioconda -c conda-forge
 
-
+To upload to anaconda:
+anaconda upload --user iossifovLab snakeobject...tar.bz2

@@ -9,5 +9,6 @@ dependencies:
   - pytest-cov
   - sphinx
   - conda-build
+  - anaconda-client
   - snakemake-minimal>5.20
 
