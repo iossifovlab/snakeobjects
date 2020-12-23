@@ -8,5 +8,6 @@ dependencies:
   - setuptools
   - pytest-cov
   - sphinx
+  - conda-build
   - snakemake-minimal>5.20
 

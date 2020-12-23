@@ -2,7 +2,7 @@
 {% set data = load_setup_py_data() %}
 
 package:
-  name: pipes
+  name: snakeobjects
   
   version: {{ data['version'] }}
 
@@ -51,7 +51,7 @@ test:
     - pytest tests
 
 about:
-  home: https://github.com/iossifovlab/pipes
+  home: https://github.com/iossifovlab/snakeobjects
   summary: Our pipeline infrastructure.
   license: {{ data.get('license') }}
   license_file: LICENSE
