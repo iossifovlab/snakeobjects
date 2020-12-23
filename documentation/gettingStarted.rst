@@ -1,12 +1,6 @@
 Getting started
 ===============
 
-Introducton
-+++++++++++
-
-Installation
-++++++++++++
-
-Hellow world pipeline
-+++++++++++++++++++++
+Hello world pipeline
+--------------------
 

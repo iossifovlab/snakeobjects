@@ -2,7 +2,7 @@ rule l2_allB:
   input:
     DT('B.txt',"level1"),
     DT('a.txt',"base")
-  log:  **(EFS('allB.txt'))
+  log:  **(LFS('allB.txt'))
   output:
     T("allB.txt")
   shell:

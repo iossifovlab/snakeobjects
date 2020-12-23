@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 cd $(dirname "$0")
-. ./setenv.sh
-./build_object_graph.py 5 createDirs
-run_snake.sh -j
-ls objLinks/P/*/obj.flag | wc
-./build_object_graph.py 6 createDirs
-run_snake.sh -j
-ls objLinks/P/*/obj.flag | wc
+sobjects prepare 5 
+sobjects run -j
+ls objects/P/*/obj.flag | wc
+
+sobjects prepare 6 
+sobjects run -j
+ls objects/P/*/obj.flag | wc

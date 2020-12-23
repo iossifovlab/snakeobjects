@@ -1,23 +1,12 @@
 shell.prefix("set -o pipefail; ")
-import os,re,yaml
-from snakeobjects.snakeUtils import set_object_graph, all_obj_dirs, all_obj_types, T, TE, DT, EFS, P, DP, PP, B
-from snakeobjects.ObjectGraph import load_object_graph, load_project_params
+from snakeobjects import Project 
+from snakeobjects.snakeUtils import set_project, T, TE, DT, LFS, P, DP, PP, B
 
-pipeline = os.environ["PIPELINE_DIR"]
+project = Project()
 
-projDir = os.environ["PROJECT_DIR"]
-if os.path.exists(projDir + "/parameters.yaml"):
-  config = load_project_params(projDir + "/parameters.yaml")
-else:
-  config = {}
+set_project(project)
 
-objectGraphFile = ".snakeobjects/OG.json"
-if 'objectGraphFile' in config: 
-    objectGraphFile = config['objectGraphFile']
-OG = load_object_graph(objectGraphFile) 
-set_object_graph(OG)
-
-def GP(parameter):
-    return config[parameter]
-
+rule all_main:
+  input:
+    expand("{of}", of=project.get_all_object_flags())
 

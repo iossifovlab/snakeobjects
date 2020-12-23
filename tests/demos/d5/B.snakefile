@@ -2,7 +2,7 @@
 rule build_a:
   output:
      t = T("t.txt")
-  log:  **(EFS('t.txt'))
+  log:  **(LFS('t.txt'))
   params: a=P('a')
   resources: 
     mem_mp=500
@@ -17,7 +17,7 @@ rule build_a:
 rule build_ab:
   output:
     T("a.txt"), T("b.txt")
-  log:  **(EFS('b.txt'))
+  log:  **(LFS('b.txt'))
   resources: 
     mem_mb=500
   run:

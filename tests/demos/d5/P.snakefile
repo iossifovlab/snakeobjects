@@ -3,12 +3,12 @@ rule P_b:
     DT("a.txt")
   output:
     T('b.txt')
-  log:  **(EFS('b.txt'))
+  log:  **(LFS('b.txt'))
   params: 
     thea = DP('a'),
     name = P('name'),
     dob  = P('dob'),
-    ref  = GP('ref')
+    ref  = PP('ref')
   resources: 
     mem_mb=500
   run:

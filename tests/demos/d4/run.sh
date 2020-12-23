@@ -1,6 +1,5 @@
 #!/bin/bash
 set -e
 cd $(dirname "$0")
-. ./setenv.sh
-./build_object_graph.py createDirs
-run_snake.sh -j
+sobjects prepare
+sobjects run -j

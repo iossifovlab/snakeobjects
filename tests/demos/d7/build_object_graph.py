@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from snakeobjects.ObjectGraph import ObjectGraph
-import sys
+from snakeobjects import Project, ObjectGraph
+
+proj = Project()
 
 OG = ObjectGraph()
 
@@ -11,5 +12,4 @@ OG.add('P','1')
 OG.add('P','2')
 
 
-OG.execARGVcommands()
-
+proj.prepare(OG)

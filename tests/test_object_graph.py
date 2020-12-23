@@ -43,28 +43,16 @@ def test_otype_order(OG):
     assert OG.get_object_types() == inOrder    
         
 def test_save_load(tmp_path):
-    OG = ObjectGraph(str(tmp_path))
+    OG = ObjectGraph()
     a = OG.add("A","o",{"gosho":"pesho","opaa":"3"})
     b = OG.add("B","1",deps=OG['A'])
     b = OG.add("B","2",deps=OG['A'])
     b = OG.add("B","3",deps=OG['A'])
     c = OG.add("C","o",deps=OG['B'])
-    OG.writeObjectGraph('a.OG')
+    OG.save(tmp_path / 'a.OG')
     OG1 = load_object_graph(tmp_path / 'a.OG')
-    OG1.writeObjectGraph('b.OG')
+    OG1.save (tmp_path / 'b.OG')
     assert os.system('diff %s %s' % (str(tmp_path / 'a.OG'),str(tmp_path / 'b.OG'))) == 0
-
-def test_save_load_json(tmp_path):
-    OG = ObjectGraph(str(tmp_path))
-    a = OG.add("A","o",{"gosho":"pesho","opaa":"3"})
-    b = OG.add("B","1",deps=OG['A'])
-    b = OG.add("B","2",deps=OG['A'])
-    b = OG.add("B","3",deps=OG['A'])
-    c = OG.add("C","o",deps=OG['B'])
-    OG.writeObjectGraphJson('a.json')
-    OG1 = load_object_graph(tmp_path / 'a.json')
-    OG1.writeObjectGraphJson('b.json')
-    assert os.system('diff %s %s' % (str(tmp_path / 'a.json'),str(tmp_path / 'b.json'))) == 0
 
 def test_deepDeps(OG):
     def p(name,ol):

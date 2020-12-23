@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 cd $(dirname "$0")
-. ./setenv.sh
-./build_object_graph.py createDirs 
-run_snake.sh -j
+echo "HHHHHH" $0
+echo "GGGGGG" `pwd`
+
+echo 'RUNNING sobjects prepare', `type sobjects`
+sobjects prepare
+
+echo 'RUNNING sobjects run', `type sobjects`
+sobjects run -j

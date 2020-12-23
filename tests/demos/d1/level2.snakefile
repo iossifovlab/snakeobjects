@@ -5,7 +5,7 @@ rule l2_allB:
   params: 
         allGs=DP('g',"level1"),
         theA=DP('a',"base")
-  log:  **(EFS('allB.txt'))
+  log:  **(LFS('allB.txt'))
   output:
     T("allB.txt")
   shell:

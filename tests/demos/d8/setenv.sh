@@ -1,3 +1,1 @@
-export PROJECT_DIR=`pwd`
-export PIPELINE_DIR=`pwd`
-
+export INPUT_DIRECTORY=`pwd`

@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
-from snakeobjects.ObjectGraph import ObjectGraph, load_object_graph_json
+from snakeobjects import Project, ObjectGraph
 
+proj = Project()
 
 OG = ObjectGraph()
 
@@ -19,5 +20,5 @@ OG.add('F','2',{'state':'  sad'},[OG['P','3'],OG['P','4']])
  
 OG.add('AF','o',{},OG['F'] + OG['B'])
 
-OG.execARGVcommands()
+proj.prepare(OG)
 

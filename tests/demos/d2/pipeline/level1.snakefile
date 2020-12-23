@@ -3,7 +3,7 @@ rule l1_big:
         DT("a.txt")
   output:
     T('B.txt')
-  log:  **(EFS('B.txt'))
+  log:  **(LFS('B.txt'))
   shell:
     "(time touch {output}) 2> {log.T}"
 

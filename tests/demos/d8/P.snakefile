@@ -6,12 +6,12 @@ rule P_b:
     DT("a.txt")
   output:
     T('b.txt')
-  log:  **(EFS('b.txt'))
+  log:  **(LFS('b.txt'))
   params: 
     thea = DP('a'),
     name = P('name'),
     dob  = P('dob'),
-    ref  = GP('ref')
+    ref  = PP('ref')
   run:
     assert input[0] == "B/o/a.txt"
     logs = ['log/b.txt-' + x for x in "out.txt err.txt time.txt".split(" ")]
@@ -21,7 +21,7 @@ rule P_b:
         "P/3/b.txt": ['Mary' , "5/30/2002"]+['P/3/' + x for x in logs],
         "P/4/b.txt": ['John' , "6/11/2003"]+['P/4/' + x for x in logs]
     }
-    prDir = os.environ['PROJECT_DIR']
+    prDir = os.environ['INPUT_DIRECTORY']
     assert output[0] in correct
     assert params.thea[0] == "alabala nica"
     assert params.name == correct[output[0]][0]
@@ -79,7 +79,7 @@ rule P_obj:
   output:
     touch(T("obj.flag"))
   log:
-    **(EFS("obj.flag"))
+    **(LFS("obj.flag"))
   run:
     correct = {
     "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],

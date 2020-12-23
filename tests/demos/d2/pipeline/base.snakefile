@@ -2,7 +2,7 @@
 rule build_a:
   output:
      t = T("t.txt")
-  log:  **(EFS('t.txt'))
+  log:  **(LFS('t.txt'))
   shell:
     "(time touch {output.t} \
            > {log.O}  \
@@ -12,7 +12,7 @@ rule build_a:
 rule build_ab:
   output:
     T("a.txt"), T("b.txt")
-  log:  **(EFS('b.txt'))
+  log:  **(LFS('b.txt'))
   shell:
     "touch {output[0]}; "
     "touch {output[1]}; "

@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from snakeobjects import __version__
+from snakeobjects import __version__, Project
 import importlib.resources as importlib_resources
 import os,sys
 
@@ -8,22 +8,42 @@ def cli(args=None):
         args = sys.argv[1:]
     command = args[0] 
 
-    if command == "header.snakefile":
-        print(importlib_resources.read_text(__package__,'header.snakefile'),end='')
-    elif command == "jobscript.sh":
+
+    if command == "jobscript.sh":
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
+        return
+
+
+    proj = Project()
+    print("WORKING ON PROJECT", proj.directory)
+    print("WITH PIPELINE", proj.get_pipeline_directory())
+    os.environ['SO_PROJECT']  = proj.directory
+    os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
+
+    if command in ["prepare","prepareTest"]:
+        bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
+        if os.path.isfile(bldObjGraphPy):
+            bargs = [bldObjGraphPy] + args[1:] + [command]
+            print(" ".join(bargs))
+            os.execvp(bldObjGraphPy,bargs)
+        else:
+            print(f'There is no {bldObjGraphPy}')
+            exit(1)
+    elif command in ["prepareObjects"]:
+        proj.prepare_objects()
     elif command == "run":
-        if 'PROJECT_DIR' not in os.environ:
-            os.environ['PROJECT_DIR'] = os.getcwd()
-        if 'PIPELINE_DIR' not in os.environ:
-            os.environ['PIPELINE_DIR'] = os.environ['PROJECT_DIR'] 
-        print("WORKING ON PROJECT",os.environ['PROJECT_DIR'])
-        print("WITH PIPELINE",os.environ['PIPELINE_DIR'])
-        sargs = ['snakemake','--snakefile', '.snakeobjects/main.snakefile'] + args[1:]
-        os.chdir(os.environ['PROJECT_DIR'] + '/objects')
-        ## if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2` fi
+        sargs = ['snakemake','--snakefile', '.snakeobjects/main.snakefile'] 
+        if "default_snakemake_args" in proj.parameters:
+            sargs += proj.parameters["default_snakemake_args"].split()
+        sargs += args[1:]
+        os.chdir(proj.directory + '/objects')
         print(" ".join(sargs))
         os.execvp('snakemake',sargs)
+    elif command == "describe":
+        print("Project parameters:")
+        for k,v in proj.parameters.items():
+            print(f"\t{k}: {v}")
+        proj.objectGraph.print_stats()
     else:
         print("Don't know the command:", command)
         return 1

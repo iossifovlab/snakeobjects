@@ -17,7 +17,7 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'pipes'
+project = 'snakeobjects'
 copyright = '2020, Ivan Iossifov, Boris Yamrom'
 author = 'Ivan Iossifov, Boris Yamrom'
 
@@ -39,6 +39,10 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+
+# If true, the current module name will be prepended to all description
+# unit titles (such as .. function::).
+add_module_names = False
 
 
 # -- Options for HTML output -------------------------------------------------

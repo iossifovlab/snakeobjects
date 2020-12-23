@@ -2,7 +2,7 @@
 rule build_a:
   output:
      t = T("t.txt")
-  log:  **(EFS('t.txt'))
+  log:  **(LFS('t.txt'))
   params: a=P('a')
   run:
     assert output[0] == "B/o/t.txt"
@@ -15,7 +15,7 @@ rule build_a:
 rule build_ab:
   output:
     T("a.txt"), T("b.txt")
-  log:  **(EFS('b.txt'))
+  log:  **(LFS('b.txt'))
   run:
     assert output[0] == "B/o/a.txt"
     assert output[1] == "B/o/b.txt"
