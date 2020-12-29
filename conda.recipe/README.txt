@@ -9,3 +9,4 @@ conda build . -c bioconda -c conda-forge
 
 To upload to anaconda:
 anaconda upload --user iossifovLab snakeobject...tar.bz2
+NOTE: for some reason this fail on wigtop1!! :(
