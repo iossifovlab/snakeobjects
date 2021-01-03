@@ -53,13 +53,24 @@ class Project:
         Each objects of the Project class represents a snakeobject project. 
         
         The project directory is given as the ``directory`` parameter. If ``direcotry`` is none,
-        the :py:func:`find_project_directory` function is used to determine the project directory.
+        the :py:func:`find_so_project_directory` function is used to determine the project directory.
 
         A snakeobject project attributes are:
 
-        * ``directory``, the project directory 
-        * ``parameters``, a key value dictionalry for global project lelvel parameters.
-        * ``objectGraph``, the objectGraph for the project
+        .. py:attribute:: directory 
+           :type: str
+
+           the project directory
+
+        .. py:attribute:: parameters 
+           :type: dict[str,str] 
+
+           a key value dictionalry for global project lelvel parameters
+
+        .. py:attribute:: objectGraph 
+           :type: ObjectGraph
+
+           the objectGraph for the project
     """
 
     def __init__(self,directory=None):
@@ -143,10 +154,10 @@ class Project:
                 f.write(f'    expand("{{of}}", of=project.get_all_object_flags("{ot}"))\n\n')
 
     def get_object_flag(self,o):
-        return f'{o.type}/{o.name}/obj.flag'
+        return f'{o.oType}/{o.oId}/obj.flag'
 
     def get_object_directory(self,o):
-        return f'{self.directory}/objects/{o.type}/{o.name}'
+        return f'{self.directory}/objects/{o.oType}/{o.oId}'
 
     def create_object_directories(self):
         for tp in sorted(self.objectGraph.get_object_types()):
@@ -165,11 +176,11 @@ class Project:
                     os.system("ln -sf %s %s" % (src,dst))
                     os.system("touch -h -r %s %s" % (src,dst))
 
-    def get_all_object_flags(self,otype=None):
+    def get_all_object_flags(self,oType=None):
         OG = self.objectGraph
-        if otype:
-            return [self.get_object_flag(o) for o in OG[otype]]
-        return [self.get_object_flag(o) for otype in OG.get_object_types() for o in OG[otype]]
+        if oType:
+            return [self.get_object_flag(o) for o in OG[oType]]
+        return [self.get_object_flag(o) for oType in OG.get_object_types() for o in OG[oType]]
 
 if __name__ == "__main__":
     print("hi")

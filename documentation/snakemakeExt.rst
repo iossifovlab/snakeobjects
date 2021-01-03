@@ -1,5 +1,8 @@
+.. _snake-extenssions:
+
 snakemake extenssion functions 
 ==============================
+
 
 .. automodule :: snakeobjects.snakeUtils
     :member-order: bysource

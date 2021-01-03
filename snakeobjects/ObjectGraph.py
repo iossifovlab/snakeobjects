@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-
 import sys
 import copy
 import re
@@ -9,19 +6,43 @@ import json,yaml
 from collections import OrderedDict
 
 class OGO:
-    def __init__(ogo,tp,name,params=None,deps=None):
-        ogo.type = tp 
-        ogo.name = name 
+    """
+    The class represents the objects in an :py:class:`.ObjectGraph`.
+    Each object has the following attributes:
+
+    .. py:attribute:: oType
+       :type: str
+
+       the object type of the object
+
+    .. py:attribute:: oOid
+       :type: str
+
+       the object id of the object
+
+    .. py:attribute:: params 
+       :type: dict[str,str] 
+
+       the key-value paramters of the object
+
+    .. py:attribute:: deps 
+       :type: list[OGO] 
+
+       the list of the dependenies objects (the object the object depends on)
+
+    """
+    def __init__(ogo,oType,oId,params=None,deps=None):
+        ogo.oType = oType 
+        ogo.oId = oId 
         ogo.params = params if params else {} 
         ogo.deps = deps if deps else []
-        ogo.parents = []
-        ogo.OG = None
-        for dep in ogo.deps:
-            if isinstance(dep,(OGO)):
-                dep.parents.append(ogo) 
+
+        # for dep in ogo.deps:
+        #     if isinstance(dep,(OGO)):
+        #        dep.parents.append(ogo) 
 
     def k(o):
-        return (o.type,o.name)
+        return (o.oType,o.oId)
 
     def deepDeps(o, dot=None, level=1, mode='equal'):
         dps = []
@@ -40,13 +61,17 @@ class OGO:
             for y in x.deps:
                 queue.append((y,xl+1)) 
         if dot:
-            dps = [dp for dp in dps if dp.type == dot]    
+            dps = [dp for dp in dps if dp.oType == dot]    
         return dps
 
 class ObjectGraphException(Exception):
     pass
 
 class ObjectGraph:
+    """
+    The class representing the directed acyclic graph representing the relationships among
+    the snakeobject's objects. Each object is defined by a set an **object type** and by **object id**. 
+    """
 
     def __init__(self):
         self.objectsByKey = {}
@@ -54,59 +79,82 @@ class ObjectGraph:
         self.oOrder = {}
         self.tOrder = []
 
-    def empty(self):
-        self.objectsByKey = {}
-        self.O = {}
-        self.oOrder = {}
-        self.tOrder = []
-
     def __getitem__(self,key):
+        """
+        Query objects in the object graph. 
+
+        :param key: the object query
+        :type key: oType or (oType,oOid)
+
+        The graph (G) indexing has two forms depending of the **key** parameter:
+
+        1. ``G[oType]`` returns the **list** of the objects of type ``oType``;
+        2. ``G[oType,oId]`` returns the object of type ``oType`` and ``oId``.
+
+        :rtype: list(OGO) if form 1 is used or OGO if form 2 is used
+        """
         if type(key) == tuple  and len(key) == 2:
             ot,oi = key
             return self.O[ot][oi]
         else:
             return self.oOrder[key]
 
-    def getO(self, o_type,o_name):
-        return self.O[o_type][o_name]
-
-    def names(self, o_type):
-        return [o.name for o in self.O[o_type].values()]
-
+    
     def get_object_types(self):
+        """The object types used in the ObjectGraph"""
+        
         return self.tOrder
     
-    def add(self,ot,oi,params=None,deps=None):
-        o = OGO(ot,oi,params,deps)
-        self.addObject(o)
+    def add(self,oType,oId,params=None,deps=None):
+        """
+        Adds a new object to the object graph.
+    
+        :param str oType: the object type of the new object.
+        :param str oId: the object id of the new object.
+        :param params: the parameters of the new object. If None, the new 
+                       object is assigend with no parameters.
+        :type params: dict[str,str]
+        :param deps: list objects the new object depends on. If None, the new object 
+                     depends on no other objects. The objects included in deps should 
+                     already be part of the ``ObjectGraph``.
+        :type deps: list[OGO]
+   
+        :returns: the newly created object.
+        :rtype: OGO
+        """
+        o = OGO(oType,oId,params,deps)
+        self._addObject(o)
         return o
  
-    def addObject(self, ob):
+    def _addObject(self, ob):
         ob.OG = self
-        key = str(ob.type)+":"+str(ob.name)
+        key = str(ob.oType)+":"+str(ob.oId)
 
         if key in self.objectsByKey:
-            raise ObjectGraphException(f"The object of type {ob.type} and key {ob.name} is already added\n");
+            raise ObjectGraphException(f"The object of type {ob.oType} and key {ob.oId} is already added\n");
         self.objectsByKey[key] = ob;
-        if ob.type in self.O:
-            self.oOrder[ob.type].append(ob)
-            self.O[ob.type][ob.name] = ob
+        if ob.oType in self.O:
+            self.oOrder[ob.oType].append(ob)
+            self.O[ob.oType][ob.oId] = ob
         else:
-            self.O[ob.type] = {}
-            self.tOrder.append(ob.type)
-            self.O[ob.type][ob.name] = ob
-            self.oOrder[ob.type] = [ob]
+            self.O[ob.oType] = {}
+            self.tOrder.append(ob.oType)
+            self.O[ob.oType][ob.oId] = ob
+            self.oOrder[ob.oType] = [ob]
                      
     def save(self,outFile):
+        """
+        Save the object graph in a json file ``outFile``.
+        """
         f=open(outFile, "w") 
 
         f.write("{\n")            
         for ot in self.tOrder:
             for o in self.oOrder[ot]:
-                f.write("\t\""+str(o.name)+"."+str(o.type)+ "\": {\n")
-                f.write("\t\t\"id\": \""+str(o.name)+"\",\n")
-                f.write("\t\t\"type\": \""+str(o.type)+"\",\n")
-                f.write("\t\t\"deps\":["  +  ",".join(["\""+d.type+"/"+d.name+"\"" for d in o.deps]) + "],\n" )
+                f.write("\t\""+str(o.oId)+"."+str(o.oType)+ "\": {\n")
+                f.write("\t\t\"id\": \""+str(o.oId)+"\",\n")
+                f.write("\t\t\"type\": \""+str(o.oType)+"\",\n")
+                f.write("\t\t\"deps\":["  +  ",".join(["\""+d.oType+"/"+d.oId+"\"" for d in o.deps]) + "],\n" )
                 f.write("\t\t\"params\": {\n")
                 out = ""
                 for p,v in sorted(o.params.items()):

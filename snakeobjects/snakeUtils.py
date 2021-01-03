@@ -59,7 +59,7 @@ def DT(t, dot=None, level=1, mode='equal'):
     ot = _find_object_type()
     def _DT(wc):
         dp = _OG[ot,wc.oid].deepDeps(dot,level,mode)
-        return ["%s%s/%s/%s" % (_targetPrefix,d.type,d.name,t) for d in dp]
+        return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,t) for d in dp]
     return _DT 
 
 def P(p):

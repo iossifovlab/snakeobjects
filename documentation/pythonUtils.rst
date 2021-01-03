@@ -12,7 +12,14 @@ ObjectGraph class
 -----------------
 .. autoclass :: snakeobjects.ObjectGraph
    :members: 
-   :undoc-members: 
+   :special-members: __getitem__
+
+
+
+
+.. autoclass :: snakeobjects.ObjectGraph.OGO
+   :members: 
+
 
 find_project_directory function
 -------------------------------

@@ -34,23 +34,32 @@ targets in objects the current object depends on as specified in the object
 graph. Finally, projects and objects can be associated with a set of key-value
 parameters.
 
-Pipeline and Project directories
---------------------------------
+Pipelines 
+---------
 
 In ``snakeobjects``, pipelines reside in a *pipeline directory*. The pipeline
 directory and its content are created by the *workflow designer* and define the
 workflow. The pipeline usually contains a python script called
 ``build_object_graph.py`` that uses *meta data* associated with the projects
-that use the pipeline to create project's object graph. In addition, the
-pipeline directory contains a ``<object type>.snakefile`` for each of the
-object types created by the ``build_object_graph.py``. These snakefiles contain
-list the targets for the object types and the rules for creating the targets. 
-The object type snakefiles use a set of extension functions for referring to
-targets in the current object :py:func:`T`; to targets in dependency objects (DT); to
-parameters of the current object (P); to parameters of the dependency objects
-(DP); and to global object parameters (GP).  In addition, the pipeline
-directory can contain scripts, conda environment definitions or other artefacts
-used by the pipeline. 
+that use the pipeline to create project's object graph and  a ``<object type>.snakefile`` for each of the
+object types created by the ``build_object_graph.py``. 
+
+``build_boject_graph.py`` script can use the :py:class:`.Project` to access the
+project attributes that point to the relevant meta data and the simple inteface
+of :py:class:`.ObjectGraph` to construct the object graph.  
+
+The object-type snakefiles contain
+list the targets for the object types and the rules for creating the targets.
+The rules are written using the ``snakemake``'s syntax and use a set of extension functions (see
+:ref:`snake-extenssions`)  for referring to targets in the current object
+(:py:func:`.T`); to targets in dependency objects (:py:func:`.DT`); to
+parameters of the current object (:py:func:`.P`); to parameters of the
+dependency objects (:py:func:`.DP`); and to global object parameters
+(:py:func:`.PP`).  In addition, the pipeline directory can contain scripts,
+conda environment definitions or other artefacts used by the pipeline. 
+
+Projects
+--------
 
 .. toctree::
     :maxdepth: 2
@@ -60,9 +69,7 @@ used by the pipeline.
     gettingStarted
     pythonUtils 
 
-.. rstTests 
-
-
+.. rstTests (This is a comment)
 
 Indices and tables
 ------------------

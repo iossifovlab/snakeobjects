@@ -12,8 +12,8 @@ def test_add(OG):
     o = OG.add('t','o')
     assert OG.get_object_types() == ['t'] 
     assert OG['t','o'] == o
-    assert OG['t','o'].type == 't'
-    assert OG['t','o'].name == 'o'
+    assert OG['t','o'].oType == 't'
+    assert OG['t','o'].oId == 'o'
     assert OG['t','o'].deps == []
     assert OG['t','o'].params == {}
     assert OG['t'] == [o]
@@ -56,9 +56,9 @@ def test_save_load(tmp_path):
 
 def test_deepDeps(OG):
     def p(name,ol):
-        return print(name,",".join([f"{o.type}:{o.name}" for o in ol]))
+        return print(name,",".join([f"{o.oType}:{o.oId}" for o in ol]))
     def s(ol):
-        return ",".join([f"{o.type}:{o.name}" for o in ol])
+        return ",".join([f"{o.oType}:{o.oId}" for o in ol])
 
     OG = ObjectGraph()
     a = OG.add("A","o")
