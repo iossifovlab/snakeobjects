@@ -27,17 +27,19 @@ def cli(args=None):
             print(" ".join(bargs))
             os.execvp(bldObjGraphPy,bargs)
         else:
-            print(f'There is no {bldObjGraphPy}')
+            print(f'ERROR: There is no {bldObjGraphPy}')
             exit(1)
     elif command in ["prepareObjects"]:
         proj.prepare_objects()
     elif command == "run":
-        sargs = ['snakemake','--snakefile', '.snakeobjects/main.snakefile'] 
+        sargs = ['snakemake',
+                        '-s', proj.directory + '/objects/.snakeobjects/main.snakefile', 
+                        '-d', proj.directory + '/objects'] 
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]
-        os.chdir(proj.directory + '/objects')
-        print(" ".join(sargs))
+        # os.chdir(proj.directory + '/objects')
+        print("RUNNING:", " ".join(sargs))
         os.execvp('snakemake',sargs)
     elif command == "describe":
         print("Project parameters:")

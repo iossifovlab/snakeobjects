@@ -115,6 +115,8 @@ class Project:
             newObjectGraph.print_stats()
         elif cmd == 'prepare':
             self.objectGraph = newObjectGraph 
+            os.system("mkdir -p objects/.snakeobjects")
+            self.objectGraph.save(self.directory + "/objects/.snakeobjects/OG.json")
             self.prepare_objects()
         else:
             print(f"unkown command {cmd}. The known commands are 'prepareTest' and 'prepare'")
@@ -122,7 +124,6 @@ class Project:
     def prepare_objects(self):
         os.chdir(self.directory)
         os.system("mkdir -p objects/.snakeobjects")
-        self.objectGraph.save("objects/.snakeobjects/OG.json")
         self.write_main_snakefile()
         self.create_object_directories()
 

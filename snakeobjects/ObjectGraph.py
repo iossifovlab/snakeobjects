@@ -148,10 +148,11 @@ class ObjectGraph:
         """
         f=open(outFile, "w") 
 
+        sep = ""
         f.write("{\n")            
         for ot in self.tOrder:
             for o in self.oOrder[ot]:
-                f.write("\t\""+str(o.oId)+"."+str(o.oType)+ "\": {\n")
+                f.write(sep + "\t\""+str(o.oId)+"."+str(o.oType)+ "\": {\n")
                 f.write("\t\t\"id\": \""+str(o.oId)+"\",\n")
                 f.write("\t\t\"type\": \""+str(o.oType)+"\",\n")
                 f.write("\t\t\"deps\":["  +  ",".join(["\""+d.oType+"/"+d.oId+"\"" for d in o.deps]) + "],\n" )
@@ -162,13 +163,13 @@ class ObjectGraph:
                     out += "\t\t\t\""+p+"\": "+w+",\n"
                 f.write(out[:-2]+"\n")
                 f.write("\t\t}\n")
-                f.write("\t},\n\n")
-        f.write("\t\"dummy\": \"dummy\"\n")
-        f.write("}\n")
+                f.write("\t}")
+                sep = ",\n\n"
+        f.write("\n}\n")
         f.close()
 
     def print_stats(OG):
-        print("Types:")
+        print("Object types:")
         for tp,tpOs in sorted(OG.O.items()):
             print("\t", tp, ":", len(tpOs)) 
     
@@ -178,7 +179,6 @@ def load_object_graph(fname):
         OD = json.load(f, object_pairs_hook=OrderedDict)
         OG = ObjectGraph()
         for k in OD:
-            if k == "dummy": break
             og = dict(OD[k])
             oi = og['id']
             ot = og['type']
