@@ -21,7 +21,7 @@ in it:
 Step 2
 ^^^^^^
 
-We can then use the ``sobjects describe`` tool to get basic information about
+We can then use the :option:`sobjects describe` tool to get basic information about
 the proejct and the pipeline:
 
 .. code-block:: bash
@@ -42,7 +42,7 @@ objects have been added to the object graph so there are no object types used).
 Step 3
 ^^^^^^
 
-We then use the ``sobject prepareObject`` command to prepare the projects for execution: 
+We then use the :option:`sobjects prepareObjects` command to prepare the projects for execution: 
 
 .. code-block:: bash
 
@@ -63,7 +63,7 @@ are added to the object graph, no object directories are be created.
 Step 4
 ^^^^^^
 
-Finally, we can run ``sobjects run`` command to create all targets for all the
+Finally, we can run :option:`sobjects run` command to create all targets for all the
 object in the project:
 
 .. code-block:: bash
@@ -88,7 +88,7 @@ its own private directory in ``./objects/.snakemake``.
 
 ``hello world`` project
 -----------------------
-Here will show how to create a project with only object of type ``hello`` and id ``world``. 
+Here will show how to create a project with only one object with object type ``hello`` and object id ``world``. 
 As above we will use the same directory for the project and for the pipeline:  
 
 .. code-block:: bash
@@ -96,7 +96,8 @@ As above we will use the same directory for the project and for the pipeline:
     $ mkdir /tmp/minimalHW
     $ cd /tmp/minimalHW
 
-But now will add one object to the project's object graph. To do that we have to create a python file called ``build_object_graph.py`` 
+But now will add one object to the project's object graph. To do that we have to create a python 
+file called ``build_object_graph.py`` 
 in the pipeline directory with the following content:
 
 .. code-block::
@@ -108,3 +109,11 @@ in the pipeline directory with the following content:
     OG.add("hello","world")
 
     proj.prepare(OG)
+
+and make sure that it is executable:
+
+.. code-block:: bash
+
+    chmod +x build_object_graph.py
+
+

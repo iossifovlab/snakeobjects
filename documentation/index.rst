@@ -65,8 +65,9 @@ Projects
     :maxdepth: 2
 
     installation 
-    snakemakeExt
     gettingStarted
+    sobjects
+    snakemakeExt
     pythonUtils 
 
 .. rstTests (This is a comment)

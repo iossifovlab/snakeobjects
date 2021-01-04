@@ -5,7 +5,6 @@ snakeobjects package
 Project class
 -------------
 .. autoclass :: snakeobjects.Project
-   :special-members: __init__
    :members: 
 
 ObjectGraph class

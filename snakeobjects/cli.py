@@ -24,7 +24,7 @@ def cli(args=None):
         bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
         if os.path.isfile(bldObjGraphPy):
             bargs = [bldObjGraphPy] + args[1:] + [command]
-            print(" ".join(bargs))
+            print("RUNNING: ", " ".join(bargs))
             os.execvp(bldObjGraphPy,bargs)
         else:
             print(f'ERROR: There is no {bldObjGraphPy}')
