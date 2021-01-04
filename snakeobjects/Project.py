@@ -100,6 +100,7 @@ class Project:
         return os.path.abspath(ppd)
 
 
+    '''
     def prepare(self, newObjectGraph, ARGV=None):
 
         if not ARGV: ARGV = sys.argv 
@@ -120,10 +121,17 @@ class Project:
             self.prepare_objects()
         else:
             print(f"unkown command {cmd}. The known commands are 'prepareTest' and 'prepare'")
+    '''
+    def ensure_snakeobject_private_directory(self):
+        sopd = self.directory + "/objects/.snakeobjects"
+        if not os.path.exists(sopd):
+            os.makedirs(sopd)
+        return sopd
+
+    def save_object_graph(self):
+        self.objectGraph.save(self.ensure_snakeobject_private_directory() + "/OG.json")
 
     def prepare_objects(self):
-        os.chdir(self.directory)
-        os.system("mkdir -p objects/.snakeobjects")
         self.write_main_snakefile()
         self.create_object_directories()
 
@@ -139,7 +147,7 @@ class Project:
         return sfile
         
     def write_main_snakefile(self):
-        mf=self.directory+'/objects/.snakeobjects/main.snakefile'
+        mf=self.ensure_snakeobject_private_directory() + "/main.snakefile"
 
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:

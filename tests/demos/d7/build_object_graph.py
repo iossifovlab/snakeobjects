@@ -1,15 +1,6 @@
-#!/usr/bin/env python
+def run(proj,OG):
+    OG.add("B","o", {"a":"alabala nica"})
 
-from snakeobjects import Project, ObjectGraph
+    OG.add('P','1')
+    OG.add('P','2')
 
-proj = Project()
-
-OG = ObjectGraph()
-
-OG.add("B","o", {"a":"alabala nica"})
-
-OG.add('P','1')
-OG.add('P','2')
-
-
-proj.prepare(OG)
