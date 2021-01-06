@@ -20,3 +20,6 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 html: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+
+deploy: html
+	rsync -avPHt -e "ssh -p 2022" _build/html lubo@iossifovlab.com:sites/snakeobjects/
