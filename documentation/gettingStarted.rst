@@ -9,7 +9,7 @@ Step 1
 
 An empty directory is both a valid ``snakeobjects`` project and a valid
 ``snakeobjects`` pipeline directory.  We will use here such a minimal and
-useless project to introduce the the basic steps for working with
+useless project to introduce the some of the basic steps for working with
 ``snakeobjects`` projects and pipelines. Let's create an empty directory and go
 in it:
 
@@ -102,18 +102,6 @@ in the pipeline directory with the following content:
 
 .. code-block::
 
-    from snakeobjects import Project, ObjectGraph
-    proj = Project()
-
-    OG = ObjectGraph()
-    OG.add("hello","world")
-
-    proj.prepare(OG)
-
-and make sure that it is executable:
-
-.. code-block:: bash
-
-    chmod +x build_object_graph.py
-
+    def run(proj,OG):
+        OG.add("hello","world")
 
