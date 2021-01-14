@@ -23,3 +23,6 @@ html: Makefile
 
 deploy: html
 	rsync -avPHt -e "ssh -p 2022" _build/html lubo@iossifovlab.com:sites/snakeobjects/
+
+clean:
+	rm -r _build

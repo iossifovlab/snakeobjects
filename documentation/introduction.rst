@@ -1,0 +1,180 @@
+Introduction
+++++++++++++
+
+
+Overview
+--------
+
+**snakeobjects** is a workflow management framework based on ``snakemake`` that
+uses an object-oriented abstraction of workflows. ``snakeobjects`` workflows
+are easier to develop, to maintain and to adopt compared to the equivalent
+workflows written in ``stanakemake``, but inherit all the powerful features of
+``snakemake``. These include the portability, efficient resource usage, the
+large expressive power due to the tight python integration, and the large
+community of the ``snakemake`` users. 
+
+Workflow object-oriented abstraction
+------------------------------------
+
+The ``snakeobjects`` introduces an abstraction of workflows inspired by
+object-oriented design that replaces the low-level input-output relationships
+between files that are at the core of snakemakes rules. A *pipeline* (workflow)
+in snakeobjects operates on *projects* and projects are composed of *objects*. The
+objects within a project are connected with *dependency relationships* organized
+in a directed acyclic graph called *object graph* in which each object has a list
+of the objects it depends on (*dependency objects*). Each object has also a
+specified *object type* and an object type is characterized by a set of *targets*
+that need to be created for each object of the given object type together with
+the rules for creating the targets. The rules for building targets for an
+object type are included in a snakefile named after the object type and are written
+using snakemakes syntax where the inputs and outputs specify targets instead of
+files. Crucially, inputs can refer to targets in the current object and to
+targets in objects the current object depends on as specified in the object
+graph. Finally, projects and objects can be associated with a set of key-value
+parameters.
+
+Pipelines 
+---------
+
+In ``snakeobjects``, pipelines reside in a *pipeline directory*. The pipeline
+directory and its content are created by the *workflow designer* and define the
+workflow. The pipeline usually contains a python script called
+``build_object_graph.py`` that uses *meta data* associated with the projects
+that use the pipeline to create project's object graph and  a ``<object type>.snakefile`` for each of the
+object types created by the ``build_object_graph.py``. 
+
+``build_object_graph.py`` script
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``build_object_graph.py`` script that should contain a function with the following 
+interface:
+
+.. py:function:: def run(project, OG [,*args])
+
+        Creates an object graph for the **project**.
+    
+        :param project: the snakeobjects project
+        :type project: snakeobjects.Project 
+
+        :param OG: the newly created object graph
+        :type OG: snakeobjects.ObjectGraph
+ 
+        :param \*args: command line arguments passed to :option:`sobjects prepare` or 
+                       :option:`sobjects prepareTest`.
+        :type \*args: list[str]
+
+
+The run function usually obtains the location of the project meta data through
+``project.parameters``, loads the meta data, and uses it to create the
+corresponding object graph using the :py:meth:`~snakeobjects.ObjectGraph.add`
+method to add object to the ``OG``.
+
+Object-type snakefiles
+^^^^^^^^^^^^^^^^^^^^^^
+
+Each object-type snakefiles contains
+the list the targets for the object type and the rules for creating the targets.
+The list of targets is defined with a rule for the creating *special* target ``T("obj.flag")``.
+The ``T("obj.flag")`` target for an object will be created only after all the object type targets have been created.
+
+For example, the following rule in the object type snakefile ``sample.snakefile``
+
+.. code-block::
+
+    rule sample_obj:
+       input:
+            T("A.txt"),
+            T("B.txt"),
+            DT("obj.flag")
+       output: 
+            touch(T("obj.flag"))
+
+, decleares that each of the objects of type ``sample`` need two targets
+created (``T("A.txt")`` and ``T("B.txt")``).  Also, the speclial target
+``T("obj.flag")`` will be created only after, the ``T("obj.flag")`` targets are
+created for all objects the objects the current object depends on. This is
+specified by the inclusion of the ``DT("obj.flag")`` list of input targets.
+
+All the rules, including the one for the ``T("obj.flag")`` special target,
+are written using the ``snakemake``'s syntax (https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html) 
+and use a set of ``snakeobjects`` extension functions (see
+:ref:`snake-extenssions`)  for referring to targets in the current object
+(:py:func:`.T`); to targets in dependency objects (:py:func:`.DT`); to
+parameters of the current object (:py:func:`.P`); to parameters of the
+dependency objects (:py:func:`.DP`); and to global object parameters
+(:py:func:`.PP`).  In addition, the pipeline directory can contain scripts,
+conda environment definitions or other artefacts used by the pipeline. 
+
+The example below demonstrates the main features of the ``snakeobjects`` rules:
+
+.. code-block:: python
+
+    rule create_B:
+        input: a=T("A.txt"), r=DT("chrAll.fa",dot="reference")
+        output: T("B.txt")
+        parameters: g=P("gender")
+        log: **logEF("B")
+        shell: "some_command.py {input.a} {param.g} {input.ref} > {output} 2> {log.E}"
+
+Projects
+--------
+
+A project in ``snakeobjects`` is created by a *workflow user* to apply one
+``snakeobjects`` pipeline.  A projects is associated with a *project directory*
+that usually contains a ``so_project.yaml`` written by the *workflow user*
+where the project is configured.  The *workflow user* uses the ``sobjects``
+command line tool to initialize (usually using the :option:`sobjects prepare`
+command) and to execute (:option:`sobjects run`) the associated
+*pipeline*.  The results of the project initialization are stored in the
+``.snakeobjects`` subdirectory of the *project directory*.  The targets and the
+log files created during the execution of the pipeline are stored in the ``objects``
+subdirectory. In addition, ``snakemake`` creates it's own standard internal 
+subdirectory ``.snakemake`` as a subdirectory the *project directory*.
+
+``so_project.yaml`` file
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The ``so_project.yaml`` contains the *project parameters* that configure the
+project and may include:
+
+* a ``so_pipeline`` parameter that points to the *pipeline directory* for the
+  pipeline that will operate on the project (a relative paths are relative 
+  based on the project directory);
+* parameters pointing to the input that will be used by the project; 
+* parameters pointing to the meta-data describing the projects input; 
+* a ``default_snakemake_params`` parameter that specifies the command line 
+  arguments that are passed to ``snakemake`` at every invocation of 
+  :option:`sobjects run`. 
+
+``objects`` subdirectory
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+The files related to ``snakeobjects`` targets have the following general name::
+
+    <project directory>/objects/<object type>/<object id>/<target name>
+
+For example, the target ``T("A.txt")`` of object of object type ``sample`` and with
+id ``i1232`` will be stored in the files ``<project
+directory>/objects/sample/i1232/A.txt``; 
+
+
+The general form for the ``log.O``, ``log.E``, and ``log.T`` log files referenced 
+using the ``logEFS(<name>)`` function are::
+
+    <project directory>/objects/<object type>/<object id>/log/<name>-out.txt
+    <project directory>/objects/<object type>/<object id>/log/<name>-err.txt
+    <project directory>/objects/<object type>/<object id>/log/<name>-time.txt
+
+respectively. For example, log file (``log.E``)
+named ``A`` for the sample i1232 object is ``<project
+directory>/objects/sample/i1232/log/A-err.txt``. 
+
+``.snakeobjects`` subdirectory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This is a private directory reserved for ``snakeobjects`` internal files. Currently, 
+the directory contain two files that may be of interest to the *workflow user*:
+
+* ``.snakeobjets/OG.json`` contains the object graph associated with the project;
+* ``.snakeobjets/main.snakefile`` contains the snakefile that is passed to ``snakemake`` at the 
+  :option:`sobjects run`. 
