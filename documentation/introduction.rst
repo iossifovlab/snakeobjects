@@ -125,10 +125,21 @@ that usually contains a ``so_project.yaml`` written by the *workflow user*
 where the project is configured.  The *workflow user* uses the ``sobjects``
 command line tool to initialize (usually using the :option:`sobjects prepare`
 command) and to execute (:option:`sobjects run`) the associated
-*pipeline*.  The results of the project initialization are stored in the
-``.snakeobjects`` subdirectory of the *project directory*.  The targets and the
-log files created during the execution of the pipeline are stored in the ``objects``
-subdirectory. In addition, ``snakemake`` creates it's own standard internal 
+*pipeline*.  The :option:`sobjects prepare`:
+ 
+1. creates and object graph (using 
+   the ``build_object_graph.py`` script from the *pipeline*)
+   and stores it in the ``snakeobjects``'s private subdirectory ``.snakeobjects`` of the *project directory* 
+   (``<projet directory>/.snakeobjects/OG.json``); 
+2. creates an *object diretory* directory for
+   each of the objects in the *object graph* in the ``objects`` subdirectory in the *project directory*; 
+3. creates the ``<project directory>/.snakeobjects/main.snakefile`` that
+   is subsequently used by ``snakemake``; and 
+4. creates the symbolic links based for all object that have ``symlink.<name>`` parameters. 
+
+The targets and the log files created during the execution of the pipeline (:option:`sobjects run`) are 
+stored in the *object directories* in the ``objects`` subdirectory. 
+In addition, ``snakemake`` creates it's own standard internal 
 subdirectory ``.snakemake`` as a subdirectory the *project directory*.
 
 ``so_project.yaml`` file
@@ -178,3 +189,39 @@ the directory contain two files that may be of interest to the *workflow user*:
 * ``.snakeobjets/OG.json`` contains the object graph associated with the project;
 * ``.snakeobjets/main.snakefile`` contains the snakefile that is passed to ``snakemake`` at the 
   :option:`sobjects run`. 
+
+Objects types, objects, and object graph
+----------------------------------------
+
+Object types in ``snakeobjects`` typically correspond to object types in the domain of the 
+*workflow*. For example, in sequence analysis *workflows*, we can have *reference genome*, 
+*library*, *sample*, *individual*, *family*, or *population* object types. ``snakeobjects`` object
+types are characterized by the set of *targets* that will be created for each object of the 
+object type. For example, *sample* may have a ``T("sample.bam")``, 
+a ``T("sample.bai")``, a ``T("sample.vcf")``, and a ``T("depth-histogram.png")``; 
+*reference genome* object type may have a ``T("chr.fa")``, ``T("chr.fa.fai")``, 
+``T("bwa.index")`` targets. 
+
+Each ``snakeobjects`` project is associated with one *object graph* 
+a structure representing 
+a directed acyclic graph of set of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
+Each of the object is from one of *workflow* object types and is assigned an *object id* that must be unique string 
+among all objects for the same object type (i.e. there can be only one object of type *individual* with object id *john*).
+
+Each object is also associated with list of dependency objects. The dependency objects are objects whose targets will be used 
+in the creation of the targets of the current object. A target, ``T(t)`` of an object is created by the rule from the snake 
+file of the object's object type
+that has the target in its output clause (i.e. ``ouput: T(t)``). The input clause of the rule may contain other targets from the 
+same object type (:py:func:`.T`), targets in a dependency object (:py:func:`.DT`), or files in the projects input.
+
+In addition, each object is associated with project parameters, a dictionary of parameter name to parameter value strings that
+provide important information for the creating of the objects targets. 
+
+Object are typically created by the *pipelines*'s ``build_object_graph.py`` script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the :py:class:`.ObjectGraph`.
+The order of the dependency objects is preserved and the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the 
+bread-first traversal of the object graph. 
+
+During the execution of the *workflow* targets for of the project's object get created and stored
+in file in the ``objects`` subdirectory of the *project directory*. 
+
+
