@@ -8,7 +8,7 @@ Overview
 **snakeobjects** is a workflow management framework based on ``snakemake`` that
 uses an object-oriented abstraction of workflows. ``snakeobjects`` workflows
 are easier to develop, to maintain and to adopt compared to the equivalent
-workflows written in ``stanakemake``, but inherit all the powerful features of
+workflows written in ``snakemake``, but inherit all the powerful features of
 ``snakemake``. These include the portability, efficient resource usage, the
 large expressive power due to the tight python integration, and the large
 community of the ``snakemake`` users. 
@@ -27,7 +27,7 @@ specified *object type* and an object type is characterized by a set of *targets
 that need to be created for each object of the given object type together with
 the rules for creating the targets. The rules for building targets for an
 object type are included in a snakefile named after the object type and are written
-using snakemakes syntax where the inputs and outputs specify targets instead of
+using snakemake's syntax where the inputs and outputs specify targets instead of
 files. Crucially, inputs can refer to targets in the current object and to
 targets in objects the current object depends on as specified in the object
 graph. Finally, projects and objects can be associated with a set of key-value
@@ -116,13 +116,17 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
         log: **logEF("B")
         shell: "some_command.py {input.a} {param.g} {input.ref} > {output} 2> {log.E}"
 
+.. TODO: Add description of the example above.
+
+See :py:func:`.DT` for explanation of ``dot`` parameter.
+
 Projects
 --------
 
 A project in ``snakeobjects`` is created by a *workflow user* to apply one
-``snakeobjects`` pipeline.  A projects is associated with a *project directory*
-that usually contains a ``so_project.yaml`` written by the *workflow user*
-where the project is configured.  The *workflow user* uses the ``sobjects``
+``snakeobjects`` pipeline.  A project is associated with a *project directory*
+that usually contains a ``so_project.yaml`` file written by the *workflow user*
+to configure the project.  The *workflow user* uses the ``sobjects``
 command line tool to initialize (usually using the :option:`sobjects prepare`
 command) and to execute (:option:`sobjects run`) the associated
 *pipeline*.  The :option:`sobjects prepare`:
@@ -156,6 +160,8 @@ project and may include:
 * a ``default_snakemake_params`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
   :option:`sobjects run`. 
+
+TODO: describe the interpolation after implementing the "[C:<param value>]" form
 
 ``objects`` subdirectory
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -202,20 +208,24 @@ a ``T("sample.bai")``, a ``T("sample.vcf")``, and a ``T("depth-histogram.png")``
 *reference genome* object type may have a ``T("chr.fa")``, ``T("chr.fa.fai")``, 
 ``T("bwa.index")`` targets. 
 
-Each ``snakeobjects`` project is associated with one *object graph* 
+Each ``snakeobjects`` project is associated with one :term:`object graph`
 a structure representing 
-a directed acyclic graph of set of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
-Each of the object is from one of *workflow* object types and is assigned an *object id* that must be unique string 
+a directed acyclic graph of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
+Each of the objects is from one of the :term:`pipeline`'s object types and is assigned with an *object id* that must be unique string 
 among all objects for the same object type (i.e. there can be only one object of type *individual* with object id *john*).
 
 Each object is also associated with list of dependency objects. The dependency objects are objects whose targets will be used 
 in the creation of the targets of the current object. A target, ``T(t)`` of an object is created by the rule from the snake 
 file of the object's object type
 that has the target in its output clause (i.e. ``ouput: T(t)``). The input clause of the rule may contain other targets from the 
-same object type (:py:func:`.T`), targets in a dependency object (:py:func:`.DT`), or files in the projects input.
+same object type (:py:func:`.T`), targets in a dependency object (:py:func:`.DT`), or other files.
 
 In addition, each object is associated with project parameters, a dictionary of parameter name to parameter value strings that
-provide important information for the creating of the objects targets. 
+provide important information for the creation of the objects targets. 
+
+TODO: Describe the symbolic link parameters!
+def run(project,OG):
+OG.add(t,i,{"symlink.name":"value"},dep)
 
 Object are typically created by the *pipelines*'s ``build_object_graph.py`` script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the :py:class:`.ObjectGraph`.
 The order of the dependency objects is preserved and the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the 

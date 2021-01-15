@@ -20,6 +20,7 @@ community of the ``snakemake`` users.
     installation 
     introduction 
     gettingStarted
+    terms
     sobjects
     snakemakeExt
     pythonUtils 
