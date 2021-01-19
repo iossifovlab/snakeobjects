@@ -167,9 +167,12 @@ project and may include:
 * parameters pointing to the meta-data describing the projects input; 
 * a ``default_snakemake_params`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
-  :option:`sobjects run`. 
+  :option:`sobjects run`; 
+* parameter values may contain expressions ``[E:<env_vaiable>]`` or ``[C:<parameter>]``:
 
-TODO: describe the interpolation after implementing the "[C:<param value>]" form
+  * in the first case the expression is replaced by the value of corresponding ``environt variable``;
+  * in the second case the expression is replaced with the value of ``parameter`` present in the file.
+  
 
 ``objects`` subdirectory
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -230,10 +233,16 @@ same object type (:py:func:`.T`), targets in a dependency object (:py:func:`.DT`
 
 In addition, each object is associated with project parameters, a dictionary of parameter name to parameter value strings that
 provide important information for the creation of the objects targets. 
+For example:
 
-TODO: Describe the symbolic link parameters!
-def run(project,OG):
-OG.add(t,i,{"symlink.name":"value"},dep)
+.. code-block::
+
+   def run(project,OG):
+       params = {"symlink.sample.bai":"<path_bai>","symlink.sample.bam":"<path_bam>"}
+       dep = [<list of objects>]
+       OG.add(t,i,params,dep)
+
+will create simbolic links sample.bam and sample.bai to corresponding paths in the directory for object ``i`` of type ``t``. 
 
 Object are typically created by the *pipelines*'s ``build_object_graph.py`` script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the :py:class:`.ObjectGraph`.
 The order of the dependency objects is preserved and the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the 
