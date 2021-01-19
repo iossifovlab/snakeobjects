@@ -242,7 +242,7 @@ For example:
        dep = [<list of objects>]
        OG.add(t,i,params,dep)
 
-will create simbolic links sample.bam and sample.bai to corresponding paths in the directory for object ``i`` of type ``t``. 
+will create simbolic links ``sample.bam`` and ``sample.bai`` to corresponding paths in the directory for object ``i`` of type ``t``. 
 
 Object are typically created by the *pipelines*'s ``build_object_graph.py`` script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the :py:class:`.ObjectGraph`.
 The order of the dependency objects is preserved and the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the 
