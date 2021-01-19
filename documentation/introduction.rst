@@ -123,7 +123,7 @@ The first two lines in this rule use functions T and DT described below.
 .. autofunction :: snakeobjects.snakeUtils.T
 .. autofunction :: snakeobjects.snakeUtils.DT
 
-Parameters and log are definen by functions P and LEF.
+Parameters and log are definen by functions P and LFS.
 
 .. autofunction :: snakeobjects.snakeUtils.P
 .. autofunction :: snakeobjects.snakeUtils.LFS
