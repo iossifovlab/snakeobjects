@@ -24,7 +24,24 @@ def load_yaml_with_envirnomemnt_interpolation(file_name):
                 config[k] = v.replace(v[s[0]:s[1]],n)
             else:
                 print('Varianble %s is not defined' % name, file=sys.stderr)
-                exit(1) 
+                exit(1)
+
+    ptn = re.compile(r'(^\[C\:)(.*)(\])')
+
+    for k,v in config.items():
+        if type(v) != str:
+            continue
+        m = ptn.match(v)
+        if m:
+            s = m.span()
+            name = m.groups(0)[1]
+            n = config[name]
+            if n:
+                config[k] = v.replace(v[s[0]:s[1]],n)
+            else:
+                print('Parameter %s is not defined' % name, file=sys.stderr)
+                exit(1)
+                
     return config  
 
 def find_so_project_directory():
