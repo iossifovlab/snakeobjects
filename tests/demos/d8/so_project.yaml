@@ -3,4 +3,4 @@ inputPath: /asdgalsdlgas/asdgas
 ref: "[E:INPUT_DIRECTORY]/ref.fa"
 refi: "[E:INPUT_DIRECTORY]/ref.fai"
 
-pedigree: "[PP:inputPath]/my.ped"
+pedigree: "[C:inputPath]/my.ped"
