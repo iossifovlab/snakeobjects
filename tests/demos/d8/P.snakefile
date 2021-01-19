@@ -11,7 +11,8 @@ rule P_b:
     thea = DP('a'),
     name = P('name'),
     dob  = P('dob'),
-    ref  = PP('ref')
+    ref  = PP('ref'),
+    pedigree = PP('pedigree')
   run:
     assert input[0] == "B/o/a.txt"
     logs = ['log/b.txt-' + x for x in "out.txt err.txt time.txt".split(" ")]
@@ -27,6 +28,7 @@ rule P_b:
     assert params.name == correct[output[0]][0]
     assert params.dob  == correct[output[0]][1]
     assert params.ref == prDir+"/ref.fa"
+    assert params.pedigree == "/asdgalsdlgas/asdgas/my.ped"
     assert log.O == correct[output[0]][2]
     assert log.E == correct[output[0]][3]
     assert log.T == correct[output[0]][4]
