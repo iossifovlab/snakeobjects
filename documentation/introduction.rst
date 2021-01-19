@@ -113,12 +113,20 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
         input: a=T("A.txt"), r=DT("chrAll.fa",dot="reference")
         output: T("B.txt")
         parameters: g=P("gender")
-        log: **logEF("B")
+        log: **LFS("B")
         shell: "some_command.py {input.a} {param.g} {input.ref} > {output} 2> {log.E}"
 
 .. TODO: Add description of the example above.
 
-See :py:func:`.DT` for explanation of ``dot`` parameter.
+The first two lines in this rule use functions T and DT described below.
+
+.. autofunction :: snakeobjects.snakeUtils.T
+.. autofunction :: snakeobjects.snakeUtils.DT
+
+Parameters and log are definen by functions P and LEF.
+
+.. autofunction :: snakeobjects.snakeUtils.P
+.. autofunction :: snakeobjects.snakeUtils.LFS
 
 Projects
 --------
