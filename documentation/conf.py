@@ -12,8 +12,6 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
-sys.path.append('/Users/yamrom/work/snakeobjects')
 
 # -- Project information -----------------------------------------------------
 
@@ -42,7 +40,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 
 # If true, the current module name will be prepended to all description
 # unit titles (such as .. function::).
-add_module_names = True
+add_module_names = False 
 
 
 # -- Options for HTML output -------------------------------------------------

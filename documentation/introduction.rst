@@ -49,7 +49,7 @@ object types created by the ``build_object_graph.py``.
 ``build_object_graph.py`` script that should contain a function with the following 
 interface:
 
-.. py:function:: def run(project, OG [,*args])
+.. py:function:: run(project, OG [,*args])
 
         Creates an object graph for the **project**.
     
@@ -64,7 +64,7 @@ interface:
         :type \*args: list[str]
 
 
-The run function usually obtains the location of the project meta data through
+The :py:func:`run` function usually obtains the location of the project meta data through
 ``project.parameters``, loads the meta data, and uses it to create the
 corresponding object graph using the :py:meth:`~snakeobjects.ObjectGraph.add`
 method to add object to the ``OG``.
@@ -118,15 +118,9 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
 
 .. TODO: Add description of the example above.
 
-The first two lines in this rule use functions T and DT described below.
+The first two lines in this rule use functions :py:func:`.T`  and :py:func:`.DT`.
 
-.. autofunction :: snakeobjects.snakeUtils.T
-.. autofunction :: snakeobjects.snakeUtils.DT
-
-Parameters and log are definen by functions P and LFS.
-
-.. autofunction :: snakeobjects.snakeUtils.P
-.. autofunction :: snakeobjects.snakeUtils.LFS
+Parameters and log are definen by functions :py:func:`.P` and :py:func:`.LFS`.
 
 Projects
 --------
@@ -168,10 +162,15 @@ project and may include:
 * a ``default_snakemake_params`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
   :option:`sobjects run`; 
-* parameter values may contain expressions ``[E:<env_vaiable>]`` or ``[C:<parameter>]``:
 
-  * in the first case the expression is replaced by the value of corresponding ``environt variable``;
-  * in the second case the expression is replaced with the value of ``parameter`` present in the file.
+
+Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<parameter>]``,
+or ``[P:<project property>]``.
+In the first case the expression is replaced by the value of environment variable called 
+``env_variable_name``; in the second case the expression is replaced with the
+value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the
+third case the expression is replaced with the project directory if ``project
+property`` is ``projectDir.
   
 
 ``objects`` subdirectory

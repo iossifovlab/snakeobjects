@@ -18,8 +18,6 @@ def cli(args=None):
     proj = Project()
     print("WORKING ON PROJECT", proj.directory)
     print("WITH PIPELINE", proj.get_pipeline_directory())
-    os.environ['SO_PROJECT']  = proj.directory
-    os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
 
     if command in ["prepare","prepareTest"]:
         bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
@@ -55,7 +53,14 @@ def cli(args=None):
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]
         # os.chdir(proj.directory + '/objects')
+        print("UPDATING ENVIRONMENT:")
+        print("export SO_PROJECT=",proj.directory,sep="") 
+        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
+        print("export PATH=$SO_PIPELINE:$PATH",sep="")
         print("RUNNING:", " ".join(sargs))
+        os.environ['SO_PROJECT']  = proj.directory
+        os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
+        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
         os.execvp('snakemake',sargs)
     elif command == "describe":
         print("Project parameters:")

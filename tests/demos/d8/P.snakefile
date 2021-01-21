@@ -12,7 +12,9 @@ rule P_b:
     name = P('name'),
     dob  = P('dob'),
     ref  = PP('ref'),
-    pedigree = PP('pedigree')
+    pedigree = PP('pedigree'),
+    refi = PP('refi'),
+    pa = PP('pa')
   run:
     assert input[0] == "B/o/a.txt"
     logs = ['log/b.txt-' + x for x in "out.txt err.txt time.txt".split(" ")]
@@ -22,13 +24,17 @@ rule P_b:
         "P/3/b.txt": ['Mary' , "5/30/2002"]+['P/3/' + x for x in logs],
         "P/4/b.txt": ['John' , "6/11/2003"]+['P/4/' + x for x in logs]
     }
-    prDir = os.environ['INPUT_DIRECTORY']
+    inDir = os.environ['INPUT_DIRECTORY']
+    projDir = os.environ['SO_PROJECT']
+    pipeDir = os.environ['SO_PIPELINE']
     assert output[0] in correct
     assert params.thea[0] == "alabala nica"
     assert params.name == correct[output[0]][0]
     assert params.dob  == correct[output[0]][1]
-    assert params.ref == prDir+"/ref.fa"
+    assert params.ref == inDir+"/ref.fa"
     assert params.pedigree == "/asdgalsdlgas/asdgas/my.ped"
+    assert params.refi == projDir+"/ref.fai"
+    assert params.pa == pipeDir+"/gosho.txt"
     assert log.O == correct[output[0]][2]
     assert log.E == correct[output[0]][3]
     assert log.T == correct[output[0]][4]

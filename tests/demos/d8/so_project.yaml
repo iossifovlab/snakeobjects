@@ -1,6 +1,8 @@
-inputPath: /asdgalsdlgas/asdgas
+inputPath: "/asdgalsdlgas/asdgas"
 
 ref: "[E:INPUT_DIRECTORY]/ref.fa"
-refi: "[E:INPUT_DIRECTORY]/ref.fai"
+
+refi: "[P:projectDir]/ref.fai"
+pa: "[P:pipelineDir]/gosho.txt"
 
 pedigree: "[C:inputPath]/my.ped"

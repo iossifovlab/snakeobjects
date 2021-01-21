@@ -3,46 +3,14 @@ from pathlib import Path
 import importlib.resources as importlib_resources
 from snakeobjects.ObjectGraph import ObjectGraph, load_object_graph
 
-
-def load_yaml_with_envirnomemnt_interpolation(file_name):
+def load_yaml(file_name):
 
     CF = open(file_name, 'r')
     config = yaml.safe_load(CF)
     CF.close()
 
-    ptn = re.compile(r'(^\[E\:)(.*)(\])')
-
-    for k,v in config.items():
-        if type(v) != str:
-            continue
-        m = ptn.match(v)
-        if m:
-            s = m.span()
-            name = m.groups(0)[1]
-            n = os.environ[name]
-            if n:
-                config[k] = v.replace(v[s[0]:s[1]],n)
-            else:
-                print('Varianble %s is not defined' % name, file=sys.stderr)
-                exit(1)
-
-    ptn = re.compile(r'(^\[C\:)(.*)(\])')
-
-    for k,v in config.items():
-        if type(v) != str:
-            continue
-        m = ptn.match(v)
-        if m:
-            s = m.span()
-            name = m.groups(0)[1]
-            n = config[name]
-            if n:
-                config[k] = v.replace(v[s[0]:s[1]],n)
-            else:
-                print('Parameter %s is not defined' % name, file=sys.stderr)
-                exit(1)
-                
     return config  
+
 
 def find_so_project_directory():
     """     
@@ -96,14 +64,67 @@ class Project:
         self._objectGraphFileName = self.directory + "/objects/.snakeobjects/OG.json"
 
         if os.path.isfile(self._porojectFileName):
-            self.parameters = load_yaml_with_envirnomemnt_interpolation(self._porojectFileName)
+            self.parameters = load_yaml(self._porojectFileName)
         else:
             self.parameters = {}
+
+        self._run_parameter_interpolation()
 
         if os.path.isfile(self._objectGraphFileName):
             self.objectGraph = load_object_graph(self._objectGraphFileName)
         else:
             self.objectGraph = ObjectGraph()
+
+    def _run_parameter_interpolation(self):
+
+        ptn = re.compile(r'(^\[E\:)(.*)(\])')
+
+        for k,v in self.parameters.items():
+            if type(v) != str:
+                continue
+            m = ptn.match(v)
+            if m:
+                s = m.span()
+                name = m.groups(0)[1]
+                n = os.environ[name]
+                if n:
+                    self.parameters[k] = v.replace(v[s[0]:s[1]],n)
+                else:
+                    print('Varianble %s is not defined' % name, file=sys.stderr)
+                    exit(1)
+
+        ptn = re.compile(r'(^\[C\:)(.*)(\])')
+
+        for k,v in self.parameters.items():
+            if type(v) != str:
+                continue
+            m = ptn.match(v)
+            if m:
+                s = m.span()
+                name = m.groups(0)[1]
+                if name in self.parameters:
+                    self.parameters[k] = v.replace(v[s[0]:s[1]],self.parameters[name])
+                else:
+                    print('Parameter %s is not defined' % name, file=sys.stderr)
+                    exit(1)
+                    
+        ptn = re.compile(r'(^\[P\:)(.*)(\])')
+
+        for k,v in self.parameters.items():
+            if type(v) != str:
+                continue
+            m = ptn.match(v)
+            if m:
+                s = m.span()
+                name = m.groups(0)[1]
+                if name == "projectDir":
+                    pv = self.directory
+                elif name == "pipelineDir":
+                    pv = self.get_pipeline_directory()
+                else:
+                    print('The project property %s is unknonw.' % name, file=sys.stderr)
+                    exit(1)
+                self.parameters[k] = v.replace(v[s[0]:s[1]],pv)
 
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
