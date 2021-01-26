@@ -72,11 +72,11 @@ def cli(args=None):
     elif command in ["help", "-h", "--help"]:
         print("Available commands are: \033[1m prepare, prepareTest, prepareObjects, run, describe, and version.\033[0m\n")
         print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
-        print("\033[1mdescrbe\033[0m prints Project parameters and Object typess;\n")
-        print("\033[1mprepareTest\033[0m prints Current graph stats and New graph stats, but does not create objects themselves;\n")
-        print("\033[1mprepare\033[0m executes \033[1mPrepareObjects\033[0m command and saves objectGraph in objects/.snakeobjects/OG.yaml file;\n")
-        print("\033[1mprepareObjects\033[0m creates objects directory and writes objects/.snakeobjects/main.snakefile file;\n")
-        print("\033[1mrun\033[0m executes pipeline, i.e. executes snakemake command with arguments provide in the project parameters with addition of parameters entered at command line;\n")
+        print("\033[1mdescrbe\033[0m Prints a basic information about the project and the pipline that are used;\n")
+        print("\033[1mprepareTest\033[0m Uses the build_object_graph.py in the pippeline directory to create a new object graph and prints statistics of the current and the new object graph. The project is not modified at all;\n")
+        print("\033[1mprepare\033[0m First, uses the build_object_graph.py in the pippeline directory to create an object graph for the snakeobjects project. Then prepares the main snakefile, and the directories and symbolic links for all object in the object graph;\n")
+        print("\033[1mprepareObjects\033[0m Prepares the main snakefile, and the directories and symbolic links for all object in the object graph;\n")
+        print("\033[1mrun [<arguments to snakemake>]\033[0m Creates targets for object in the object graph by running snakemake. The <arguments to snakemake>  determine which targets will be created and what resources will be used;\n")
         print("\033[1mversion\033[0m This prints the version;\n")
         print("\033[1mhelp\033[0m This shows help;\n")
     else:
