@@ -118,6 +118,9 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
 
 .. TODO: Add description of the example above.
 
+Detailed documentation of the snakemake rule syntax can be fount in
+`here <https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html>`_.
+
 The first two lines in this rule use functions :py:func:`.T`  and :py:func:`.DT`.
 
 Parameters and log are definen by functions :py:func:`.P` and :py:func:`.LFS`.
@@ -161,11 +164,10 @@ project and may include:
 * parameters pointing to the meta-data describing the projects input; 
 * a ``default_snakemake_params`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
-  :option:`sobjects run`; 
+  :option:`sobjects run`. 
 
 
-Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<parameter>]``,
-or ``[P:<project property>]``.
+Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<parameter>]``, or ``[P:<project property>]``.
 In the first case the expression is replaced by the value of environment variable called 
 ``env_variable_name``; in the second case the expression is replaced with the
 value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the
