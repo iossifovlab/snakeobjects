@@ -1,6 +1,8 @@
 inputPath: "/asdgalsdlgas/asdgas"
-
-ref: "[E:INPUT_DIRECTORY]/ref.fa"
+BATCH: "1"
+l: ['ivan', '[E:INPUT_DIRECTORY]', 'boris']
+d: {'PD': '[P:projectDir]', 'ID':'[E:INPUT_DIRECTORY]'}
+ref: "[E:INPUT_DIRECTORY]/[C:BATCH]/ref.fa"
 
 refi: "[P:projectDir]/ref.fai"
 pa: "[P:pipelineDir]/gosho.txt"

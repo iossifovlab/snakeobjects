@@ -14,7 +14,10 @@ rule P_b:
     ref  = PP('ref'),
     pedigree = PP('pedigree'),
     refi = PP('refi'),
-    pa = PP('pa')
+    pa   = PP('pa'),
+    batch = PP('BATCH'),
+    l    = PP('l'),
+    d    = PP('d')
   run:
     assert input[0] == "B/o/a.txt"
     logs = ['log/b.txt-' + x for x in "out.txt err.txt time.txt".split(" ")]
@@ -31,13 +34,15 @@ rule P_b:
     assert params.thea[0] == "alabala nica"
     assert params.name == correct[output[0]][0]
     assert params.dob  == correct[output[0]][1]
-    assert params.ref == inDir+"/ref.fa"
+    assert params.ref == inDir+"/1/ref.fa"
     assert params.pedigree == "/asdgalsdlgas/asdgas/my.ped"
     assert params.refi == projDir+"/ref.fai"
     assert params.pa == pipeDir+"/gosho.txt"
     assert log.O == correct[output[0]][2]
     assert log.E == correct[output[0]][3]
     assert log.T == correct[output[0]][4]
+    assert params.l == ['ivan', inDir, 'boris']
+    assert params.d == {'PD': projDir, 'ID': inDir}
     shell("(time echo 'thea:' {params.thea}, 'name:' {params.name}, \
           'dob: {params.dob}'> {output}) 2> {log.T}")
 
