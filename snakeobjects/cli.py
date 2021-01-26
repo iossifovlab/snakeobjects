@@ -67,6 +67,17 @@ def cli(args=None):
         for k,v in proj.parameters.items():
             print(f"\t{k}: {v}")
         proj.objectGraph.print_stats()
+    elif command == "version":
+        return __version__
+    elif command in ["help", "-h", "--help"]:
+        print("Available commands are: \033[1m prepare, prepareTest, prepareObjects, run, describe, and version.\033[0m\n")
+        print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
+        print("\033[1mdescrbe\033[0m prints Project parameters and Object typess;\n")
+        print("\033[1mprepareTest\033[0m prints Current graph stats and New graph stats, , but does not create objects themselves;\n")
+        print("\033[1mprepare\033[0m executes \033[1mPrepareObjects\033[0m command and saves objectGraph in objects/.snakeobjects/OG.yaml file;\n")
+        print("\033[1mprepareObjects\033[0m creates objects directory and writes objects/.snakeobjects/main.snakefile file;\n")
+        print("\033[1mrun\033[0m executes pipeline, i.e. executes snakemake command with arguments provide in the project parameters with addition of parameters entered at command line;\n")
+        print("\033[1mversion\033[0m prints version of the current snakeobjects.\n")
     else:
         print("Don't know the command:", command)
         return 1
