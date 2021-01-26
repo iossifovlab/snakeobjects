@@ -22,7 +22,7 @@ def find_so_project_directory():
     1. If the SO_PROJECT envirnoment variable exits, its values is returned.
     2. If the current working directory contains a file named so_project.yaml, 
        the current working direcoty is returned.
-    3. The partents of the current working directory are examined recursivelly 
+    3. The parents of the current working directory are examined recursivelly 
        and the first one containing so_project.yaml file is returned. 
     """
     if "SO_PROJECT" in os.environ:
@@ -32,6 +32,14 @@ def find_so_project_directory():
         if os.path.isfile(d / "so_project.yaml"):
             return str(d)
     return os.getcwd()
+
+class ProjectException(Exception):
+    pass
+    """
+    def __init__(self, message=""):
+        self.message = message
+        super().__init__(self.message)
+    """
 
 class Project:
     """
@@ -77,54 +85,45 @@ class Project:
 
     def _run_parameter_interpolation(self):
 
-        ptn = re.compile(r'(^\[E\:)(.*)(\])')
-
+        def interpolate(O):
+            ptn = re.compile(r'(\[[\w]\:(\w+)\])(\w*)')
+            
+            if type(O) == int or type(O) == float:
+                return O
+            elif type(O) == list:
+                return [interpolate(x) for x in O]
+            elif type(O) == dict:
+                return {k:interpolate(v) for k,v in O.items()}
+            elif type(O) == str:
+                for s in ptn.findall(O):
+                    letter = s[0][1]
+                    name = s[1]
+                    try:
+                        if letter =='E':
+                            if not name in os.environ:
+                                raise ProjectException("Varianble %s is not defined" % name)
+                            O = O.replace(s[0],os.environ[name])
+                        elif letter =='C':
+                            if not name in self.parameters:
+                                raise ProjectException('Parameter %s is not defined' % name)
+                            O = O.replace(s[0],self.parameters[name])
+                        elif letter =='P':
+                            if name == "projectDir":
+                                pv = self.directory
+                            elif name == "pipelineDir":
+                                pv = self.get_pipeline_directory()
+                            else:
+                                raise ProjectException('The project property %s is unknonw.' % name)
+                            O = O.replace(s[0],pv)
+                        else:
+                            raise ProjectException('Letter [%s: ...] is unknown; can be only E|C|P.' % letter)
+                    except ProjectException():
+                        pass
+                return O
+            
         for k,v in self.parameters.items():
-            if type(v) != str:
-                continue
-            m = ptn.match(v)
-            if m:
-                s = m.span()
-                name = m.groups(0)[1]
-                n = os.environ[name]
-                if n:
-                    self.parameters[k] = v.replace(v[s[0]:s[1]],n)
-                else:
-                    print('Varianble %s is not defined' % name, file=sys.stderr)
-                    exit(1)
-
-        ptn = re.compile(r'(^\[C\:)(.*)(\])')
-
-        for k,v in self.parameters.items():
-            if type(v) != str:
-                continue
-            m = ptn.match(v)
-            if m:
-                s = m.span()
-                name = m.groups(0)[1]
-                if name in self.parameters:
-                    self.parameters[k] = v.replace(v[s[0]:s[1]],self.parameters[name])
-                else:
-                    print('Parameter %s is not defined' % name, file=sys.stderr)
-                    exit(1)
-                    
-        ptn = re.compile(r'(^\[P\:)(.*)(\])')
-
-        for k,v in self.parameters.items():
-            if type(v) != str:
-                continue
-            m = ptn.match(v)
-            if m:
-                s = m.span()
-                name = m.groups(0)[1]
-                if name == "projectDir":
-                    pv = self.directory
-                elif name == "pipelineDir":
-                    pv = self.get_pipeline_directory()
-                else:
-                    print('The project property %s is unknonw.' % name, file=sys.stderr)
-                    exit(1)
-                self.parameters[k] = v.replace(v[s[0]:s[1]],pv)
+            self.parameters[k] = interpolate(v)
+            
 
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
