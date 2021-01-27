@@ -114,7 +114,7 @@ def cli(args=None):
     elif command == "run":
         sargs = ['snakemake',
                         '-s', proj.directory + '/objects/.snakeobjects/main.snakefile', 
-                        '-d', proj.directory + '/objects'] 
+                        '-d', proj.directory + '/objects']
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]
@@ -128,6 +128,32 @@ def cli(args=None):
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
         os.execvp('snakemake',sargs)
+    elif command == "submit":
+        sargs = []
+        if "default_snakemake_args" in proj.parameters:
+            sargs += proj.parameters["default_snakemake_args"].split()
+        else:
+            raise ProjectException("No profile specified")
+        profile=sargs[sargs.index('--profile')+1]
+        if not os.path.exists(profile): raise ProjectException("Profile not found %s" % profile)
+        if not os.path.exists(profile+"/config.yaml"): raise ProjectException("No config.yaml in %s" % profile)
+        pr_config = Project.load_yaml(profile+"/config.yaml")
+        if not "cluster" in pr_config: ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
+        cmd=pr_config["cluster"]
+        sargs += args[1:]
+        # os.chdir(proj.directory + '/objects')
+        print("UPDATING ENVIRONMENT:")
+        print("export SO_PROJECT=",proj.directory,sep="") 
+        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
+        print("export PATH=$SO_PIPELINE:$PATH",sep="")
+        print("RUNNING:", " ".join(sargs))
+        os.environ['SO_PROJECT']  = proj.directory
+        os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
+        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
+        if os.ststem('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
+            raise ProjectException("sobjects jobscript.sh failed")
+        os.system("echo "+" ".join(args[1:])+"$* && exit 0 || exit 1 >>$SO_PROJECT/objects/.snakeobjects/jobscript.sh")
+        os.execvp(cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh &")        
     elif command == "describe":
         print("Project parameters:")
         for k,v in proj.parameters.items():
