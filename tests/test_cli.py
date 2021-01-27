@@ -1,5 +1,6 @@
 from snakeobjects import cli
 
 def test_cli_jobscript():
-    assert cli.cli(["jobscript.sh"]) is None
+    assert cli.cli(["version"]) is None
+    assert cli.cli(["help"]) is None
 

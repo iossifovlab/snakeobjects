@@ -4,6 +4,47 @@ import importlib.resources as importlib_resources
 import os,sys
 from importlib.util import spec_from_file_location, module_from_spec
 
+helpData = {
+    "version": "prints the version",
+
+    "help":    '''sobjects help [command]
+
+Shows description of the command line interface. 
+Without an argument, prints help for all the commands. If one argument 
+is given, it should be one of the available commands and help for the given 
+command is shown.''',
+
+    "describe": '''Prints a basic information about the project and the pipeline
+that are used''',
+
+    "prepareTest": '''sobjects prepareTest [<arguments to build_object_graph.py>]
+
+Uses the build_object_graph.py in the pipeline directory to create a new object 
+graph and prints statistics of the current and the new object graph. The project 
+is not modified at all.''',
+
+    "prepare": '''sobjects prepare [<arguments to build_object_graph.py>]
+
+First, uses the build_object_graph.py in the pipeline directory 
+to create an object graph for the snakeobjects project. Then prepares the main 
+snakefile, and the directories and symbolic links for all object in the object 
+graph''',
+
+    "prepareObjects": '''sobjects prepareObjects
+
+Prepares the main snakefile, and the directories and symbolic links for all 
+object in the object graph''',
+
+    "run": '''sobjects run [<arguments to snakemake>]
+
+Creates targets for object in the object graph by running snakemake. The 
+<arguments to snakemake> determine which targets will be created and what resources 
+will be used'''
+
+}
+
+
+
 
 def cli(args=None):
     if not args:
@@ -11,8 +52,33 @@ def cli(args=None):
     command = args[0] 
 
 
-    if command == "jobscript.sh":
-        print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
+    # if command == "jobscript.sh":
+    #    print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
+    #    return
+
+    if command == "version":
+        print(__version__)
+        return
+    elif command in ["help", "-h", "--help"]:
+        print("snakeobject %s\n" % (__version__))
+        if len(args) == 1:
+            print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
+        # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
+            for cmd,hs in helpData.items():
+                print(cmd)
+                print('#' * len(cmd))
+                print(hs)
+                print()
+        elif len(args) == 2:
+            hCmd = args[1]
+            if hCmd in helpData:
+                print(helpData[hCmd])
+            else:
+                print("The command", hCmd, "is unknown")
+                return 1
+        else:
+            print("Help accepts at most one argument.")
+            return 1
         return
 
     proj = Project()
@@ -67,25 +133,9 @@ def cli(args=None):
         for k,v in proj.parameters.items():
             print(f"\t{k}: {v}")
         proj.objectGraph.print_stats()
-    elif command == "version":
-        return __version__
-    elif command in ["help", "-h", "--help"]:
-        print("Available commands are: \033[1m prepare, prepareTest, prepareObjects, run, describe, and version.\033[0m\n")
-        print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
-        print("\033[1mdescrbe\033[0m Prints a basic information about the project and the pipline that are used;\n")
-        print("\033[1mprepareTest\033[0m Uses the build_object_graph.py in the pippeline directory to create a new object graph and prints statistics of the current and the new object graph. The project is not modified at all;\n")
-        print("\033[1mprepare\033[0m First, uses the build_object_graph.py in the pippeline directory to create an object graph for the snakeobjects project. Then prepares the main snakefile, and the directories and symbolic links for all object in the object graph;\n")
-        print("\033[1mprepareObjects\033[0m Prepares the main snakefile, and the directories and symbolic links for all object in the object graph;\n")
-        print("\033[1mrun [<arguments to snakemake>]\033[0m Creates targets for object in the object graph by running snakemake. The <arguments to snakemake>  determine which targets will be created and what resources will be used;\n")
-        print("\033[1mversion\033[0m This prints the version;\n")
-        print("\033[1mhelp\033[0m This shows help;\n")
     else:
         print("Don't know the command:", command)
         return 1
-
-    # No return value means no error.
-    # Return a value of 1 or higher to signify an error.
-    # See https://docs.python.org/3/library/sys.html#sys.exit
 
 '''
 if [ -z "$PROJECT_DIR" ]; then

@@ -7,34 +7,50 @@ The available commands are described below:
 
 .. program:: sobjects 
 
-.. option:: version
 
-This prints the version.
+.. option:: version
+.. runblock:: console
+
+    $ sobjects help version
+
 
 .. option:: help 
+.. runblock:: console
 
-This shows help.
+    $ sobjects help help 
+
 
 .. option:: describe
+.. runblock:: console
 
-Prints a basic information about the project and the pipline that are used.
+    $ sobjects help desribe 
+
 
 .. option:: prepareObjects 
+.. runblock:: console
 
-Prepares the main snakefile, and the directories and symbolic links for all object in the object graph.
+    $ sobjects help prepareObjects 
+
 
 .. option:: prepare
+.. runblock:: console
 
-First, uses the build_object_graph.py in the pippeline directory to create an object graph for 
-the ``snakeobjects`` project. Then prepares the main snakefile, and the directories and symbolic 
-links for all object in the object graph.
+    $ sobjects help prepare
+
 
 .. option:: prepareTest
+.. runblock:: console
 
-Uses the build_object_graph.py in the pippeline directory to create a new object graph and prints 
-statistics of the current and the new object graph. The project is not modified at all.
+    $ sobjects help prepareTest
 
-.. option:: run [<arguments to snakemake>]
+.. option:: run 
+.. runblock:: console
 
-Creates targets for object in the object graph by running ``snakemake``.
-The ``<arguments to snakemake>``  determine which targets will be created and what resources will be used.
+    $ sobjects help run 
+
+
+.. option:: submit 
+.. runblock:: console
+
+    $ sobjects help submit 
+

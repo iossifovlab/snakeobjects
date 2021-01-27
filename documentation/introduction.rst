@@ -171,8 +171,7 @@ Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<para
 In the first case the expression is replaced by the value of environment variable called 
 ``env_variable_name``; in the second case the expression is replaced with the
 value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the
-third case the expression is replaced with the project directory if ``project
-property`` is ``projectDir.
+third case the expression is replaced with the project directory if ``project property`` is ``projectDir``.
   
 
 ``objects`` subdirectory

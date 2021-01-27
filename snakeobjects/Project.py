@@ -35,11 +35,6 @@ def find_so_project_directory():
 
 class ProjectException(Exception):
     pass
-    """
-    def __init__(self, message=""):
-        self.message = message
-        super().__init__(self.message)
-    """
 
 class Project:
     """
@@ -98,27 +93,24 @@ class Project:
                 for s in ptn.findall(O):
                     letter = s[0][1]
                     name = s[1]
-                    try:
-                        if letter =='E':
-                            if not name in os.environ:
-                                raise ProjectException("Varianble %s is not defined" % name)
-                            O = O.replace(s[0],os.environ[name])
-                        elif letter =='C':
-                            if not name in self.parameters:
-                                raise ProjectException('Parameter %s is not defined' % name)
-                            O = O.replace(s[0],self.parameters[name])
-                        elif letter =='P':
-                            if name == "projectDir":
-                                pv = self.directory
-                            elif name == "pipelineDir":
-                                pv = self.get_pipeline_directory()
-                            else:
-                                raise ProjectException('The project property %s is unknonw.' % name)
-                            O = O.replace(s[0],pv)
+                    if letter =='E':
+                        if not name in os.environ:
+                            raise ProjectException("Varianble %s is not defined" % name)
+                        O = O.replace(s[0],os.environ[name])
+                    elif letter =='C':
+                        if not name in self.parameters:
+                            raise ProjectException('Parameter %s is not defined' % name)
+                        O = O.replace(s[0],self.parameters[name])
+                    elif letter =='P':
+                        if name == "projectDir":
+                            pv = self.directory
+                        elif name == "pipelineDir":
+                            pv = self.get_pipeline_directory()
                         else:
-                            raise ProjectException('Letter [%s: ...] is unknown; can be only E|C|P.' % letter)
-                    except ProjectException():
-                        pass
+                            raise ProjectException('The project property %s is unknonw.' % name)
+                        O = O.replace(s[0],pv)
+                    else:
+                        raise ProjectException('Letter [%s: ...] is unknown; can be only E|C|P.' % letter)
                 return O
             
         for k,v in self.parameters.items():
