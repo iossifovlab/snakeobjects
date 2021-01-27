@@ -118,12 +118,13 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
 
 .. TODO: Add description of the example above.
 
-Detailed documentation of the snakemake rule syntax can be fount in
-`here <https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html>`_.
-
-The first two lines in this rule use functions :py:func:`.T`  and :py:func:`.DT`.
-
-Parameters and log are definen by functions :py:func:`.P` and :py:func:`.LFS`.
+Typical rule has a name, here it is create_B, and several attributes, such as input, output, parameters, log, and shell. 
+Attributes should be indented relative to the term rule. Attributes values are strings or lists of stings separated by commas. They may start on the same line as the attribute name or on separate line in which case they are indented relative its attribute position. 
+The first two lines in this rule use functions :py:func:`.T`  and :py:func:`.DT` to specify the values of input and output files. 
+The values for parameters and log are definen by functions :py:func:`.P` and :py:func:`.LFS`.
+The values of attibutes can be named as in a=T("A.txt") or g=P("gender") and these names could be used for reference in the shell command. Shell attribute value is valid shell command or a list of commands enclosed in quotation marks. Attribute values in shell command are enclosed in curly braces. 
+The complete documentation for snakefiles rules can be fount at
+`Snakemake <https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html>`_.
 
 Projects
 --------
@@ -168,10 +169,13 @@ project and may include:
 
 
 Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<parameter>]``, or ``[P:<project property>]``.
+These meta expressions are replaced with ``interpolation`` function.
 In the first case the expression is replaced by the value of environment variable called 
 ``env_variable_name``; in the second case the expression is replaced with the
 value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the
-third case the expression is replaced with the project directory if ``project property`` is ``projectDir``.
+third case the expression is replaced with the project directory if ``project property`` is ``projectDir``
+and with the pipeline directory if ``project property`` is ``pipelineDir``.
+Iterpolation is applied to all project parameters. If parameter does not contain the above meta expressions, it remaines unaffected; parameters represented by lists and dictionaries are processed recurcively by applying interpolation to all its members.
   
 
 ``objects`` subdirectory
