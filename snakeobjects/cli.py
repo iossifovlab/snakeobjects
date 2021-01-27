@@ -1,8 +1,16 @@
 from argparse import ArgumentParser
 from snakeobjects import __version__, Project, ObjectGraph
 import importlib.resources as importlib_resources
-import os,sys
+import os,sys,yaml
 from importlib.util import spec_from_file_location, module_from_spec
+
+def load_yaml(file_name):
+
+    CF = open(file_name, 'r')
+    config = yaml.safe_load(CF)
+    CF.close()
+
+    return config  
 
 helpData = {
     "version": "prints the version",
@@ -52,9 +60,9 @@ def cli(args=None):
     command = args[0] 
 
 
-    # if command == "jobscript.sh":
-    #    print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
-    #    return
+    if command == "jobscript.sh":
+        print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
+        return
 
     if command == "version":
         print(__version__)
@@ -137,9 +145,9 @@ def cli(args=None):
         profile=sargs[sargs.index('--profile')+1]
         if not os.path.exists(profile): raise ProjectException("Profile not found %s" % profile)
         if not os.path.exists(profile+"/config.yaml"): raise ProjectException("No config.yaml in %s" % profile)
-        pr_config = Project.load_yaml(profile+"/config.yaml")
+        pr_config = load_yaml(profile+"/config.yaml")
         if not "cluster" in pr_config: ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
-        cmd=pr_config["cluster"]
+        cmd=profile+"/"+pr_config["cluster"]
         sargs += args[1:]
         # os.chdir(proj.directory + '/objects')
         print("UPDATING ENVIRONMENT:")
@@ -150,10 +158,10 @@ def cli(args=None):
         os.environ['SO_PROJECT']  = proj.directory
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
-        if os.ststem('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
+        if os.system('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
         os.system("echo "+" ".join(args[1:])+"$* && exit 0 || exit 1 >>$SO_PROJECT/objects/.snakeobjects/jobscript.sh")
-        os.execvp(cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh &")        
+        os.execlp(cmd, " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")        
     elif command == "describe":
         print("Project parameters:")
         for k,v in proj.parameters.items():
