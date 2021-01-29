@@ -145,13 +145,14 @@ def cli(args=None):
         else:
             raise ProjectException("No profile specified")
         profile=sargs[sargs.index('--profile')+1]
-        if not os.path.exists(profile): raise ProjectException("Profile not found %s" % profile)
-        if not os.path.exists(profile+"/config.yaml"): raise ProjectException("No config.yaml in %s" % profile)
+        if not os.path.exists(profile): 
+            raise ProjectException("Profile not found %s" % profile)
+        if not os.path.exists(profile+"/config.yaml"): 
+            raise ProjectException("No config.yaml in %s" % profile)
         pr_config = load_yaml(profile+"/config.yaml")
-        if not "cluster" in pr_config: ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
-        #cmd=profile+"/"+pr_config["cluster"]
+        if not "cluster" in pr_config: 
+            ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
         cmd=pr_config["cluster"]
-        #print(cmd)
         sargs += args[1:]
         # os.chdir(proj.directory + '/objects')
         print("UPDATING ENVIRONMENT:")
@@ -164,10 +165,8 @@ def cli(args=None):
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
         if os.system('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
-        #print("echo "+" ".join(args[1:])+" $* && exit 0 || exit 1 >>$SO_PROJECT/objects/.snakeobjects/jobscript.sh")
-        #os.system("echo "+" ".join(args[1:])+"$* && exit 0 || exit 1 >>$SO_PROJECT/objects/.snakeobjects/jobscript.sh")
         os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")
-        #os.execvp(profile + "/" +cmd, ["$SO_PROJECT/objects/.snakeobjects/jobscript.sh"])        
+        #os.execlp(profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh")        
     elif command == "describe":
         print("Project parameters:")
         for k,v in proj.parameters.items():
