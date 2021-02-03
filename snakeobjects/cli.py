@@ -1,5 +1,5 @@
 from argparse import ArgumentParser
-from snakeobjects import __version__, Project, ObjectGraph
+from snakeobjects import __version__, Project, ObjectGraph, load_object_graph, graph
 import importlib.resources as importlib_resources
 import os,sys,yaml
 from importlib.util import spec_from_file_location, module_from_spec
@@ -47,11 +47,19 @@ object in the object graph''',
 
 Creates targets for object in the object graph by running snakemake. The 
 <arguments to snakemake> determine which targets will be created and what resources 
-will be used'''
+will be used''',
+
+    "submit": '''sobjects submit [<arguments to snakemake>]
+
+Creates targets for object in the object graph by running snakemake with profile specified in default_snakemake_args directive of so_project.yaml. The 
+<arguments to snakemake> determine which targets will be created and what resources 
+will be used''',
+
+    "graph": '''sobjects graph [<width> <penwidth> <arrowsize>] [<objectGraph json file>]
+
+Prints to stdout dot file for project ObjectGraph. Defaults values for width, penwidth, and arrowsize are 0.05, 0.1, 0.1. If fourth argument is provided, the dot file for the object graph in json file will be created'''
 
 }
-
-
 
 
 def cli(args=None):
@@ -90,8 +98,8 @@ def cli(args=None):
         return
 
     proj = Project()
-    print("WORKING ON PROJECT", proj.directory)
-    print("WITH PIPELINE", proj.get_pipeline_directory())
+    print("# WORKING ON PROJECT", proj.directory)
+    print("# WITH PIPELINE", proj.get_pipeline_directory())
 
     if command in ["prepare","prepareTest"]:
         bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
@@ -166,12 +174,22 @@ def cli(args=None):
         if os.system('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
         os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")
-        #os.execlp(profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh")        
+        #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh"])        
     elif command == "describe":
         print("Project parameters:")
         for k,v in proj.parameters.items():
             print(f"\t{k}: {v}")
         proj.objectGraph.print_stats()
+    elif command == "graph":
+        print(args, file=sys.stderr)
+        if len(args) == 1:
+            graph.plotGraph(proj.objectGraph)
+        elif len(args) == 4:
+            w, pw, ar = [float(a) for a in args[1:]]
+            graph.plotGraph(proj.objectGraph, width=w, penwidth=pw, arrowsize=ar)
+        elif len(args) == 5:
+            w, pw, ar = [float(a) for a in args[1:-1]]
+            graph.plotGraph(load_object_graph(args[-1]), width=w, penwidth=pw, arrowsize=ar)
     else:
         print("Don't know the command:", command)
         return 1
