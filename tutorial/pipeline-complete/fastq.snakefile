@@ -51,14 +51,18 @@ rule fastq_idx:
 
 rule read_cnt:
   input:
-    T("sample_cs.bam")
+    bam=T("sample_cs.bam"),
+    idx=T("sample_cs.bam.bai")    
   output:
     T("sample_cnt.txt")
   params:
     regions=PP("target"),
     ref = PP("ref")
+  log:
+    **(LFS("sample_cnt.txt"))
   shell:
-    "samtools bedcov -j --reference {params.ref} {params.regions} {input} > {output}"
+    # -j option does not work for samtools 1.7
+    "samtools bedcov --reference {params.ref} {params.regions} {input.bam} > {output} 2>{log.E}"
 
 rule clean_fastq:
   shell:

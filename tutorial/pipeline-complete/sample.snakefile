@@ -64,14 +64,15 @@ rule sample_idx:
 
 rule depth:
   input:
-    T("mdup.bam")
+    bam=T("mdup.bam"),
+    idx=T("mdup.bam.bai")    
   output:
     T("depth.txt")
   params:
     target=PP("target"),
     ref = PP("ref")
   shell:
-    "samtools depth -b {params.target} -q 30 -Q 30 {input} > {output}"
+    "samtools depth -b {params.target} -q 30 -Q 30 {input.bam} > {output}"
 
 rule sample_plot:
   input:
@@ -80,8 +81,8 @@ rule sample_plot:
     T("coverage.png")
   log:
     **(LFS("coverage.png"))
-  script:
-    "scripts/coveragePlot.py `basename {input}` {output} {input} 2>{log.E}"
+  shell:
+    "$SO_PIPELINE/coveragePlot.py {wildcards.oid} {output} {input} 2>{log.E}"
 
 rule clean_sample:
   shell:

@@ -8,16 +8,17 @@ rule trio:
 
 rule call_denovos:
   input:
-    DT("mdup.bam")
+    bams=DT("mdup.bam"),
+    idx =DT("mdup.bam.bai"),
+    ref = DT("chrAll.fa", dot="reference", level=3)
   output:
     T("denovo_calls.txt")
   params:
-    ref = PP("ref"),
     bed = PP("target")
   log:
     **(LFS("denovo_calls.txt"))
   shell:
-    "$SO_PIPELINE/call_denovo.py {input} {params.ref} {params.bed} {wildcards.oid} >{output} 2>{log.E}"
+    "$SO_PIPELINE/call_denovo.py {input.bams} {input.ref} {params.bed} {wildcards.oid} >{output} 2>{log.E}"
 
 
 rule clean_trio:

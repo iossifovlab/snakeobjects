@@ -1,6 +1,7 @@
 rule fastqSummary:
   input:
-    DT("obj.flag")
+    DT("obj.flag"),
+    DT("sample_cnt.txt")    
   output:
     touch(T("obj.flag"))
 
