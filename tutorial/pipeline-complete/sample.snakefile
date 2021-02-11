@@ -1,14 +1,8 @@
-rule sample:
-  input:
-    DT('obj.flag'),
-    T("ns.bam"),
-    T("fixmate.bam"),
-    T("cs.bam"),
-    T("mdup.bam"),
-    T("mdup.bam.bai"),
-    T("coverage.png")
-  output:
-    touch(T("obj.flag"))
+add_targets("ns.bam", \
+            "fixmate.bam", \
+            "cs.bam", \
+            "mdup.bam", "mdup.bam.bai", \
+            "coverage.png")
 
 rule merge:
   input:

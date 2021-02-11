@@ -1,9 +1,4 @@
-rule trioSummary:
-  input:
-    DT("obj.flag"),
-    T("denovo_calls.txt")
-  output:
-    touch(T("obj.flag"))
+add_targets('denovo_calls.txt')
 
 rule summary_denovos:
   input:

@@ -1,9 +1,4 @@
-rule fastqSummary:
-  input:
-    DT("obj.flag"),
-    DT("sample_cnt.txt")    
-  output:
-    touch(T("obj.flag"))
+add_targets("sample_cnt.txt")
 
 rule cnt:
   input:
@@ -13,7 +8,7 @@ rule cnt:
   log:
     **(LFS("sample_cnt.txt"))
   shell:
-    "$SO_PIPELINE/summary_cnt.py {input} >{output} 2>{log.E}"
+    "summary_cnt.py {input} >{output} 2>{log.E}"
 
 rule clean_fastqSummary:
   shell:

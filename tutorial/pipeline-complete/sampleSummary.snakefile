@@ -1,9 +1,4 @@
-rule sampleSummary:
-  input:
-    DT("obj.flag"),
-    T("coverage.png")
-  output:
-    touch(T("obj.flag"))
+add_targets("coverage.png")
 
 rule summary_plot:
   input:

@@ -8,5 +8,5 @@ target: "[C:data]/targetRegions.txt"
 fastqMap: "[C:data]/fastqs.txt"
 pedigree: "[C:data]/collection.ped"
 #default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/sge-nygc
-default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
+#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
 #default_snakemake_args: --profile /mnt/wigclust8/data/safe/iossifov/snakeprofiles/sge-wigclust

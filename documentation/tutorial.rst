@@ -52,7 +52,7 @@ variants and the judging the qaulity of the data by small steps. We will start
 with a simple pipeline that checks if the fastq files are valid and counts the
 number of pairs of reads for each fastq run. 
 
-Step 1.1
+Step 1.1. Create project and pipline directories
 --------
 
 First, let's crete a directory called pipeline where will create add the
@@ -68,8 +68,8 @@ Below, we assume that these directories are 'next to' each other, but this is
 not required by snakeobjects.  We will aslo assume that the input directory has
 been extracted next to the pipeline and project directory.
 
-Step 1.2
---------
+Step 1.2. Configure the projects
+--------------------------------
 
 Next, we will create a file called ``so_project.haml`` in the project directory
 with the following content:
@@ -132,10 +132,10 @@ and that the fastqdir and fastqsFile project properties point to the correct loc
     FC0A03F0C	L007	L	SM78901
     FC0B03F00	L001	L	SM78901
 
-Step 1.3
---------
+Step 1.3. Create the build_object_graph.py 
+------------------------------------------
 
-Now that have configured our first project, we will trun our attention to the 
+Now that have configured our first project, we will turn our attention to the 
 pipeline. So far the pipeline directory is empty. The first thing to do when 
 starting a pipeline is to create the ``build_object_graph.py`` script. In the 
 **Step 1** we will create a very simple graph that contains one object for each 
@@ -180,8 +180,8 @@ objects: ``R1`` and ``R2`` point to the fastq files for the first and for the
 second reads defined relative to the project's ``fastqDir`` parameter, and the 
 ``sampleId`` is assigned the value of the ``individual`` column.
 
-Step 1.4
---------
+Step 1.4. Prepare the projects 
+------------------------------
 
 Next we will create the object graph for our project. We do that by using the :option:`sobjects prepare` command
 from within the project directory. We can then flow with the :option:`sobjects describe` to see 
@@ -232,5 +232,45 @@ stored: the ``objects/fastq/FC0A03F09.L006.G`` directory will contain the target
 for the object of type ``fastq`` and object id ``FC0A03F09.L006.G``. Each of the 
 object directories has also a log subdirectory (i.e. ``objects/fastq/FC0A03F09.L006.G/log``) 
 where log files associated with the object will be stored (more about log files later). 
+
+In addition, the :option:`sobjects prepare` created one file, ``fastq.snakefile``, in 
+pipeline directory. This is not a typical behaviour: as a rule sobjects only updates
+the project directory (and to be more specific, only its ``objects`` subdirectory),
+but when we start a new pipeline it's handy to have placeholders for the object 
+type snakemake files place be created for us. The content if the new ``fastq.snakefile`` is
+very simple: 
+
+.. code-block::
+   
+    add_targets() 
+
+This simple one line accomplishes nothing but reminding us that next step would be to
+declare the targets to be created for objects of  type ``fastq``. There is one special
+target automatically added to every object file, and it is called ``T("obj.flag")``. It is
+created after all the other targets for the object are successfully created. Without 
+explicitly adding object type targets (as in the current state of the ``fastq.snakefile``), 
+the ``T("obj.flag")`` is the only target. We will keep this situation for now, and add 
+useful targets shortly.
+
+Step 1.5. Execute the dummy project 
+-----------------------------------
+
+Step 1.6. Add a usefull target 
+------------------------------
+
+Count number read pairs.
+
+Step 1.7. Crate a test project
+------------------------------
+
+Step 1.8. Re-run the project 
+----------------------------
+
+Note. If we had a cluster profile configured we can 
+used it!!!
+
+Step 1.9. Add a summary object 
+------------------------------
+
 
 

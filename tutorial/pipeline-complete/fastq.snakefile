@@ -1,17 +1,12 @@
-rule fastq:
-  input:
-    DT("obj.flag"),
-    T("sample.bam"),
-    T("sample_ns.bam"),
-    T("sample_cs.bam"),
-    T("sample_cs.bam.bai"),
-    T('sample_cnt.txt')
-  output:
-    touch(T("obj.flag"))
+add_targets("sample.bam", \
+            "sample_ns.bam", \
+            "sample_cs.bam", "sample_cs.bam.bai", \
+            "sample_cnt.txt")
 
 rule bwa_map:
   input:
-    DT("chrAll.fa"),
+    ref=DT("chrAll.fa"),
+    indexes=DT("obj.flag")
   output:
     T("sample.bam")
   log:
@@ -21,7 +16,7 @@ rule bwa_map:
     r2 = P('R2'),
     rg = P('rg')
   shell:
-    "bwa mem -R '{params.rg}' {input} {params.r1} {params.r2} 2> {log.E} | samtools view -Sb - > {output}"
+    "bwa mem -R '{params.rg}' {input.ref} {params.r1} {params.r2} 2> {log.E} | samtools view -Sb - > {output}"
 
 rule fastq_sort:
     input:

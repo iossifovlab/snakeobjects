@@ -1,0 +1,20 @@
+name: snakeobjectsTutorial
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - ipython
+  - setuptools
+  - pytest-cov
+  - sphinx
+  - conda-build
+  - anaconda-client
+  - snakemake-minimal>5.20
+  - sphinx_rtd_theme
+  - pandas
+  - matplotlib
+  - pysam 
+  - pip
+  - pip:
+    - sphinx-autorun

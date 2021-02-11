@@ -1,13 +1,10 @@
-rule reference:
-  input:
-    T("chrAll.fa.amb"),
-    T("chrAll.fa.ann"),
-    T("chrAll.fa.bwt"),
-    T("chrAll.fa.fai"),
-    T("chrAll.fa.pac"),
-    T("chrAll.fa.sa")
-  output:
-    touch(T("obj.flag"))
+add_targets("chrAll.fa.amb", \
+            "chrAll.fa.ann", \
+            "chrAll.fa.bwt", \
+            "chrAll.fa.fai", \
+            "chrAll.fa.pac", \
+            "chrAll.fa.sa", \
+            "chrAll.fa.fai")
 
 rule bwa_index:
   input:
