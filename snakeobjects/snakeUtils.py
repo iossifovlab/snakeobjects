@@ -3,11 +3,12 @@ Gosho
 """
 
 import traceback 
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 _targetPrefix = ""
 _OG = None
 _project = None
+_objectTypeTargets = defaultdict(list) 
 
 def _find_object_type():
     fss = reversed(traceback.extract_stack())
@@ -15,11 +16,23 @@ def _find_object_type():
         if fs.filename.endswith(".snakefile"):
             ot = fs.filename.split("/")[-1][:-len(".snakefile")] 
             return ot
+
    
 def set_project(project):
     global _OG,_project
     _project = project
     _OG = project.objectGraph
+
+def add_targets(*targets):
+    global _objectTypeTargets
+    _objectTypeTargets[_find_object_type()] += targets
+
+def get_targets(ot):
+    global _objectTypeTargets, _OG
+
+    def _GT(wc):
+        return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,"obj.flag") for d in _OG[ot,wc.oid].deps]
+    return [_GT] + ["%s%s/{oid}/%s" % (_targetPrefix,ot,t) for t in _objectTypeTargets[ot]] 
 
 def PP(p):
     """Value of the project parameter ``p``."""

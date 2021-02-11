@@ -161,7 +161,6 @@ def cli(args=None):
         if not "cluster" in pr_config: 
             ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
         cmd=pr_config["cluster"]
-        sargs += args[1:]
         # os.chdir(proj.directory + '/objects')
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=",proj.directory,sep="") 

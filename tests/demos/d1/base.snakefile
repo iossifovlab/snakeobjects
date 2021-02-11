@@ -1,3 +1,5 @@
+add_targets("a1.txt", "a2.txt", "b.txt")
+add_targets("t.txt" )
 
 rule build_a:
   output:
@@ -18,11 +20,6 @@ rule build_ab:
     "touch {output[1]}; "
     "touch {output[2]}; "
 
-rule base_obj:
-  input:
-    T("a1.txt"), T("a2.txt"), T("b.txt"), T("t.txt")
-  output:
-    touch(T("obj.flag"))
 
 
 

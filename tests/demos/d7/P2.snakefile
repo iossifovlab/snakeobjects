@@ -1,11 +1,4 @@
-rule P_obj:
-  input:
-    DT('obj.flag'),
-     T('a.txt'),
-     T('b.txt'),
-     T('c.txt')
-  output: 
-    touch(T('obj.flag'))
+add_targets("a.txt","b.txt","c.txt")
 
 rule P_a:
   input:

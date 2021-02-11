@@ -1,11 +1,19 @@
-Getting started
-===============
+.. _getting-started-label:
+
+***************
+Getting Started
+***************
+
+Installation
+============
+
+conda install -c iossifovlab -c bioconda -c conda-forge snakeobjects
 
 Minimal (empty) project and pipeline
-------------------------------------
+====================================
 
 Step 1
-^^^^^^
+------
 
 An empty directory is both a valid ``snakeobjects`` project and a valid
 ``snakeobjects`` pipeline directory.  We will use here such a minimal and
@@ -19,7 +27,7 @@ in it:
     $ cd /tmp/minimalSO
 
 Step 2
-^^^^^^
+------
 
 We can then use the :option:`sobjects describe` tool to get basic information about
 the proejct and the pipeline:
@@ -87,7 +95,8 @@ graph, no targets are created. The only change is that ``snakemake`` creates
 its own private directory in ``./objects/.snakemake``.
 
 ``hello world`` project
------------------------
+=======================
+
 Here will show how to create a project with only one object with object type ``hello`` and object id ``world``. 
 As above we will use the same directory for the project and for the pipeline:  
 
@@ -104,4 +113,5 @@ in the pipeline directory with the following content:
 
     def run(proj,OG):
         OG.add("hello","world")
+
 

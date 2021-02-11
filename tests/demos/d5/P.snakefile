@@ -1,3 +1,5 @@
+add_targets('assert.flag')
+
 rule P_b:
   input: 
     DT("a.txt")
@@ -64,21 +66,21 @@ rule mergedI:
     "cat {input} > {output}"
 
 
-rule P_obj:
+rule P_assert:
   input: 
     DT("obj.flag"),
     T('b.txt'),
     T('merged.txt')
   output:
-    touch(T("obj.flag"))
+    touch(T("assert.flag"))
   resources: 
     mem_mb=500
   run:
     correct = {
-    "P/1/obj.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],
-    "P/2/obj.flag": ["B/o/obj.flag", "P/2/b.txt", "P/2/merged.txt"],
-    "P/3/obj.flag": ["B/o/obj.flag", "P/3/b.txt", "P/3/merged.txt"],
-    "P/4/obj.flag": ["B/o/obj.flag", "P/4/b.txt", "P/4/merged.txt"]
+    "P/1/assert.flag": ["B/o/obj.flag", "P/1/b.txt", "P/1/merged.txt"],
+    "P/2/assert.flag": ["B/o/obj.flag", "P/2/b.txt", "P/2/merged.txt"],
+    "P/3/assert.flag": ["B/o/obj.flag", "P/3/b.txt", "P/3/merged.txt"],
+    "P/4/assert.flag": ["B/o/obj.flag", "P/4/b.txt", "P/4/merged.txt"]
     }
     assert output[0] in correct
     assert input == correct[output[0]]

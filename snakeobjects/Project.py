@@ -168,11 +168,7 @@ class Project:
         sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
         if not os.path.exists(sfile): 
             with open(sfile, 'w') as f:
-                f.write(f'rule {ot}:\n')
-                f.write(f'  input:\n')
-                f.write(f'    DT("obj.flag")\n') 
-                f.write(f'  output:\n') 
-                f.write(f'    touch(T("obj.flag"))\n\n')
+                f.write(f'add_targets()\n')
         return sfile
         
     def write_main_snakefile(self):
@@ -187,9 +183,14 @@ class Project:
                 sfile = self.ensure_object_type_snakefile_exists(ot) 
 
                 f.write(f'include: "{sfile}"\n')
+
                 f.write(f'rule all_{ot}:\n')
                 f.write(f'  input:\n')
                 f.write(f'    expand("{{of}}", of=project.get_all_object_flags("{ot}"))\n\n')
+
+                f.write(f'rule {ot}_obj:\n')
+                f.write(f'  input: get_targets("{ot}")\n')
+                f.write(f'  output: touch("{ot}/{{oid}}/obj.flag")\n\n') 
 
     def get_object_flag(self,o):
         return f'{o.oType}/{o.oId}/obj.flag'
