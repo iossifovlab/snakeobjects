@@ -163,7 +163,7 @@ project and may include:
   based on the project directory);
 * parameters pointing to the input that will be used by the project; 
 * parameters pointing to the meta-data describing the projects input; 
-* a ``default_snakemake_params`` parameter that specifies the command line 
+* a ``default_snakemake_args`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
   :option:`sobjects run`. 
 
