@@ -17,9 +17,10 @@ community of the ``snakemake`` users.
 .. toctree::
     :maxdepth: 1
 
-    installation 
-    introduction 
     gettingStarted
+    documentation 
+    tutorial 
+    specialTopics 
     terms
     sobjects
     snakemakeExt
