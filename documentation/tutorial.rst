@@ -53,7 +53,7 @@ with a simple pipeline that checks if the fastq files are valid and counts the
 number of pairs of reads for each fastq run. 
 
 Step 1.1. Create project and pipline directories
---------
+------------------------------------------------
 
 First, let's crete a directory called pipeline where will create add the
 pipeline's componenets and a directory called project where will store the
