@@ -1,3 +1,4 @@
+add_targets('assert.flag')
 
 rule build_a:
   output:
@@ -29,15 +30,15 @@ rule build_ab:
     shell("touch {output[0]}")
     shell("touch {output[1]}")
 
-rule base_obj:
+rule base_assert:
   input:
     T("a.txt"), T("b.txt"), T("t.txt")
   output:
-    touch(T("obj.flag"))
+    touch(T("assert.flag"))
   resources: 
     mem_mb=500
   run:
     assert input[0]  == "B/o/a.txt"
     assert input[1]  == "B/o/b.txt"
     assert input[2]  == "B/o/t.txt"
-    assert output[0] == "B/o/obj.flag"
+    assert output[0] == "B/o/assert.flag"

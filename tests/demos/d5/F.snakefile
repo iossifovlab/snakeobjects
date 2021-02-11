@@ -1,3 +1,5 @@
+add_targets('assert.flag')
+
 rule F_b:
   input:
     DT('b.txt', level=2, mode='lessOrEqual')
@@ -23,20 +25,20 @@ rule F_b:
     shell("echo {input} > {output}")
 
 
-rule F_obj:
+rule F_assert:
   input:
     DT('obj.flag'),
      T('b.txt')
   output: 
-    touch(T('obj.flag'))
+    touch(T('assert.flag'))
   params:
     state = P('state')
   resources: 
     mem_mb=500
   run:
     correct = {
-        "F/1/obj.flag": ["happy", "P/1/obj.flag", "P/2/obj.flag", "F/1/b.txt"],
-        "F/2/obj.flag": ["  sad", "P/3/obj.flag", "P/4/obj.flag", "F/2/b.txt"]
+        "F/1/assert.flag": ["happy", "P/1/obj.flag", "P/2/obj.flag", "F/1/b.txt"],
+        "F/2/assert.flag": ["  sad", "P/3/obj.flag", "P/4/obj.flag", "F/2/b.txt"]
     }
     assert output[0] in correct
     assert params.state == correct[output[0]][0]

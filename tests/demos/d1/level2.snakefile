@@ -1,3 +1,5 @@
+add_targets('allB.txt', 'merged.txt')
+
 rule l2_allB:
   input:
     DT('B2.txt',"level1"),
@@ -39,15 +41,5 @@ rule mergedI:
     T('merged.txt')
   shell:
     "cat {input} > {output}"
-
-
-rule level2_obj:
-  input: 
-    DT("obj.flag"),
-    T('allB.txt'),
-    T('merged.txt')
-  output:
-    touch(T("obj.flag"))
-
 
 
