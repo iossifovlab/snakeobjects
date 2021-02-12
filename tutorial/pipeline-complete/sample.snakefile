@@ -76,7 +76,7 @@ rule sample_plot:
   log:
     **(LFS("coverage.png"))
   shell:
-    "$SO_PIPELINE/coveragePlot.py {wildcards.oid} {output} {input} 2>{log.E}"
+    "coveragePlot.py {wildcards.oid} {output} {input} 2>{log.E}"
 
 rule clean_sample:
   shell:
