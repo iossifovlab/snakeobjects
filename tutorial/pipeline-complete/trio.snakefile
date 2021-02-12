@@ -12,7 +12,7 @@ rule call_denovos:
   log:
     **(LFS("denovo_calls.txt"))
   shell:
-    "$SO_PIPELINE/call_denovo.py {input.bams} {input.ref} {params.bed} {wildcards.oid} >{output} 2>{log.E}"
+    "call_denovo.py {input.bams} {input.ref} {params.bed} {wildcards.oid} >{output} 2>{log.E}"
 
 
 rule clean_trio:
