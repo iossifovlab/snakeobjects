@@ -38,7 +38,7 @@ def run(proj, OG):
     # creating the trio objects
     for i, r in ped.iterrows():
         if r['fatherId'] == '.' or r['motherId'] == '.': continue
-        OG.add('trio',r['personId'], { }, [
+        OG.add('trio',r['familyId'], { }, [
                     OG['sample',r['fatherId']], 
                     OG['sample',r['motherId']], 
                     OG['sample',r['personId']] 

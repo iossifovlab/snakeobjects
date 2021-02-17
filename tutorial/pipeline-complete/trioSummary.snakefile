@@ -1,10 +1,19 @@
-add_targets('denovo_calls.txt')
+add_targets('denovo_calls.vcf',"denovo_annotated.vcf")
 
 rule summary_denovos:
   input:
-    DT("denovo_calls.txt")
+    DT("denovo_calls.vcf")
   output:
-    T("denovo_calls.txt")
+    T("denovo_calls.vcf")
   shell:
-    " head -1 {input[0]} >{output} && for n in {input}; do (tail -n +2 $n) done |sort -n -k3 >> {output} "
+    " head -5 {input[0]} >{output} && for n in {input}; do (tail -n +6 $n) done |sort -n -k3 >> {output} "
 
+rule annotate_denovos:
+  input:
+    T("denovo_calls.vcf")
+  output:
+    T("denovo_annotated.vcf")
+  log:
+    **(LFS("denovo_annotated.vcf"))
+  shell:
+    " annotate.py {input} >{output}"

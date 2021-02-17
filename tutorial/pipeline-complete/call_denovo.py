@@ -11,21 +11,23 @@ class GT:
         pass
 
 def genotype(gr):
-    print(vars(gr), file=sys.stderr)
+    #print(vars(gr), file=sys.stderr)
     denovo = 0
     for cnt in gr.C:
-        if cnt[0] == 0 and cnt[1] == 0 and cnt[2] >5:
+        if cnt[0] == 0 and cnt[1] == 0 and cnt[2] >0:
                 denovo += 1
     if denovo:
-        print ('\t'.join([gr.famId, 
-                          gr.chrom, 
-                          str(gr.position),
+        print ('\t'.join([gr.chrom, 
+                          str(gr.position+1),
+                          gr.famId, 
                           gr.refA, 
-                          gr.altA, 
-                          '/'.join([' '.join([str(x) for x in y]) 
+                          gr.altA,
+                          '',
+                          '',
+                          'CNT='+'/'.join([' '.join([str(x) for x in y]) 
                                     for y in gr.C])]))
 
-def walk(P, minMaxCnt, famId):
+def walk(P, famId):
     n = 0
     chrom = None
 
@@ -104,23 +106,38 @@ def walk(P, minMaxCnt, famId):
     P.close()
 
 def main():
-    if len(sys.argv) <7:
-        print("Usage: variantCaller.py <dad.bam mom.bam child.bam ref.fa bed file famId>")
-        exit(1)
+        if len(sys.argv) <7:
+                print("Usage: variantCaller.py <dad.bam mom.bam child.bam ref.fa bed file famId>")
+                exit(1)
               
-    global P
-    files = []
-    files = sys.argv[1:4]
-    refF  = sys.argv[4]
-    bedFn = sys.argv[5]
-    famId = sys.argv[6]
+        global P
+        files = []
+        files = sys.argv[1:4]
+        refF  = sys.argv[4]
+        bedFn = sys.argv[5]
+        famId = sys.argv[6]
+        
+        contigs = []
+        
+        with open(refF + '.fai') as f:
+                for l in f:
+                        cs = l.strip("\n\r").split("\t")
+                        contigs.append(cs[:2])
 
-    print('\t'.join('familyId chrom position refBase altBase baseCnts'.split(' ')))
-    with open(bedFn, 'r') as f:
-        for l in f:
-            ch, st, en = l.strip().split('\t')
-            P = PU(files, ch, int(st), int(en), refF, 30, 20)
-            walk(P, 5, famId)
+        print("##fileformat=VCF4.2")
+        from datetime import date
+        today = date.today()
+        print("##filedate="+str(today.year) + str(today.month) + str(today.day))
+        print("##reference=GRCh38/hg38")
+        for l in contigs:
+                print("##contig=<ID="+l[0]+",length="+l[1]+">")
+                print("\t".join("#CHROM POS ID REF ALT QUAL FILTER INFO".split(" ")))
+
+        with open(bedFn, 'r') as f:
+                for l in f:
+                        ch, st, en = l.strip().split('\t')
+                        P = PU(files, ch, int(st), int(en), refF, 30, 20)
+                        walk(P, famId)
 
 if __name__ == "__main__":
 	main()

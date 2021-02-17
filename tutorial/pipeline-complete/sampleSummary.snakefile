@@ -8,4 +8,4 @@ rule summary_plot:
   log:
     **(LFS("coverage.png"))
   shell:
-    "$SO_PIPELINE/coveragePlot.py 'Sample Summary Plot' {output} {input} 2>{log.E}"
+    "coveragePlot.py 'Sample Summary Plot' {output} {input} 2>{log.E}"
