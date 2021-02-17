@@ -1,0 +1,5 @@
+so_pipeline: "[P:projectDir]/../pipeline"
+data: "[P:projectDir]/../data"
+ref:  "[C:data]/genome.fa"
+samplesDir: "[C:data]/samples"
+
