@@ -6,7 +6,7 @@ project = Project()
 
 set_project(project)
 
-rule all_main:
+rule so_all_targets:
   input:
     expand("{of}", of=project.get_all_object_flags())
 

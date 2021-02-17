@@ -1,4 +1,4 @@
-so_pipeline: "[P:projectDir]/../pipeline-step-1"
+so_pipeline: "[P:projectDir]/../pipeline-step-1.3"
 
 inputDir: "[P:projectDir]/../input"
 fastqDir: "[C:inputDir]/fastq"

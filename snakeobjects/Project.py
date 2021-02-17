@@ -184,11 +184,11 @@ class Project:
 
                 f.write(f'include: "{sfile}"\n')
 
-                f.write(f'rule all_{ot}:\n')
+                f.write(f'rule so_all_{ot}:\n')
                 f.write(f'  input:\n')
                 f.write(f'    expand("{{of}}", of=project.get_all_object_flags("{ot}"))\n\n')
 
-                f.write(f'rule {ot}_obj:\n')
+                f.write(f'rule so_{ot}_obj:\n')
                 f.write(f'  input: get_targets("{ot}")\n')
                 f.write(f'  output: touch("{ot}/{{oid}}/obj.flag")\n\n') 
 
