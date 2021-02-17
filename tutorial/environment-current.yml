@@ -4,6 +4,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - snpeff
   - ipython
   - setuptools
   - pytest-cov
@@ -18,3 +19,4 @@ dependencies:
   - pip
   - pip:
     - sphinx-autorun
+    - myvariant
