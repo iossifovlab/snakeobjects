@@ -21,7 +21,7 @@ class PU:
         pu.a = [pysam.AlignmentFile(x, mode='rc',reference_filename=refF) for x in files]
 
         if chrom:
-            print("chrom, start, stop", chrom, start, stop, file=sys.stderr)
+            #print("chrom, start, stop", chrom, start, stop, file=sys.stderr)
             pu.pu = [x.pileup(chrom, start, stop,
                               stepper='samtools',
                               truncate = True,
@@ -33,7 +33,7 @@ class PU:
                      for x in pu.a] 
 
         else:
-            print("no contig, no region", file=sys.stderr)
+            #print("no contig, no region", file=sys.stderr)
             pu.pu = [x.pileup(stepper='samtools',
                               truncate = True,
                               min_mapping_quality=minMapQ, 
