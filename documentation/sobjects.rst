@@ -54,3 +54,8 @@ The available commands are described below:
 
     $ sobjects help submit 
 
+.. option:: graph
+.. runblock:: console
+
+    $ sobjects help graph
+
