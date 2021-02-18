@@ -5,6 +5,17 @@ Special topics
 Wokring with clusters
 =====================
 
+``Snakeobjects`` provides transparent access to different cluster architectures such as ``slurm``, ``sge``, and others. This is accomplished by placing cluster profile path into ``so_project.yaml`` file with the name ``default_snakemake_args`` as in this example:
+
+.. code-block::
+
+   default_snakemake_args: --profile <path to profile folder>
+
+Profile folder should contain file ``config.yaml`` with directives specific to cluster architecture. For more information on profiles see https://github.com/snakemake-profiles/doc.
+Access to profile is accomplished by command ``submit`` ( :option:`sobjects submit` ).
+
+
+
 TODO
 
 Multi-part targets
