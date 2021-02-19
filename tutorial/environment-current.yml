@@ -4,8 +4,10 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - snpeff
   - ipython
+  - bcftools=1.3.1
+  - bwa=0.7.12
+  - graphviz=2.38.0
   - setuptools
   - pytest-cov
   - sphinx
@@ -15,6 +17,7 @@ dependencies:
   - sphinx_rtd_theme
   - pandas
   - matplotlib
+  - samtools
   - pysam 
   - pip
   - pip:
