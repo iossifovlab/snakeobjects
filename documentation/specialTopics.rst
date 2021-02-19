@@ -49,7 +49,8 @@ Sometimes target computing time exceeds several hours or even days. This negativ
       shell: 
         "merge_parts.sh {input} > {output}"
 
-Explanation.
+Here initialize.sh, process_part.sh, and merge_parts.sh are appropriate commands user should provide for his/her application. They are not restricted to shell codes, but can be python scripts or other executables. More specific simple examples are presented in demos/d5 and demos/d8.
+The important element in this implementation is function :py:func:`.TE`.
 
 TODO
 
