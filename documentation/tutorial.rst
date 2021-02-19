@@ -331,18 +331,18 @@ Step 1.6. Add a usefull target
 ------------------------------
 
 Next, we will add an explicit target that does something useful: we will create a target
-called ``readNumber.txt`` for objects of type ``fastq`` that will store the number of paired reads
+called ``pairNumber.txt`` for objects of type ``fastq`` that will store the number of paired reads
 in the fastq object. This is achieved by replacing the auto-generated one line in the pipeline's 
 ``fastq.snakemake`` with the following:
 
 .. code-block:: 
     :linenos:
 
-    add_targets("readNumber.txt")
+    add_targets("pairNumber.txt")
 
     rule countReads:
         input: P('R1'), P('R2')
-        output: T("readNumber.txt")
+        output: T("pairNumber.txt")
         run:
             import gzip
 
@@ -362,11 +362,11 @@ in the fastq object. This is achieved by replacing the auto-generated one line i
 
 The first line declares that objects of type ``fastq`` (the object type is
 implied by the name of the snakemake file ``fastq.snakemake``) will have a
-target named ``readNumber.txt``.
+target named ``pairNumber.txt``.
 
 Next is a ``snakemake`` rule we have called ``countReads`` that describes how
 such target is to be created: the output clause on line 5 shows that this rule
-will generate the ``T("readNumber.txt")`` target.  As input (line 4), the rule
+will generate the ``T("pairNumber.txt")`` target.  As input (line 4), the rule
 will use the two files pointed by the fastq object's parameters called ``R1``
 and ``R2``.  To obtain the value of ``R1`` and ``R2`` parameters for the object
 the rule operates on the rule uses the extension function :py:func:`.P`. As a
@@ -386,8 +386,8 @@ The python snipped uses the ``input`` and ``output`` objects provided by
 ``snakemake``'s object called ``wildcards`` object to access the object id
 (``oid``) for the object the rule operates on. (For the readers that are
 familiar with ``snakemake``, the ``oid`` can be explained by the fact that the
-``output: T("readNumber.txt")`` is equivalent to ``output:
-fastq/{oid}/readNumber.txt``.)
+``output: T("pairNumber.txt")`` is equivalent to ``output:
+fastq/{oid}/pairNumber.txt``.)
 
 The actual implementation is fairly trivial assuming one knows a bit about the
 way pair-end sequencing results are represented in the fastq files. Briefly, in
@@ -405,9 +405,89 @@ line, sequence line, separator line, base-quality line).
 Step 1.7. Crate a test project
 ------------------------------
 
-cp -r project projectTest
-cd projectTest
-head ../input/fastqs.txt  > fastqs-small.txt
+We just improved our pipleine to do something usefull. In a large project usefull 
+tasks usually take a lot of computational resoruces and a lot or time. To be 
+able to easily test if the updated pipeline works well it is a good idea to 
+have a small test project configured to operate on a small subset of the input data.
+Here we will do just that. Even though the complete tutorial input data is small 
+enough that it can be processed on a single processor for less than a minute,
+this is a useful demonstration of how easy it is to maintain and operate on 
+multiple projects with the same ``snakeobjects`` pipeline. 
+
+We can create the new projectTest with the following simple commands:
+
+.. code-block:: bash
+
+    $ mkdir projectTest
+    $ cd projectTest
+    $ cp ../project/so_project.yaml
+    $ head -10 ../input/fastqs.txt  > fastqs-small.txt
+
+and replace line 5 in ``projectTest/so_project.yaml`` file
+that configures the ``fastqsFile`` project parameter to
+point to the ``fastqs-small.txt`` file containing a description of 9 fastq runs
+instead of the complete ``fastqs.txt`` file with 384 fastq runs:
+
+.. code-block::
+    :linenos:
+    :emphasize-lines: 5
+
+    so_pipeline: "[P:projectDir]/../pipeline"
+
+    inputDir: "[P:projectDir]/../input"
+    fastqDir: "[C:inputDir]/fastq"
+    fastqsFile: "[P:projectDir]/fastqs-small.txt"
+
+With the ``projectTest`` configured, we can then *prepare* and *run* the projects:
+
+.. code-block:: bash
+
+    $ sobjects run -j -q
+    # WORKING ON PROJECT /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
+    # WITH PIPELINE /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
+
+    $ sobjects run -j -q
+    # WORKING ON PROJECT /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
+    # WITH PIPELINE /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
+    UPDATING ENVIRONMENT:
+    export SO_PROJECT=/Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
+    export SO_PIPELINE=/Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
+    export PATH=$SO_PIPELINE:$PATH
+    RUNNING: snakemake -s /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest/objects/.snakeobjects/main.snakefile -d /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest/objects -j -q
+    Job counts:
+        count	jobs
+        9	countReads
+        1	so_all_targets
+        9	so_fastq_obj
+        19
+    ...
+
+The run finishes almost instantaneously and as a results we can find the pairNumber.txt files 
+for each of the 9 fastq objects created for the projectTest:
+
+.. code-block:: bash
+
+    $ cat objects/fastq/*/pairNumber.txt 
+    FC0A03F0C.L007.J	2038
+    FC0A03F0C.L007.K	1994
+    FC0A03F0C.L007.L	2086
+    FC0A03F0F.L004.J	2238
+    FC0A03F0F.L004.K	2212
+    FC0A03F0F.L004.L	2278
+    FC0B03F00.L001.J	214
+    FC0B03F00.L001.K	245
+    FC0B03F00.L001.L	223
+
+We can now spot check to see if the reported number of reads is correct. For example: 
+
+.. code-block:: bash
+
+    $ cat ../input/fastq/FC0A03F0C/L007/bcJ_R1.fastq.gz  | gunzip -c | wc -l
+    8152
+
+Read 1 file for the fastq run ``FC0A03F0C.L007.J`` contains 8152 lines which is equal to 4 times 
+the number of pairs (2038) reported in the corresponding pairNumber.txt file. This is exactly what is 
+expected: as described above, sequencing reads are represented in 4 lines in the fastq files. 
 
 Step 1.8. Re-run the project 
 ----------------------------

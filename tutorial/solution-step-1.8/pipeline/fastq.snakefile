@@ -1,8 +1,8 @@
-add_targets("readNumber.txt")
+add_targets("pairNumber.txt")
 
 rule countReads:
     input: P('R1'), P('R2')
-    output: T("readNumber.txt")
+    output: T("pairNumber.txt")
     run:
         import gzip
 
