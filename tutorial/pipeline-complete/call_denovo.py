@@ -22,8 +22,8 @@ def genotype(gr):
                           gr.famId, 
                           gr.refA, 
                           gr.altA,
-                          '',
-                          '',
+                          '.',
+                          '.',
                           'CNT='+'/'.join([' '.join([str(x) for x in y]) 
                                     for y in gr.C])]))
 
