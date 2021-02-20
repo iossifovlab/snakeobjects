@@ -23,9 +23,9 @@ the snakeobjects.  A commands like ``conda install pandas`` and ``conda install
 matplotlib`` whould be sufficient.
 
 The contents of the directory we were given can be downloaded from
-:download:`snakeobjects_tutorial_input.tgz
-<./snakeobjects_tutorial_input.tgz>`. When you download and extract this file
-(on linux and Mac that is done by ``tar xzf snakeobjects_tutorial_input.tgz``)
+:download:`snakeobjectsTutorial.tgz
+<./snakeobjectsTutorial.tgz>`. When you download and extract this file
+(on linux and Mac that is done by ``tar xzf snakeobjectsTutorial.tgz``)
 you will get a directory called ``input``. Inside you find a shorted
 ``README.txt`` file describing the contents. 
 
@@ -442,7 +442,7 @@ With the ``projectTest`` configured, we can then *prepare* and *run* the project
 
 .. code-block:: bash
 
-    $ sobjects run -j -q
+    $ sobjects prepare 
     # WORKING ON PROJECT /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
     # WITH PIPELINE /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
 
@@ -492,8 +492,7 @@ expected: as described above, sequencing reads are represented in 4 lines in the
 Step 1.8. Re-run the project 
 ----------------------------
 
-Note. If we had a cluster profile configured we can 
-used it!!!
+Now that have verified that updated pipline seems to work, it is time to 
 
 Step 1.9. Add a summary object 
 ------------------------------
