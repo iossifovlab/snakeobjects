@@ -111,7 +111,7 @@ def LFS(t):
     A set of three log files, logO, logE, and logT, named after target ``t`` to be used in a rule. 
 
     This function is expected to be used in the ``log`` section of the snamemake rules 
-    like ``log: **EFS('bamFile'))``. After that, the rule can use one or more of ``{log.O}``, ``{log.E}``, and 
+    like ``log: **LFS('bamFile'))``. After that, the rule can use one or more of ``{log.O}``, ``{log.E}``, and 
     ``{log.T}`` for storing standard output, standard error, or timing information respectivelly. 
     """
     a = _targetPrefix + _find_object_type() + "/{oid}/log/" + t 

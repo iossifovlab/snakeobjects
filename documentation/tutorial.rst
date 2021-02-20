@@ -492,10 +492,31 @@ expected: as described above, sequencing reads are represented in 4 lines in the
 Step 1.8. Re-run the project 
 ----------------------------
 
-Now that have verified that updated pipline seems to work, it is time to 
+Now that have verified that updated pipline seems to work, it is time to count the pair numbers
+for the complete project. 
 
 Step 1.9. Add a summary object 
 ------------------------------
 
 draw a graph??
+
+
+Step 2. Alignment and target coverage by sample 
+===============================================
+
+Step 2.1. Refernce genome indexing
+----------------------------------
+
+Step 2.2. Alignment of fastq 
+----------------------------
+
+Step 2.3. Merging alignments by individual 
+------------------------------------------
+
+Step 2.4. Target coverage by sample and globally 
+------------------------------------------------
+
+
+Step 3. Calling de novo variants
+================================
 
