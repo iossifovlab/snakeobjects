@@ -30,4 +30,5 @@ deploy: html
 	rsync -avPHt -e "ssh -p 2022" _build/html lubo@iossifovlab.com:sites/snakeobjects/
 
 clean:
-	rm -r _build
+	rm -rf _build
+	rm -rf snakeobjectsTutorial.tgz
