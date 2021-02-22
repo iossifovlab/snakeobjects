@@ -19,7 +19,7 @@ setup(
         "snakeobjects": ["jobscript.sh","header.snakefile"],
     },
     include_package_data=True,
-    scripts = ['bin/run_snake.sh','bin/submit_snake.sh'], 
+    scripts = [],
     entry_points={
         'console_scripts': [
             'sobjects=snakeobjects.cli:cli'
