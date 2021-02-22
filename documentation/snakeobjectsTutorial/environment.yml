@@ -8,3 +8,4 @@ dependencies:
   - snakeobjects
   - pandas
   - matplotlib
+  - graphviz
