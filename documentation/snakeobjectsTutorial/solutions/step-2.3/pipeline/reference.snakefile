@@ -1,6 +1,6 @@
 add_targets("chrAll.bwaIndex.flag")
 
-rule make_bwa_index:
+rule makeBwaIndex:
     input: T("chrAll.fa")
     output:
          T("chrAll.bwaIndex.flag"),

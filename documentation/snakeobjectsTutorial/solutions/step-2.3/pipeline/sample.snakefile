@@ -7,7 +7,7 @@ rule merge:
     log: **LFS('merge')
     shell: "(time samtools merge -n {output} {input} > {log.O} 2> {log.E} ) 2> {log.T}"
 
-rule reorganized_bam:
+rule reorganizedBam:
     input: T("raw.bam"), DT("chrAll.fa",level=2)
     output: T("sample.bam"), T("markDupStats.txt")
     conda: "env-bwa.yaml"
@@ -20,7 +20,7 @@ rule reorganized_bam:
         ) 2> {log.T}
     '''
 
-rule sample_idx:
+rule indexBam:
     input: T("sample.bam")
     output: T("sample.bam.bai")
     conda: "env-bwa.yaml"
