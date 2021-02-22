@@ -5,6 +5,7 @@ rule callDenovos:
     bams=DT("sample.bam"),
     idx=DT("sample.bam.bai")
   output: T("denovo_calls.txt")
+  conda: "env-bwa.yaml"
   params:
     bed = PP("target")
   log: **LFS("denovo_calls.vcf")

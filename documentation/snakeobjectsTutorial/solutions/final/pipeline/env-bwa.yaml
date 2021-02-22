@@ -3,3 +3,6 @@ channels:
 dependencies:
   - samtools 
   - bwakit
+  - pysam
+  - numpy
+  - pandas
