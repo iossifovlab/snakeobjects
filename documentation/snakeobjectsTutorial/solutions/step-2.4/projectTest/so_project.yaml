@@ -1,0 +1,8 @@
+so_pipeline: "[P:projectDir]/../pipeline"
+default_snakemake_args: "--use-conda"
+
+inputDir: "[P:projectDir]/../input"
+fastqDir: "[C:inputDir]/fastq"
+fastqsFile: "[P:projectDir]/fastqs-small.txt"
+chrAllFile: "[C:inputDir]/chrAll.fa"
+target: "[C:inputDir]/targetRegions.bed"
