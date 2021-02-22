@@ -9,6 +9,8 @@ rule call_denovos:
     T("denovo_calls.vcf")
   params:
     bed = PP("target")
+  conda:
+    "envs/trio.yaml"
   log:
     **(LFS("denovo_calls.vcf"))
   shell:

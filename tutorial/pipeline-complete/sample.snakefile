@@ -9,6 +9,8 @@ rule merge:
     DT("sample_ns.bam")
   output:
     T("ns.bam")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("ns.bam"))
   shell:
@@ -21,6 +23,8 @@ rule fixmate:
     T("fixmate.bam")
   params:
     ref=PP("ref")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("fixmate.bam"))
   shell:
@@ -31,6 +35,8 @@ rule sample_cs:
     T("fixmate.bam")
   output:
     T("cs.bam")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("cs.bam"))
   shell:
@@ -43,6 +49,8 @@ rule markdup:
     T("mdup.bam")
   params:
     ref = PP("ref")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("mdup.bam"))
   shell:
@@ -53,6 +61,8 @@ rule sample_idx:
     T("mdup.bam")
   output:
     T("mdup.bam.bai")
+  conda:
+    "envs/bwa.yaml"
   shell:
     "samtools index -b {input} {output}"
 
@@ -62,6 +72,8 @@ rule depth:
     idx=T("mdup.bam.bai")    
   output:
     T("depth.txt")
+  conda:
+    "envs/bwa.yaml"
   params:
     target=PP("target"),
     ref = PP("ref")

@@ -9,6 +9,8 @@ rule bwa_map:
     indexes=DT("obj.flag")
   output:
     T("sample.bam")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS('sample.bam'))
   params:
@@ -19,30 +21,36 @@ rule bwa_map:
     "bwa mem -R '{params.rg}' {input.ref} {params.r1} {params.r2} 2> {log.E} | samtools view -Sb - > {output}"
 
 rule fastq_sort:
-    input:
-        T("sample.bam")
-    output:
-        T("sample_ns.bam")
-    shell:
+  input:
+    T("sample.bam")
+  output:
+    T("sample_ns.bam")
+  conda:
+    "envs/bwa.yaml"
+  shell:
         "samtools sort -n -T {input} -O bam {input} > {output}"
 
 rule fastq_cs:
   input:
-    T("sample_ns.bam")
+      T("sample_ns.bam")
   output:
     T("sample_cs.bam")
   log:
     **(LFS("sample_cs.bam"))
+  conda:
+    "envs/bwa.yaml"
   shell:
     "samtools sort -T {input} -O bam {input} > {output} 2>{log.E}"
 
 rule fastq_idx:
-    input:
-        T("sample_cs.bam")
-    output:
-        T("sample_cs.bam.bai")
-    shell:
-        "samtools index -b {input} {output}"
+  input:
+    T("sample_cs.bam")
+  output:
+    T("sample_cs.bam.bai")
+  conda:
+    "envs/bwa.yaml"
+  shell:
+    "samtools index -b {input} {output}"
 
 rule read_cnt:
   input:
@@ -53,6 +61,8 @@ rule read_cnt:
   params:
     regions=PP("target"),
     ref = PP("ref")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("sample_cnt.txt"))
   shell:

@@ -15,6 +15,8 @@ rule bwa_index:
     T("chrAll.fa.bwt"),
     T("chrAll.fa.pac"),
     T("chrAll.fa.sa")
+  conda:
+    "envs/bwa.yaml"
   log:
     **(LFS("chrAll.fa.amb"))
   shell:
@@ -25,6 +27,8 @@ rule reference_index:
     T("chrAll.fa")
   output:
     T("chrAll.fa.fai")
+  conda:
+    "envs/bwa.yaml"
   shell:
     "samtools faidx {input}"
 

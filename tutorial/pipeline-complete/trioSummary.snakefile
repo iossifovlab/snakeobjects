@@ -13,6 +13,8 @@ rule annotate_denovos:
     T("denovo_calls.vcf")
   output:
     T("denovo_annotated.vcf")
+  conda:
+    "envs/summary.yaml"
   log:
     **(LFS("denovo_annotated.vcf"))
   shell:
