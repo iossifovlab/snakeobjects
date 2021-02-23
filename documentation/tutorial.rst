@@ -123,15 +123,16 @@ and that the fastqdir and fastqsFile project properties point to the correct loc
 
     $ head /home/iossifov/work/snakeobjects/tutorial/project/../input/fastqs.txt
     flowcell	lane	barcode	individual
-    FC0A03F0F	L004	J	SM07279
-    FC0A03F0F	L004	K	SM04710
-    FC0A03F0F	L004	L	SM63089
-    FC0A03F0C	L007	J	SM18469
-    FC0B03F00	L001	J	SM18469
-    FC0A03F0C	L007	K	SM64466
-    FC0B03F00	L001	K	SM64466
-    FC0A03F0C	L007	L	SM78901
-    FC0B03F00	L001	L	SM78901
+    FC0A03F09	L006	D	SM90370
+    FC0B03F03	L001	D	SM90370
+    FC0A03F09	L006	E	SM03231
+    FC0B03F03	L001	E	SM03231
+    FC0A03F09	L006	F	SM79279
+    FC0B03F03	L001	F	SM79279
+    FC0A03F0C	L007	D	SM14701
+    FC0B03F00	L008	D	SM14701
+    FC0C03F00	L004	D	SM14701
+
 
 Step 1.3. Create the build_object_graph.py 
 ------------------------------------------
@@ -421,7 +422,7 @@ We can create the new projectTest with the following simple commands:
     $ mkdir projectTest
     $ cd projectTest
     $ cp ../project/so_project.yaml
-    $ head -10 ../input/fastqs.txt  > fastqs-small.txt
+    $ head -16 ../input/fastqs.txt  > fastqs-small.txt
 
 and replace line 5 in ``projectTest/so_project.yaml`` file
 that configures the ``fastqsFile`` project parameter to

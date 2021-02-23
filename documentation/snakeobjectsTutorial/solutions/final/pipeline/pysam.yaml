@@ -1,6 +1,6 @@
 channels:
   - bioconda
 dependencies:
-  - samtools 
-  - bwakit
-
+  - pysam
+  - numpy
+  - pandas
