@@ -430,24 +430,23 @@ With the ``projectTest`` configured, we can then *prepare* and *run* the project
 
 .. code-block:: bash
 
-    $ sobjects prepare 
-    # WORKING ON PROJECT /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
-    # WITH PIPELINE /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
-
-    $ sobjects run -j -q
-    # WORKING ON PROJECT /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
-    # WITH PIPELINE /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
+    # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
+    # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j -q
+    # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
+    # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
-    export SO_PROJECT=/Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest
-    export SO_PIPELINE=/Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/pipeline
+    export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
+    export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest/objects/.snakeobjects/main.snakefile -d /Users/iiossifov/work/snakeobjects/tutorial/solution-step-1.8/projectTest/objects -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/projectTest/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/projectTest/objects -j -q
     Job counts:
         count	jobs
-        9	countReads
+        15	countReads
         1	so_all_targets
-        9	so_fastq_obj
-        19
+        15	so_fastq_obj
+        31
     ...
 
 The run finishes almost instantaneously and as a results we can find the pairNumber.txt files 
@@ -455,33 +454,122 @@ for each of the 9 fastq objects created for the projectTest:
 
 .. code-block:: bash
 
-    $ cat objects/fastq/*/pairNumber.txt 
-    FC0A03F0C.L007.J	2038
-    FC0A03F0C.L007.K	1994
-    FC0A03F0C.L007.L	2086
-    FC0A03F0F.L004.J	2238
-    FC0A03F0F.L004.K	2212
-    FC0A03F0F.L004.L	2278
-    FC0B03F00.L001.J	214
-    FC0B03F00.L001.K	245
-    FC0B03F00.L001.L	223
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cat objects/fastq/*/pairNumber.txt
+    FC0A03F09.L006.D	942
+    FC0A03F09.L006.E	1037
+    FC0A03F09.L006.F	1048
+    FC0A03F0C.L007.D	1179
+    FC0A03F0C.L007.E	1133
+    FC0A03F0C.L007.F	1206
+    FC0B03F00.L008.D	511
+    FC0B03F00.L008.E	483
+    FC0B03F00.L008.F	502
+    FC0B03F03.L001.D	1205
+    FC0B03F03.L001.E	1290
+    FC0B03F03.L001.F	1251
+    FC0C03F00.L004.D	684
+    FC0C03F00.L004.E	614
+    FC0C03F00.L004.F	647
 
-We can now spot check to see if the reported number of reads is correct. For example: 
+
+We can spot check to see if the reported number of reads is correct. For example: 
 
 .. code-block:: bash
 
-    $ cat ../input/fastq/FC0A03F0C/L007/bcJ_R1.fastq.gz  | gunzip -c | wc -l
-    8152
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cat ../input/fastq/FC0A03F09/L006/bcD_R1.fastq.gz | gunzip -c | wc -l
+    3768
 
-Read 1 file for the fastq run ``FC0A03F0C.L007.J`` contains 8152 lines which is equal to 4 times 
-the number of pairs (2038) reported in the corresponding pairNumber.txt file. This is exactly what is 
-expected: as described above, sequencing reads are represented in 4 lines in the fastq files. 
+Read 1 file for the fastq run ``FC0A03F09.L006.D`` contains 3,768 lines which
+is equal to 4 times the number of pairs (942) reported in the corresponding
+pairNumber.txt file. This is exactly what is expected: as described above,
+sequencing reads are represented in 4 lines in the fastq files. 
 
 Step 1.8. Re-run the project 
 ----------------------------
 
-Now that have verified that updated pipline seems to work, it is time to count the pair numbers
-for the complete project. 
+Now that have verified that updated pipeline works, it is time to count the
+pair numbers for the complete project:
+
+.. code-block:: bash
+
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cd ../project
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j -q
+    # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
+    # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
+    UPDATING ENVIRONMENT:
+    export SO_PROJECT=/tmp/snakeobjectsTutorial/project
+    export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
+    export PATH=$SO_PIPELINE:$PATH
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | head
+    cat: 'objects/fastq/*/pairNumber.txt': No such file or directory
+
+The results seem strange. ``snakemake`` doesn't seem to run any jobs and the
+``pairNumber.txt`` targets are not created. One way to figure out what's going
+is to run ``snakemake`` in verbose mode, by removing the ``-q`` flag:
+ 
+.. code-block:: bash
+    :emphasize-lines: 10 
+
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j 
+    # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
+    # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
+    UPDATING ENVIRONMENT:
+    export SO_PROJECT=/tmp/snakeobjectsTutorial/project
+    export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
+    export PATH=$SO_PIPELINE:$PATH
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j
+    Building DAG of jobs...
+    Nothing to be done.
+    Complete log: /tmp/snakeobjectsTutorial/project/objects/.snakemake/log/2021-02-25T114732.563671.snakemake.log
+
+``snakemake`` says that there is nothing to do. This is a peculiar behaviour of
+``snakemake`` that manifests anytime we add a new targets and rules to a
+pipeline and we need to create the new targets in a projects that was
+successfully executed prior to the addition. The way to overcome this is to
+force ``snakemake`` to created all targets built by the new rule:
+
+.. code-block:: bash
+
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j -R countReads 
+    # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
+    # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
+    UPDATING ENVIRONMENT:
+    export SO_PROJECT=/tmp/snakeobjectsTutorial/project
+    export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
+    export PATH=$SO_PIPELINE:$PATH
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -R countReads
+    Building DAG of jobs...
+    Using shell: /bin/bash
+    Provided cores: 192
+    Rules claiming more threads will be scaled down.
+    Job counts:
+        count   jobs
+        384 countReads
+        1   so_all_targets
+        384 so_fastq_obj
+        769
+    Select jobs to execute...
+    ...
+    
+This seems to have done the job and now we do indeed have the ``pairCount.txt`` targets:
+
+.. code-block:: bash
+
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | head
+    FC0A03F00.L001.D	2265
+    FC0A03F00.L001.E	2181
+    FC0A03F00.L001.F	2221
+    FC0A03F00.L001.G	2265
+    FC0A03F00.L001.H	2170
+    FC0A03F00.L001.I	2162
+    FC0A03F00.L002.A	1371
+    FC0A03F00.L002.B	1276
+    FC0A03F00.L002.C	1365
+    FC0A03F00.L002.D	1760
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | wc -l 
+    384
+
 
 Step 1.9. Add a summary object 
 ------------------------------
