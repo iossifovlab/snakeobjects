@@ -820,11 +820,11 @@ For example, the ``log.O`` from our ``makeBwaIndex``
 rule for the ``projectTest`` project is: 
 ``/mnt/snakeobjectsTutorial/projectTest/objects/reference/o/log/bwa_index-out.txt``
 
-To actually create the bwa index for our projects, we need to execute :option:`sobjects run``.
+To actually create the bwa index for our projects, we need to execute :option:`sobjects run`.
 But to convince ``snakemake`` to notice the ``conda`` clauses, we have to provide the ``--use-conda`` 
 command line argument: 
 ``(snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j --use-conda``. Moreover, we
-have to provide this option every time we do :option:`sobjects run`` in the future when we extend the 
+have to provide this option every time we do :option:`sobjects run` in the future when we extend the 
 pipeline or when we process new data. ``snakeobjects`` provides a better solution. We can defined a
 project parameter called ``default_snakemake_args`` whose value is a set of command line parameters
 passed to ``snakemake`` automatically every time we do :option:`sobjects run`. To take advantage of that 
@@ -898,6 +898,29 @@ that tells us that took 0.633s to create this index.
 
 Step 2.2. Alignment of fastq 
 ----------------------------
+
+With the bwa reference genome index created, it is time to align the reads in our fastq runs. We 
+will store the alignments as a targets of the fastq objects that have already been added to the object
+graph, but since the alignment uses the reference genome index will make the fastq objects to be 
+dependent on the ``refernece/o`` object. This is easily accomplished by a small change 
+(adding the highlighted line) in the pipeline's ``build_objects_graph.py`` script:
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.2/pipeline/build_object_graph.py
+    :emphasize-lines: 18 
+
+We will add the new target (``fastq.bam``) and the rule that creates it to the end of our ``pipeline/fastq.snakefile`` 
+file: 
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.2/pipeline/fastq.snakefile
+    :emphasize-lines: 22-43
+
+* a note about bam files
+* named inputs
+* ``snakemake``'s params clause
+    - rule parameters vs objects and project parameters
+* ``snakemake``'s treads clause
+* pipeing in the shell cause (shown before?)
+* running on clusters
 
 Step 2.3. Merging alignments by individual 
 ------------------------------------------

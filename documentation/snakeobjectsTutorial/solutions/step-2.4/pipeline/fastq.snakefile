@@ -1,4 +1,4 @@
-add_targets("pairNumber.txt","fastq.bam")
+add_targets("pairNumber.txt")
 
 rule countReads:
     input: P('R1'), P('R2')
@@ -19,6 +19,8 @@ rule countReads:
         with open(output[0],"w") as OF:
             OF.write(f'{wildcards.oid}\t{nPairs}\n')
 
+add_targets("fastq.bam")
+
 rule align:
     input:
         refFile       = DT("chrAll.fa"),
@@ -28,12 +30,14 @@ rule align:
     output:
         T("fastq.bam")
     params:
-        rg = P('rg')
+        sId = P('sampleId')
     conda: "env-bwa.yaml"
     resources: 
-        mem_mb = 5*1024,
+        mem_mb = 5*1024
     threads: 5
     log: **LFS('align')    
     shell:
-        "(time bwa mem -t {threads} -R '{params.rg}' {input.refFile} {input.R1File} {input.R2File} 2> {log.E} | samtools view -Sb - > {output}) 2> {log.T}"
-
+        "(time bwa mem -t {threads} -R '@RG\\tID:{wildcards.oid}\\tSM:{params.sId}' \
+                       {input.refFile} {input.R1File} {input.R2File}                \
+               2> {log.E} | samtools view -Sb - > {output}                          \
+         ) 2> {log.T}"

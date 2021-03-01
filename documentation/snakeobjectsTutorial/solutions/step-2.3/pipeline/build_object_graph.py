@@ -9,14 +9,12 @@ def run(proj, OG):
     OG.add('reference','o', {'symlink.chrAll.fa':proj.parameters['chrAllFile']})
 
     for i, r in fastqs.iterrows():
-        fqId = ".".join([r['flowcell'],r['lane'],r['barcode']])
         OG.add('fastq', 
-                fqId,
+                ".".join([r['flowcell'],r['lane'],r['barcode']]),
                 {
                     'R1':       fastqDir / r['flowcell'] / r['lane'] / f"bc{r['barcode']}_R1.fastq.gz",
                     'R2':       fastqDir / r['flowcell'] / r['lane'] / f"bc{r['barcode']}_R2.fastq.gz",
-                    'sampleId': r['individual'],
-                    'rg':       f"@RG\\\\tID:{fqId}\\\\tSM:{r['individual']}"
+                    'sampleId': r['individual']
                 },
                 OG['reference']
              )
