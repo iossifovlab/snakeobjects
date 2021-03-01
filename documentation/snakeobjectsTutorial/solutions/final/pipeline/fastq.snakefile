@@ -38,6 +38,6 @@ rule align:
     log: **LFS('align')    
     shell:
         "(time bwa mem -t {threads} -R '@RG\\tID:{wildcards.oid}\\tSM:{params.sId}' \
-                       {input.refFile} {input.R1File} {input.R2File}                \
-               2> {log.E} | samtools view -Sb - > {output}                          \
+                       {input.refFile} {input.R1File} {input.R2File} 2> {log.E} |   \
+               samtools view -Sb - > {output}                                       \
          ) 2> {log.T}"
