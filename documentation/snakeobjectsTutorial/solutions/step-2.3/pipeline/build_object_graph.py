@@ -25,3 +25,6 @@ def run(proj, OG):
         sampleFastqOs[o.params['sampleId']].append(o) 
     for smId,fqOs in sampleFastqOs.items():
         OG.add('sample',smId,deps=fqOs)
+
+    OG.add('sampleSummary','o',deps=OG['sample'])
+    

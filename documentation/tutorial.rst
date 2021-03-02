@@ -1015,7 +1015,6 @@ profile configured you may also consider adding the ``--profile=<cluster profile
 the ``snakemake`` will submit jobs the cluster instead of running them locally on you computer as
 it does when you pass the ``-j`` option. 
 
-
 Step 2.3. Target coverage by sample and globally 
 ------------------------------------------------
 
