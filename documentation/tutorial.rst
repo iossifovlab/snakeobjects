@@ -1019,6 +1019,37 @@ it does when you pass the ``-j`` option.
 Step 2.3. Target coverage by sample and globally 
 ------------------------------------------------
 
+In this step we will introduce two new object types, ``sample`` and ``sampleSummary``. The
+``sample`` object type will the most complicated object type in this tutorial but will 
+introduce only one new feature. The point of this step is to demonstrate how the 
+functionalyty introduced so far is powerfull enough to implement a fairly complex part
+of the pipeline. 
+
+An ``sample`` object will represent the all sequence data for one individual. We did 
+not pay much attention until now, but ``sampleId`` paramter of the ``fastq`` objects
+specifies the sample (or individual) whose genome is represented in the sequence reads 
+in the fastq files. If you examine, the ``input/fastqs.txt`` file, you will see that 
+some individuals have one fastq run, but others have two or three fastq runs. It is 
+important to verify if we enough sequencing reads for each sample. One way to 
+check if the number of reads is 'enough' is to examine the distribution of the 
+number reads covering the positions of intereset (or coverage). The positions of 
+interest are represented by the ``targetRegions.txt`` file in the input directory. 
+To meausure the coverage (and to be able to identify *de novo* variant later) its
+convinient to merge all the fastq bam files for an individual into a single sample
+bam file. Then we can use the single file to examin the depth (number of covering) reads
+for all the positions in the target regions. Once we have the coverage for every position 
+in the target and for every samle we can compute statistics of the depth per sample, 
+visuallize the coverate distribution per sample and globaly accross all samples.
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/projectTest/so_project.yaml
+    :emphasize-lines: 7 
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/build_object_graph.py
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakemake
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakemake
+
 Step 3. Calling de novo variants
 ================================
 
