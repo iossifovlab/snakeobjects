@@ -148,10 +148,9 @@ def cli(args=None):
         sargs = []
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
-            sargs += args[1:]
-            print("sargs:", sargs)
         else:
             raise ProjectException("No profile specified")
+        sargs += args[1:]
         profile=sargs[sargs.index('--profile')+1]
         if not os.path.exists(profile): 
             raise ProjectException("Profile not found %s" % profile)
