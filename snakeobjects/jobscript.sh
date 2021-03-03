@@ -6,4 +6,4 @@ python \
 --force -j --keep-target-files --keep-remote \
 --attempt 1 --force-use-threads \
 --wrapper-prefix https://github.com/snakemake/snakemake-wrappers/raw/ \
---nocolor --notemp --no-hooks \
+--nocolor --notemp --no-hooks --use-conda \
