@@ -1019,35 +1019,77 @@ Step 2.3. Target coverage by sample and globally
 ------------------------------------------------
 
 In this step we will introduce two new object types, ``sample`` and ``sampleSummary``. The
-``sample`` object type will the most complicated object type in this tutorial but will 
-introduce only one new feature. The point of this step is to demonstrate how the 
-functionalyty introduced so far is powerfull enough to implement a fairly complex part
+``sample`` object type will be the most complicated object type in this tutorial but will 
+introduce only few new of the ``snakeobjects``' features. The point of this step is to demonstrate 
+how the functionalyty introduced so far is powerfull enough to implement a fairly complex part
 of the pipeline. 
 
 An ``sample`` object will represent the all sequence data for one individual. We did 
-not pay much attention until now, but ``sampleId`` paramter of the ``fastq`` objects
+not pay much attention until now, but ``sampleId`` parameter of the ``fastq`` objects
 specifies the sample (or individual) whose genome is represented in the sequence reads 
-in the fastq files. If you examine, the ``input/fastqs.txt`` file, you will see that 
+in the fastq files. If you examine the ``input/fastqs.txt`` file, you will see that 
 some individuals have one fastq run, but others have two or three fastq runs. It is 
 important to verify if we enough sequencing reads for each sample. One way to 
 check if the number of reads is 'enough' is to examine the distribution of the 
-number reads covering the positions of intereset (or coverage). The positions of 
+number reads covering the positions of interest (or coverage). The positions of 
 interest are represented by the ``targetRegions.txt`` file in the input directory. 
-To meausure the coverage (and to be able to identify *de novo* variant later) its
-convinient to merge all the fastq bam files for an individual into a single sample
-bam file. Then we can use the single file to examin the depth (number of covering) reads
+To measure the coverage (and to be able to identify *de novo* variant later) its
+convenient to merge all the fastq bam files for an individual into a single sample
+bam file. Then, we can use the single file to examine the depth (number of covering) reads
 for all the positions in the target regions. Once we have the coverage for every position 
-in the target and for every samle we can compute statistics of the depth per sample, 
-visuallize the coverate distribution per sample and globaly accross all samples.
+in the target and for every sample, we can compute statistics of the depth per sample, 
+visualize the coverage distribution per sample and globally across all samples.
+
+To implement this plan we will add a project parameter called ``target`` that points 
+to the ``input/targetRegions.bed`` file to the ``so_project.yaml`` for our two projects.
+For example, the ``projectTest/so_project.yaml`` should look like that after the addition
+of the highlighted line:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/projectTest/so_project.yaml
-    :emphasize-lines: 7 
+    :emphasize-lines: 8 
+
+We will then update the ``build_object_graph.py`` script in our pipeline by adding few 
+lines (highlited below) that create the sample objects referenced in the fastq object that have 
+already been added to the object graph:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/build_object_graph.py
+    :emphasize-lines: 3, 23-29 
 
-.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakemake
+The code above is simple enough (assuming one knows basic python). But the resulting graph becomes 
+non-trivilial. Before the addition of the ``sample`` object, there were two dependency types: (1) all ``fastq`` 
+objects depneded on the single ``referece/o`` object and (2) the single ``fastqSummary/o`` object 
+depended on all ``fastq`` objects. Each ``sample`` objects is dependent only on the one, two, or three
+fastq objects that are related to this sample, breaking the one-to-all dependence types. 
+At the last line we also add the sinlgeton ``sampleSummary/o`` object that will be responsible for
+aggregating statistics from all ``sample`` objects.
 
-.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakemake
+We will add six targets for the objects of type ``sample``. The target definition, their relationships,
+and rules that create them are shown below and the following content should be copies to a file 
+called ``sample.sankefile`` within the pipeline directory.  
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakefile
+
+The six targets are related in a complex with-object and across-object target dependencies represented 
+by the input and output clauses of the rules. In addition, to the six targets the ``sample.snakefile``
+uses a temporary target ``T("raw.bam")``. It is declared as temporary using the ``snakemake``'s function 
+``temp``. Temporary targets are created as normal targets but are removed when all the downstream
+rules that use them finish successfully. The :py:func:`.DT` function, enables us to concisely define
+across-objects target dependencies. The figure, shows a graphical representation of the target dependency
+relationship of the targets of the ``sample`` objects overlaid over the object-graph dependency relation
+ships. 
+
+.. image:: _static/sampleTargets.png
+  :width: 4000 
+  :alt: sample target graph 
+
+Note, the ``level=2`` parameter passed on the :py:func:`.DT` function call in the rule ``normalizedBam``.  
+It means that we are referring to targets in objects that are two steps away in the object graph. In the specific
+case, the implementation of the rule requires the ``charAll.fa`` file that is stored as a target of the ``reference/o`` object. The ``sample`` objects do not depend directly on the ``reference/o`` object in our graph, but they 
+depend on one or more ``fastq`` objects which in turn depend on the ``reference/o``. Thus, ``reference/o`` is 'two 
+steps away in the object graph from the ``sample`` objects.
+
+
+.. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakefile
 
 Step 3. Calling de novo variants
 ================================
