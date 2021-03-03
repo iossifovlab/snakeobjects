@@ -11,6 +11,6 @@ def run(proj, OG):
                 {
                     'R1':       fastqDir / r['flowcell'] / r['lane'] / f"bc{r['barcode']}_R1.fastq.gz",
                     'R2':       fastqDir / r['flowcell'] / r['lane'] / f"bc{r['barcode']}_R2.fastq.gz",
-                    'sampleId': r['individual'],
+                    'sampleId': r['individual']
                 }
              )

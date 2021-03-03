@@ -3,4 +3,3 @@ channels:
 dependencies:
   - samtools 
   - bwakit
-
