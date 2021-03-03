@@ -1020,22 +1020,23 @@ Step 2.3. Target coverage by sample and globally
 
 In this step we will introduce two new object types, ``sample`` and ``sampleSummary``. The
 ``sample`` object type will be the most complicated object type in this tutorial but will 
-introduce only few new of the ``snakeobjects``' features. The point of this step is to demonstrate 
+introduce only few of the ``snakeobjects``' features. The point of this step is to demonstrate 
 how the functionalyty introduced so far is powerfull enough to implement a fairly complex part
 of the pipeline. 
 
-An ``sample`` object will represent the all sequence data for one individual. We did 
+An ``sample`` object will represent all sequence data for one individual. We did 
 not pay much attention until now, but ``sampleId`` parameter of the ``fastq`` objects
 specifies the sample (or individual) whose genome is represented in the sequence reads 
 in the fastq files. If you examine the ``input/fastqs.txt`` file, you will see that 
-some individuals have one fastq run, but others have two or three fastq runs. It is 
-important to verify if we enough sequencing reads for each sample. One way to 
+some individuals have one fastq run, but others have two or three fastq runs. 
+
+It is important to verify if we enough sequencing reads for each sample. One way to 
 check if the number of reads is 'enough' is to examine the distribution of the 
-number reads covering the positions of interest (or coverage). The positions of 
+number reads covering the positions of interest (or coverage). In our project, the positions of 
 interest are represented by the ``targetRegions.txt`` file in the input directory. 
-To measure the coverage (and to be able to identify *de novo* variant later) its
+To measure the coverage (and to be able to identify *de novo* variants later) it is
 convenient to merge all the fastq bam files for an individual into a single sample
-bam file. Then, we can use the single file to examine the depth (number of covering) reads
+bam file. Then, we can use the single file to examine the depth (number of covering reads)
 for all the positions in the target regions. Once we have the coverage for every position 
 in the target and for every sample, we can compute statistics of the depth per sample, 
 visualize the coverage distribution per sample and globally across all samples.
@@ -1049,8 +1050,8 @@ of the highlighted line:
     :emphasize-lines: 8 
 
 We will then update the ``build_object_graph.py`` script in our pipeline by adding few 
-lines (highlited below) that create the sample objects referenced in the fastq object that have 
-already been added to the object graph:
+lines (highlighted below) that create the sample objects referenced in the fastq objects 
+already added to the object graph:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/build_object_graph.py
     :emphasize-lines: 3, 23-29 
@@ -1064,7 +1065,7 @@ At the last line we also add the sinlgeton ``sampleSummary/o`` object that will 
 aggregating statistics from all ``sample`` objects.
 
 We will add six targets for the objects of type ``sample``. The target definition, their relationships,
-and rules that create them are shown below and the following content should be copies to a file 
+and rules that create them are shown below and you should copy the following content to a file 
 called ``sample.sankefile`` within the pipeline directory.  
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakefile
@@ -1074,22 +1075,85 @@ by the input and output clauses of the rules. In addition, to the six targets th
 uses a temporary target ``T("raw.bam")``. It is declared as temporary using the ``snakemake``'s function 
 ``temp``. Temporary targets are created as normal targets but are removed when all the downstream
 rules that use them finish successfully. The :py:func:`.DT` function, enables us to concisely define
-across-objects target dependencies. The figure, shows a graphical representation of the target dependency
-relationship of the targets of the ``sample`` objects overlaid over the object-graph dependency relation
-ships. 
+across-objects target dependencies. The figure below, shows a graphical representation of the target dependency
+relationship of the targets of one of the ``sample`` objects overlaid on top of the object-graph dependency 
+relation ships. 
 
 .. image:: _static/sampleTargets.png
   :width: 4000 
   :alt: sample target graph 
 
-Note, the ``level=2`` parameter passed on the :py:func:`.DT` function call in the rule ``normalizedBam``.  
-It means that we are referring to targets in objects that are two steps away in the object graph. In the specific
-case, the implementation of the rule requires the ``charAll.fa`` file that is stored as a target of the ``reference/o`` object. The ``sample`` objects do not depend directly on the ``reference/o`` object in our graph, but they 
-depend on one or more ``fastq`` objects which in turn depend on the ``reference/o``. Thus, ``reference/o`` is 'two 
-steps away in the object graph from the ``sample`` objects.
+We want to point out two interesting features used in the ``sample.snakefile``.
+The first one is the ``level=2`` parameter passed on the :py:func:`.DT`
+function call in the rule ``normalizedBam``.  It means that we are referring to
+targets in objects that are two steps away in the object graph. In the specific
+case, the implementation of the rule requires the ``charAll.fa`` file that is
+stored as a target of the ``reference/o`` object. The ``sample`` objects do not
+depend directly on the ``reference/o`` object in our graph, but they depend on
+one or more ``fastq`` objects which in turn depend on the ``reference/o``.
+Thus, ``reference/o`` is 'two steps' away in the object graph from the
+``sample`` objects.  The second feature is that a rule can create more than one
+output targets, as our ``reorganizedBam`` rule does.
 
+For each ``sample`` we first merge the related ``fastq.bam`` files in one bam
+file called ``raw.bam`` using the ``samtools merge`` command. Then we go through a
+process of 'cleaning up` the ``raw.bam`` file by a series of commands well
+accepted in the sequence analysis field (fixmate, sort, markdup). The
+implementation of the ``reorganizedBam`` rule uses piping extensively, an
+approach that saves the expensive writes/reads to disk if saved the
+intermediate files. The ``markdup`` step identifies read pairs that appear to
+be duplicates of each other, flag the duplicates, and saves the updated bam
+file. In addition, ``markdup`` writes statistics, like the number of duplicate
+reads identified, on its standard error. The ``reorganizedBam`` rule captures
+this stream and saves it in the ``markDupStats.txt`` target. The percent of
+duplicated reads in bam file is an important quality measure that one should
+pay attention to. To avoid getting this tutorial even longer, we do not discuss
+the ``markDupStats.txt`` further. The main output of the ``reorganziedBam``
+rule is the cleaned, flagged, and sorted (by genomic coordinates) bam file
+``sample.bam``. We next create an index ``sample.bam.bai`` for the
+``sample.bam`` file that allows quick access to the reads aligned at a given
+genomic region. This index is used to measure the depth for every position in
+our target regions in the ``depth`` rule that saves the resulting depths in the
+``depths.txt`` file. Finally, for each sample we use the ``depths.txt`` to create a figure (``coverage.png``)
+showing the distribution of the depths and record the percent of the target positions covered 
+by at least 1, 10, 20, and 40 reads in the ``coverage-stats.txt`` target. The ``coverage.png`` and
+the ``coverage-stats.txt`` are created by two separate rule, both of which use ``depths.txt`` and
+are implemented by small python snipped using a ``run:`` clause.
+
+
+To finish the updates to the pipeline you should copy the content bellow to to the ``sampleSummary.snakefile``
+in our pipeline: 
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakefile
+
+``sampleSummary`` objects has two targets. The first one is called ``allCoveratStats.txt`` its
+implementation aggregates the ``coverage-stats.txt`` from all the ``sample`` objects and sorts the 
+but the percent of the target covered by at least 20 reads 
+(the 4th column in the ``coverage-stats.txt`` files). The second target is called ``allCoverages.png``
+is a is a figure showing the coverage statistics accros all samples.
+
+By now, it should be clear how execute the updated pipeline for the two projects:
+change the working directory to the project directory; do ``sbojects prepare`` (we 
+need to run prepare because we updated the ``build_object_graph.py`` script and 
+we need to create a new object graph); do ``sobjects run -j``.
+
+Once you have successfully run the two projects you should have a figure like
+
+.. image:: _static/example-sample-coverage.png
+  :width: 400
+  :alt: An example sample-coverate.png figure.
+
+for each sameple. The ``...sampleSummary/o/allCoverages.png`` for the ``projectTest`` and 
+for the large ``project`` should look like: 
+
+.. image:: _static/projectTest-allCoverages.png
+  :width: 340
+  :alt: allCoverages.png for the projectTest 
+
+.. image:: _static/project-allCoverages.png
+  :width: 340
+  :alt: allCoverages.png for the large project
+
 
 Step 3. Calling de novo variants
 ================================
