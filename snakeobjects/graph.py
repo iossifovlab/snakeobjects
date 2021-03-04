@@ -1,7 +1,7 @@
 #!/bin/env python
 
 from snakeobjects import Project, ObjectGraph, load_object_graph
-import random,sys
+import random,sys,argparse
 
 # project = Project("variants/batch3")
 # OG = project.objectGraph
@@ -25,22 +25,23 @@ palegreen slategrey
 colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
-def plotGraph(OG, width=0.10, penwidth=0.1, arrowsize=0.1):
-    print("graph:",width, penwidth, arrowsize, file=sys.stderr)
-    print("digraph digraphname {")
+def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph'):
+    O = open(out+'.dot', 'w')
+    print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
+    print("digraph digraphname {", file=O)
     print('''
     graph [ size = "60,60" ];
 
     node [shape = circle,
       style = filled,
-    ''')
+    ''', file=O)
     print(
       "width = %f," % width
-        )
+        , file=O)
     print('''
       color = grey,
       label = ""]
-    ''')
+    ''', file=O)
 
     def o2K(o):
         return ('"' + o.oType + "_" + o.oId + '"').replace('.','_')
@@ -49,63 +50,109 @@ def plotGraph(OG, width=0.10, penwidth=0.1, arrowsize=0.1):
     for t,c in zip(OG.get_object_types(),colors):
     
         print(f"{t} -> {c}",file=sys.stderr)
-        print(f"node [fillcolor = {c}]")
+        print(f"node [fillcolor = {c}]", file=O)
         for o in OG[t]:
-            print(o2K(o))
-        print()
+            print(o2K(o), file=O)
+        print('', file=O)
 
     print('''
     edge [color = black,
-    ''')
+    ''', file=O)
     print(
           "penwidth= %f," % penwidth,
           "arrowsize= %f," % arrowsize
-    )
-    print("]")
+    , file=O)
+    print("]", file=O)
 
     for t in OG.tOrder:
         for o in OG[t]:
             for d in o.deps:
-                print (o2K(d) + " -> " + o2K(o) + ";")
+                print (o2K(d) + " -> " + o2K(o) + ";", file=O)
 
-    print()
-    print("subgraph cluster_1 {")
-    print('''
+    print('', file=O)
+    print('}', file=O)
+
+    O.close()
+    if legend:
+        O = open(out+'_legend.dot', 'w')
+        print("digraph digraphname {", file=O)
+        print('''
+        graph [ size = "60,60" ];
+
+        node [shape = circle,
+        style = filled,
+        ''', file=O)
+        print(
+            "width = %f," % width
+            , file=O)
+        print('''
+        color = grey,
+        label = ""]
+        ''', file=O)
+        print('''
+           labelloc="t"
            label=Legend
 	   nodesep=0.02
 	   ranksep="0.02 equally"
 
 	   node [ label="", fontsize=10, width=.2, shape=circle] 
-          ''')
-    for t,c in zip(OG.get_object_types(),colors):
+          ''', file=O)
+        for t,c in zip(OG.get_object_types(),colors):
     
-        print(f"node [ fillcolor=%s ] %s_s" % (c, t))
-    print()
+            print(f"node [ fillcolor=%s ] %s_s" % (c, t), file=O)
+        print(' ', file=O)
 
-    print("node [shape=none, fillcolor=none]")
-    print()
+        print("node [shape=none, fillcolor=none]", file=O)
+        print(' ', file=O)
 
-    for t in OG.get_object_types():
+        for t in OG.get_object_types():
     
-        print("node [ label=%s ] %s_n" % (t, t))
+            print("node [ label=%s ] %s_n" % (t, t), file=O)
 
-    print()
-    for t in OG.get_object_types():
+        print(' ', file=O)
+        for t in OG.get_object_types():
     
-        print("{ rank=same; %s_n;%s_s }" % (t, t))
+            print("{ rank=same; %s_n;%s_s }" % (t, t), file=O)
 
-    print()
-    print("edge [style=invis]")
-    for t in OG.get_object_types():
+        print('', file=O)
+        print("edge [style=invis]", file=O)
+        for t in OG.get_object_types():
     
-        print(f"%s_n -> %s_s" % (t, t))
-    print()
-    names = OG.get_object_types()
-    for i in range(len(names)-1):
+            print(f"%s_n -> %s_s" % (t, t), file=O)
+        print('', file=O)
+        names = OG.get_object_types()
+        for i in range(len(names)-1):
     
-        print(f"%s_s -> %s_s" % (names[i], names[i+1]))
-    print()
-    print("}")
-    
-    print("}")
+            print(f"%s_s -> %s_s" % (names[i], names[i+1]), file=O)
+        print('', file=O)
+        print("}", file=O)
+        O.close()
+
+def driver(OG, data):
+    print(data, file=sys.stderr)
+    parser = argparse.ArgumentParser(prog='graph.py')
+
+    parser.add_argument("-w", "--width", dest="width", default=.75, type=float, action='store',
+        metavar="width", help="width of node" )
+
+    parser.add_argument("-p", "--penwidth", dest="penwidth", default=1, type=float, action='store',
+        metavar="penwidth", help="thickness of edges" )
+
+    parser.add_argument("-a", '--arrowsize', dest='arrowsize', default=1, type=float, metavar='arrowsize',
+        help='multiplicative scale factor for arrowheads' )
+
+    parser.add_argument("-l", '--legend', dest='legend', default=False, type=bool, metavar='legend',
+        help='multiplicative scale factor for arrowheads' )
+
+    args = parser.parse_args(data[1:])
+
+    width = args.width
+    penwidth = args.penwidth
+    arrowsize = args.arrowsize
+    legend = args.legend
+
+    plotGraph(OG, width, penwidth, arrowsize, legend)
+
+
+
 

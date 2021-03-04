@@ -186,14 +186,7 @@ def cli(args=None):
         proj.objectGraph.print_stats()
     elif command == "graph":
         print(args, file=sys.stderr)
-        if len(args) == 1:
-            graph.plotGraph(proj.objectGraph)
-        elif len(args) == 4:
-            w, pw, ar = [float(a) for a in args[1:]]
-            graph.plotGraph(proj.objectGraph, width=w, penwidth=pw, arrowsize=ar)
-        elif len(args) == 5:
-            w, pw, ar = [float(a) for a in args[1:-1]]
-            graph.plotGraph(load_object_graph(args[-1]), width=w, penwidth=pw, arrowsize=ar)
+        graph.driver(proj.objectGraph, args)
     else:
         print("Don't know the command:", command)
         return 1
