@@ -5,10 +5,10 @@ rule callDenovos:
     bams=DT("sample.bam"),
     idx=DT("sample.bam.bai")
   output: T("denovo_calls.txt")
-  conda: "pysam.yaml"
+  conda: "env-pysam.yaml"
   params:
     bed = PP("target")
-  log: **LFS("denovo_calls.vcf")
+  log: **LFS("denovo_calls")
   shell:
     "(time call_denovo.py {input.bams} {params.bed} > {output} 2>{log.E}) 2> {log.T}"
 
