@@ -171,6 +171,11 @@ def cli(args=None):
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
         if os.system('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
+        with open(proj.directory+'/objects/.snakeobjects/jobscript.sh', 'a') as js:
+            for k,v in pr_config.items():
+                if not k in 'jobname jobscript cluster cluster-status'.split(' '):
+                    js.write('--'+str(k)+' ' + str(v) + ' ')
+
         os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")
         #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh"])        
     elif command == "describe":
