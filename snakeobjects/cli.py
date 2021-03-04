@@ -175,6 +175,7 @@ def cli(args=None):
             for k,v in pr_config.items():
                 if not k in 'jobname jobscript cluster cluster-status'.split(' '):
                     js.write('--'+str(k)+' ' + str(v) + ' ')
+            js.write(' '.join(args[1:]))
 
         os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")
         #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh"])        
