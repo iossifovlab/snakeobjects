@@ -1020,22 +1020,23 @@ Step 2.3. Target coverage by sample and globally
 
 In this step we will introduce two new object types, ``sample`` and ``sampleSummary``. The
 ``sample`` object type will be the most complicated object type in this tutorial but will 
-introduce only few new of the ``snakeobjects``' features. The point of this step is to demonstrate 
+introduce only few of the ``snakeobjects``' features. The point of this step is to demonstrate 
 how the functionalyty introduced so far is powerfull enough to implement a fairly complex part
 of the pipeline. 
 
-An ``sample`` object will represent the all sequence data for one individual. We did 
+An ``sample`` object will represent all sequence data for one individual. We did 
 not pay much attention until now, but ``sampleId`` parameter of the ``fastq`` objects
 specifies the sample (or individual) whose genome is represented in the sequence reads 
 in the fastq files. If you examine the ``input/fastqs.txt`` file, you will see that 
-some individuals have one fastq run, but others have two or three fastq runs. It is 
-important to verify if we enough sequencing reads for each sample. One way to 
+some individuals have one fastq run, but others have two or three fastq runs. 
+
+It is important to verify if we enough sequencing reads for each sample. One way to 
 check if the number of reads is 'enough' is to examine the distribution of the 
-number reads covering the positions of interest (or coverage). The positions of 
+number reads covering the positions of interest (or coverage). In our project, the positions of 
 interest are represented by the ``targetRegions.txt`` file in the input directory. 
-To measure the coverage (and to be able to identify *de novo* variant later) its
+To measure the coverage (and to be able to identify *de novo* variants later) it is
 convenient to merge all the fastq bam files for an individual into a single sample
-bam file. Then, we can use the single file to examine the depth (number of covering) reads
+bam file. Then, we can use the single file to examine the depth (number of covering reads)
 for all the positions in the target regions. Once we have the coverage for every position 
 in the target and for every sample, we can compute statistics of the depth per sample, 
 visualize the coverage distribution per sample and globally across all samples.
@@ -1049,8 +1050,8 @@ of the highlighted line:
     :emphasize-lines: 8 
 
 We will then update the ``build_object_graph.py`` script in our pipeline by adding few 
-lines (highlited below) that create the sample objects referenced in the fastq object that have 
-already been added to the object graph:
+lines (highlighted below) that create the sample objects referenced in the fastq objects 
+already added to the object graph:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/build_object_graph.py
     :emphasize-lines: 3, 23-29 
@@ -1064,7 +1065,7 @@ At the last line we also add the sinlgeton ``sampleSummary/o`` object that will 
 aggregating statistics from all ``sample`` objects.
 
 We will add six targets for the objects of type ``sample``. The target definition, their relationships,
-and rules that create them are shown below and the following content should be copies to a file 
+and rules that create them are shown below and you should copy the following content to a file 
 called ``sample.sankefile`` within the pipeline directory.  
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakefile
@@ -1074,23 +1075,215 @@ by the input and output clauses of the rules. In addition, to the six targets th
 uses a temporary target ``T("raw.bam")``. It is declared as temporary using the ``snakemake``'s function 
 ``temp``. Temporary targets are created as normal targets but are removed when all the downstream
 rules that use them finish successfully. The :py:func:`.DT` function, enables us to concisely define
-across-objects target dependencies. The figure, shows a graphical representation of the target dependency
-relationship of the targets of the ``sample`` objects overlaid over the object-graph dependency relation
-ships. 
+across-objects target dependencies. The figure below, shows a graphical representation of the target dependency
+relationship of the targets of one of the ``sample`` objects overlaid on top of the object-graph dependency 
+relation ships. 
 
 .. image:: _static/sampleTargets.png
   :width: 4000 
   :alt: sample target graph 
 
-Note, the ``level=2`` parameter passed on the :py:func:`.DT` function call in the rule ``normalizedBam``.  
-It means that we are referring to targets in objects that are two steps away in the object graph. In the specific
-case, the implementation of the rule requires the ``charAll.fa`` file that is stored as a target of the ``reference/o`` object. The ``sample`` objects do not depend directly on the ``reference/o`` object in our graph, but they 
-depend on one or more ``fastq`` objects which in turn depend on the ``reference/o``. Thus, ``reference/o`` is 'two 
-steps away in the object graph from the ``sample`` objects.
+We want to point out two interesting features used in the ``sample.snakefile``.
+The first one is the ``level=2`` parameter passed on the :py:func:`.DT`
+function call in the rule ``normalizedBam``.  It means that we are referring to
+targets in objects that are two steps away in the object graph. In the specific
+case, the implementation of the rule requires the ``charAll.fa`` file that is
+stored as a target of the ``reference/o`` object. The ``sample`` objects do not
+depend directly on the ``reference/o`` object in our graph, but they depend on
+one or more ``fastq`` objects which in turn depend on the ``reference/o``.
+Thus, ``reference/o`` is 'two steps' away in the object graph from the
+``sample`` objects.  The second feature is that a rule can create more than one
+output targets, as our ``reorganizedBam`` rule does.
 
+For each ``sample`` we first merge the related ``fastq.bam`` files in one bam
+file called ``raw.bam`` using the ``samtools merge`` command. Then we go through a
+process of 'cleaning up` the ``raw.bam`` file by a series of commands well
+accepted in the sequence analysis field (fixmate, sort, markdup). The
+implementation of the ``reorganizedBam`` rule uses piping extensively, an
+approach that saves the expensive writes/reads to disk if saved the
+intermediate files. The ``markdup`` step identifies read pairs that appear to
+be duplicates of each other, flag the duplicates, and saves the updated bam
+file. In addition, ``markdup`` writes statistics, like the number of duplicate
+reads identified, on its standard error. The ``reorganizedBam`` rule captures
+this stream and saves it in the ``markDupStats.txt`` target. The percent of
+duplicated reads in bam file is an important quality measure that one should
+pay attention to. To avoid getting this tutorial even longer, we do not discuss
+the ``markDupStats.txt`` further. The main output of the ``reorganziedBam``
+rule is the cleaned, flagged, and sorted (by genomic coordinates) bam file
+``sample.bam``. We next create an index ``sample.bam.bai`` for the
+``sample.bam`` file that allows quick access to the reads aligned at a given
+genomic region. This index is used to measure the depth for every position in
+our target regions in the ``depth`` rule that saves the resulting depths in the
+``depths.txt`` file. Finally, for each sample we use the ``depths.txt`` to create a figure (``coverage.png``)
+showing the distribution of the depths and record the percent of the target positions covered 
+by at least 1, 10, 20, and 40 reads in the ``coverage-stats.txt`` target. The ``coverage.png`` and
+the ``coverage-stats.txt`` are created by two separate rule, both of which use ``depths.txt`` and
+are implemented by small python snipped using a ``run:`` clause.
+
+
+To finish the updates to the pipeline you should copy the content bellow to to the ``sampleSummary.snakefile``
+in our pipeline: 
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakefile
 
+``sampleSummary`` objects has two targets. The first one is called ``allCoveratStats.txt`` its
+implementation aggregates the ``coverage-stats.txt`` from all the ``sample`` objects and sorts the 
+but the percent of the target covered by at least 20 reads 
+(the 4th column in the ``coverage-stats.txt`` files). The second target is called ``allCoverages.png``
+is a is a figure showing the coverage statistics accros all samples.
+
+By now, it should be clear how execute the updated pipeline for the two projects:
+change the working directory to the project directory; do ``sbojects prepare`` (we 
+need to run prepare because we updated the ``build_object_graph.py`` script and 
+we need to create a new object graph); do ``sobjects run -j``.
+
+Once you have successfully run the two projects you should have a figure like
+
+.. image:: _static/example-sample-coverage.png
+  :width: 400
+  :alt: An example sample-coverate.png figure.
+
+for each sameple. The ``...sampleSummary/o/allCoverages.png`` for the ``projectTest`` and 
+for the large ``project`` should look like: 
+
+.. image:: _static/projectTest-allCoverages.png
+  :width: 340
+  :alt: allCoverages.png for the projectTest 
+
+.. image:: _static/project-allCoverages.png
+  :width: 340
+  :alt: allCoverages.png for the large project
+
+
 Step 3. Calling de novo variants
 ================================
+
+To finish the tutorial we will implement a quick and dirty *de novo* caller and will integrate
+it into our pipeline. *De novo* variants are nucleotides (our de novo caller will handle 
+only de novo substitutions) found in children that are not present. Our de novo caller is shown 
+below. 
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/call_denovo.py
+    :linenos:
+
+It is implemented in python and you should copy the above in a python file called 
+``call_denovo.py`` in our pipeline directory. The only quality this implementation 
+has is that it is short. Otherwise, it is a poorly coded (although not impossible, it 
+will be a challenge for one to understand it), and performs poorly. But it would do for
+the purposes of the tutorial. The ones of you who actually care about finding *de novo*
+variants should improve implementation substantially or, even better, replace it all 
+with a 'proper' de novo caller. 
+
+The ``call_denovo.py`` is a command line scripts that expects four arguments: the bam files
+for the father, for the mother, for a child and a list of target regions that contain the 
+positions in which the script will search for *de novo* alleles. The script uses the popular python 
+module ``pysam`` that provides access to reads stored in bam files. The pysam is 
+neither included in our global environment nor in the ``env-bwa.yaml`` one.  
+We thus crate a new environment ``env-pysam.yaml`` that requires the pysam package. 
+You should copy the following in the ``env-pysam.yaml`` file in our pipeline directory---
+We will use it shortly. The ``env-pysam.yaml`` environment required two additional packages,
+numpy and pandas, that are used by the call_denovo.py script.
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/env-pysam.yaml
+
+The ``call_denovo.py`` script iterates over all the regions in the ``targetFile`` 
+and counts the number of reads supporting each of the four nucleotides, A, C, G, and T
+at every position within the current region. For positions that are covered by reads 
+in the tree bam files (see mysterious line 25), the script checks if there are *de novo* alleles.
+*De novo* allele is reported if all of the following criteria are met:
+
+    * the allele seen in 3 or more reads in the child (line 29); 
+    * the allele is NOT seen in either of the parents (lines 30 and 31); 
+    * both parents have at least 10 reads covering the positions (line 32).
+
+To integrate the ``call_enovo.py`` script in the pipeline we will create two 
+new objects types, ``trio``, and ``trioSummary``. The ``trio`` object will represent
+a father, a mother, and a child trios. In our project the family relationships are 
+described in the ``input/collection.ped`` file. The top 10 lines of the file are shown 
+below:
+
+.. include:: snakeobjectsTutorial/input/collection.ped 
+    :start-line: 0
+    :end-line: 10
+    :literal:
+    :tab-width: 10
+
+The question marks in the affected column indicate that the affected status of the 
+children is 'masked'. This can be done in real projects to avoid bias in the 
+handling between the cases and controls.
+
+We will used the ``collections.ped`` file in the ``build_object_graph.py`` pipeline 
+script to create the ``trio`` objects. As already done multiple times, we will add a project
+parameter (``pedigree``) in our two projects that points to the ``collections.ped`` file. After the addition, 
+the ``so_projects.yaml`` file for the ``projectTest`` looks like:
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/projectTest/so_project.yaml
+    :emphasize-lines: 9
+
+The additions the ``build_object_graph.py`` are highlighted bellow:
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/build_object_graph.py
+    :linenos:
+    :emphasize-lines: 31-40 
+
+The script will create only for the children described in the ``pedigree`` file (line 33)
+and only for the children for which the ``sample`` objects for the father, for the mother, 
+and for the child have already been created in the object graph (line 34). 
+The object id for the ``trio`` objects will be set to the sampleId (called ``personId`` in the 
+pedigree file) of the child and 
+newly created ``trio`` are made dependent on the samples for the father, mother, and child. 
+A very important feature of the ``snakeobjects`` is that the order of the dependencies is 
+preserved in the object graph. The implementation for the single target of the ``trio`` objects
+depends on this order: father's sample, mother's sample, child's sample. See the content bellow and
+copy it into the new ``trio.snakemake`` file in the pipeline directory:
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/trio.snakefile
+    :emphasize-lines: 5
+
+In the highlighted line, the ``DT("sample.bam")`` will return a list of 3 bam files, 
+with the first one being the ``sample.bam`` file for the father, the second one being 
+the ``sample.bam`` file for the mother, and the third one being the ``sample.bam`` file 
+for the child, honoring the order in which the object dependencies were listed in the creation 
+of the ``trio`` object. 
+
+Apart from the important issue about the dependency order, the ``callDenovos`` rule 
+demonstrates the use the function :py:func:`.PP` to access a project parameter in the 
+configuration of the rule's parameters.
+
+Finally, the ``trioSummary.snakefile`` is also fairly simple, and contains one target, 
+``allDenovoCalls.txt``, that is the union of the *de novo* variants found in the individual trios: 
+
+.. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/trioSummary.snakefile
+
+One useful trick in the ``trioSummary.snakefile`` is the way we use the shell commands 
+``head``, ``for``, and ``tail``, to combine several files that have identical header, without 
+repeating the header multiple times.
+
+We can now re-run the ``project``, and ``projectTest`` with :option:`sobjects prepare` and 
+:option:`sobjects run`. Below, we show the ``.../projectTest/objects/trioSummary/o/allDenovoCalls.txt``
+after the execution of the ``projectTest`` is done (and with a bit of manual formatting in Excel):
+
+.. image:: _static/projectTest-allDenovoCalls.png
+  :alt: allDenovoCalls.txt for the projectTest
+
+Two de novo variants are identified in the ``SM79279`` child and one is identified in the ``SM79371`` 
+child. The first *de novo* is an ``G`` allele at position ``chr1:965184`` that is: supported by 24 reads 
+(which is larger than 3) in the child; not seen at all in his parents (dad.G and mom.G are both 0) and both parents have more than 10 reads covering the ``chr1:965184`` position (dad has 39 + 1 = 40 reads and mom has 24 reads).
+All the criteria for the a *de novo* allele are thus met. All the criteria are also met for the other two
+reported *de novo* variants. But, the third variant (the new ``C`` at ``chr1:930177``) just barely meets 
+the cut-offs and it is possible that it is a false *de novo* call--it is possible that the the three ``C`` in 
+the child are all due to noise, or to unlucky fail to sample the ``C`` allele from one of the parents. 
+
+When you successfully execute the large ``project`` you should get a list of 47 de novo variant. 
+
+.. code-block:: bash
+
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects graph | dot -Tpng > a.png
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects graph | neato -Tpng > a.png
+
+.. image:: _static/projectTest-OG.png
+  :alt: allDenovoCalls.txt for the projectTest
+
+.. image:: _static/project-OG.png
+  :alt: allDenovoCalls.txt for the projectTest
 

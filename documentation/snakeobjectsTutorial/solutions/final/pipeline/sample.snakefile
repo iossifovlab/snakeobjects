@@ -37,7 +37,7 @@ rule targetDepth:
     params: target=PP("target")
     conda: "env-bwa.yaml"
     log: **LFS('targetDepth')
-    shell: "(time samtools depth -b {params.target} -q 30 -Q 30 {input.bam} > {output} 2> {log.E}) 2> {log.T}"
+    shell: "(time samtools depth -b {params.target} -a {input.bam} > {output} 2> {log.E}) 2> {log.T}"
 
 rule coverageStats:
     input: T("depth.txt")
