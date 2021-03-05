@@ -25,7 +25,7 @@ palegreen slategrey
 colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
-def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id=0):
+def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id=0, shape='circle'):
     O = open(out+'.dot', 'w')
     print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
     print("digraph digraphname {", file=O)
@@ -50,7 +50,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
     for t,c in zip(OG.get_object_types(),colors):
     
         print(f"{t} -> {c}",file=sys.stderr)
-        print(f"node [fillcolor = {c}]", file=O)
+        print(f"node [fillcolor = {c}, shape=%s]" % shape, file=O)
         for o in OG[t]:
             if id == 0:
                 print(o2K(o), file=O)
@@ -156,6 +156,8 @@ def driver(OG, data):
     parser.add_argument("-i", '--id', dest='id', default=0, type=int, metavar='id',
         help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId' )
 
+    parser.add_argument("-s", '--shape', dest='shape', default='circle', type=str, metavar='shape',
+        help='shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html' )
     args = parser.parse_args(data[1:])
 
     width = args.width
@@ -164,8 +166,9 @@ def driver(OG, data):
     legend = args.legend
     out = args.out
     id = args.id
+    shape = args.shape
     
-    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, id=id)
+    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, id=id, shape=shape)
 
 
 
