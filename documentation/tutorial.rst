@@ -1295,9 +1295,39 @@ When you successfully execute the large ``project`` you should get a list of 47 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects graph | dot -Tpng > a.png
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects graph | neato -Tpng > a.png
 
-.. image:: _static/projectTest-OG.png
-  :alt: allDenovoCalls.txt for the projectTest
 
-.. image:: _static/project-OG.png
-  :alt: allDenovoCalls.txt for the projectTest
+.. |P18| image:: _static/project-step-1.8-graph.png
+.. |P19| image:: _static/project-step-1.9-graph.png
+.. |P21| image:: _static/project-step-2.1-graph.png
+.. |P22| image:: _static/project-step-2.2-graph.png
+.. |P23| image:: _static/project-step-2.3-graph.png
+.. |P30| image:: _static/project-final-graph.png
+.. |T18| image:: _static/projectTest-step-1.8-graph.png
+.. |T19| image:: _static/projectTest-step-1.9-graph.png
+.. |T21| image:: _static/projectTest-step-2.1-graph.png
+.. |T22| image:: _static/projectTest-step-2.2-graph.png
+.. |T23| image:: _static/projectTest-step-2.3-graph.png
+.. |T30| image:: _static/projectTest-final-graph.png
+
++-----+---------------+-----------------+
+| Step| projectTest   | project         |
++=====+===============+=================+
+| 1.8 | |T18|         + |P18|           +
++-----+---------------+-----------------+
+| 1.9 | |T19|         + |P19|           +
++-----+---------------+-----------------+
+| 2.1 | |T21|         + |P21|           +
++-----+---------------+-----------------+
+| 2.2 | |T22|         + |P22|           +
++-----+---------------+-----------------+
+| 2.3 | |T23|         + |P23|           +
++-----+---------------+-----------------+
+| 3.0 | |T30|         + |P30|           +
++-----+---------------+-----------------+
+
+
+
+
+
+
 
