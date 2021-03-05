@@ -18,8 +18,8 @@ community of the ``snakemake`` users.
     :maxdepth: 1
 
     gettingStarted
-    documentation 
     tutorial 
+    documentation 
     specialTopics 
     terms
     sobjects
