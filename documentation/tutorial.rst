@@ -917,7 +917,7 @@ With the bwa reference genome index created, it is time to align the reads in
 our fastq runs. We will store the alignments as a target of the fastq objects
 that have already been added to the object graph, but since the alignment uses
 the reference genome index will make the fastq objects to be dependent on the
-``refernece/o`` object. This is easily accomplished by a small change (adding
+``reference/o`` object. This is easily accomplished by a small change (adding
 the highlighted line) in the pipeline's ``build_objects_graph.py`` script:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.2/pipeline/build_object_graph.py
@@ -929,12 +929,12 @@ end of our ``pipeline/fastq.snakefile`` file:
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.2/pipeline/fastq.snakefile
     :emphasize-lines: 22-43
 
-The new target, ``fastq.bam``, is a ``bam`` file. ``.bam`` is well accepted
-binary file standard format for storing the results of alignments. ``.sam``
+The new target, ``fastq.bam``, is a ``bam`` file. ``bam`` is a well accepted
+binary file standard format for storing the results of alignments. ``sam``
 files are the text version of the ``bam`` files. The ``bwa`` tool we use for
 alignment generates sam format that is easily converted into the more efficient
-bam formant with using ``samtools``.  That is the reason we required samtools
-to be part of the ``env-bwa.yaml`` conda environment that is re-used in the new
+bam formant using ``samtools``.  That is the reason we required samtools to be
+part of the ``env-bwa.yaml`` conda environment that is re-used in the new
 ``align`` rule.  In the new rule, we avoid storing the large sam files by
 piping (``|``) the sam output of ``bwa`` through ``samtools`` and storing only
 the significantly smaller ``bam`` files.
@@ -946,10 +946,10 @@ use named inputs. The rule has four inputs, and we have called them
 be used in the implementation of the rule using constructs like
 ``{input.refFile}``. This clearly improves the readability compared to
 ``{input[0]}`` particularly in rules with many inputs of different types.  It's
-worthwhile pointing out that the ``refFileBwaIndex`` input listed as an input
+worthwhile pointing out that the ``refFileBwaIndex`` is listed as an input
 but is not explicitly used in the implementation. ``snakemake`` will execute
 this rule only after all its inputs have been created which is important here
-because ``bwa`` implicitly requires the index files that were must have been
+because ``bwa`` implicitly requires the index files that must have been
 prepared before the ``chrAll.bwaIndex.flag`` is created. The ``refFile`` and
 ``refFileBwaIndex`` are set to point to the ``chrAll.fa`` and
 ``chrAll.bwaIndex.flag`` targets of the dependency ``referece/o`` object, while
@@ -966,25 +966,25 @@ be used in the implementation of the rule using constructs like
 ``{params.sId}``. The ``threads`` clause is the way to inform ``snakemake`` of
 the number of threads the rule will use in its implementation. Alignment of
 sequencing reads with bwa is a task that can benefit greatly from the use of
-threads. The tool typically loads into memeory a fairly large index and then
+threads. The tool typically loads into memory a fairly large index and then
 uses that index to align tens or even hundreds of millions of reads or read
-pairs. Each read is aligned indendently. Having many threads share the same
+pairs. Each read is aligned independently. Having many threads share the same
 index but process different reads goes a long way towards optimizing memory
 usage, a resource that is frequently a bottleneck in large sequence analysis
 projects. But when we execute on computational cluster we have to take into
 account the number of cores configured on the individual cluster nodes and how
 easy it is to schedule a job requiring many threads in typical cluster loads or
-when we run large projects. The ability to controll the number of threads,
-memeory, and other resources separatelly for each rule makes is possible to
-develop a strategy balancing the many contradictory requirements.
+when we run large projects. The ability to control the number of threads,
+memory, and other resources separately for each rule makes is possible to
+develop a strategy for balancing the many contradictory requirements.
 
 We will now create the alignment bam files first for the ``projectsTest`` project 
 and then for the large ``project``. We need to recreate the object graph (by running
-:option:`sobjects prepare`) because we introdued teh new dependence of fastq objects 
-on the ``reference/o``. But unless we start from scratch, by removeing teh ``objects`` 
+:option:`sobjects prepare`) because we introduced the new dependence of fastq objects 
+on the ``reference/o``. But unless we start from scratch, by removing the ``objects`` 
 directory, we would need to help ``snakemake`` a bit by asking explicitly to run the 
-``align`` rule---here we in the situation when we added a targed to already complete 
-objects.
+``align`` rule---here we are again in the situation when we add a target to an already 
+complete objects.
 
 .. code-block:: bash
 
@@ -1011,23 +1011,28 @@ objects.
     Select jobs to execute...
     ...
  
-On the small ``projectTest`` this finishes quickly, well under a
-minitue. But when you repeat the same commands for the large project 
-(we exect that you will indeed to that) it may take several minutes to create all 384 alignment
-files. And in real seuquence alignment projects it is impractical to run
-many alignments on a single computer. One of the most important features of
+On the small ``projectTest`` this finishes quickly, well under a minute. But
+when you repeat the same commands for the large project (we expect that you
+will indeed to that) it may take several minutes to create all 384 alignment
+files. And in real sequence alignment projects it is impractical to run many
+alignments on a single computer. One of the most important features of
 ``snakeobjects``, directly inherited from ``snakemake``, is that the same
-pipline without any change can be executed on a computational cluter by simply
-providing the command line parameter ``--profile=<cluster profile>`` to the :option:`sobjects run`.
-The <cluster profile> points to a directory that contains the setup necessary to
-submit a jobs on a given cluster. The configuration of the cluster profiles is 
-beyond the scope of this tutorial. But, if you happend to have one available or 
-if go through the steps descriebed in (HOW TO SET UP CLUSTER PROFILES) you you should by
-all means execute the tutorial pipelines on the your cluster. When you get a cluster 
-profile configured you may also consider adding the ``--profile=<cluster profile>`` to the 
-``default_snakemake_args`` project parameter. Everytime that you use :option:`sobjects run` for that project
-the ``snakemake`` will submit jobs the cluster instead of running them locally on you computer as
-it does when you pass the ``-j`` option. 
+pipeline without any change can be executed on a computational cluster by
+simply providing the command line parameter ``--profile=<cluster profile>`` to
+the :option:`sobjects run`.  The ``<cluster profile>`` points to a directory
+that contains the setup necessary to submit a jobs on a given cluster. The
+configuration of the cluster profiles is beyond the scope of this tutorial.
+But, if you happen to have one available or if go through the steps described
+in :ref:`working-with-clusters` you should by all means execute the
+tutorial pipelines on the your cluster. Note though that the jobs generated
+by running the tutorial projects are all small because we prepared a toy input
+datasets.  For small jobs like these the overhead of submitting and scheduling 
+may be unnecessarily large. When you get a cluster profile
+configured you may also consider adding the ``--profile=<cluster profile>`` to
+the ``default_snakemake_args`` project parameter. Every time that you use
+:option:`sobjects run` for that project the ``snakemake`` will submit jobs the
+cluster instead of running them locally on you computer as it does when you
+pass the ``-j`` option. 
 
 Step 2.3. Target coverage by sample and globally 
 ------------------------------------------------
@@ -1169,8 +1174,8 @@ for the large ``project`` should look like:
   :alt: allCoverages.png for the large project
 
 
-Step 3. Calling de novo variants
-================================
+Step 3. Calling *de novo* variants
+==================================
 
 To finish the tutorial we will implement a quick and dirty *de novo* caller and will integrate
 it into our pipeline. *De novo* variants are nucleotides (our de novo caller will handle 
@@ -1297,17 +1302,29 @@ When you successfully execute the large ``project`` you should get a list of 47 
 
 
 .. |P18| image:: _static/project-step-1.8-graph.png
+    :width: 300
 .. |P19| image:: _static/project-step-1.9-graph.png
+    :width: 300
 .. |P21| image:: _static/project-step-2.1-graph.png
+    :width: 300
 .. |P22| image:: _static/project-step-2.2-graph.png
+    :width: 300
 .. |P23| image:: _static/project-step-2.3-graph.png
+    :width: 300
 .. |P30| image:: _static/project-final-graph.png
+    :width: 300
 .. |T18| image:: _static/projectTest-step-1.8-graph.png
+    :width: 300
 .. |T19| image:: _static/projectTest-step-1.9-graph.png
+    :width: 300
 .. |T21| image:: _static/projectTest-step-2.1-graph.png
+    :width: 300
 .. |T22| image:: _static/projectTest-step-2.2-graph.png
+    :width: 300
 .. |T23| image:: _static/projectTest-step-2.3-graph.png
+    :width: 300
 .. |T30| image:: _static/projectTest-final-graph.png
+    :width: 300
 
 +-----+---------------+-----------------+
 | Step| projectTest   | project         |
