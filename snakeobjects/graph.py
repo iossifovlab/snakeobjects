@@ -25,7 +25,7 @@ palegreen slategrey
 colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
-def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph'):
+def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id=0):
     O = open(out+'.dot', 'w')
     print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
     print("digraph digraphname {", file=O)
@@ -52,7 +52,12 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph'):
         print(f"{t} -> {c}",file=sys.stderr)
         print(f"node [fillcolor = {c}]", file=O)
         for o in OG[t]:
-            print(o2K(o), file=O)
+            if id == 0:
+                print(o2K(o), file=O)
+            elif id == 1:
+                print(f"node [label=\"%s\"] %s" % (o.oId, o2K(o)), file=O)
+            elif id == 2:
+                print(f"node [label=\"%s/%s\"] %s" % (o.oType, o.oId, o2K(o)), file=O)               
         print('', file=O)
 
     print('''
@@ -73,6 +78,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph'):
     print('}', file=O)
 
     O.close()
+    
     if legend:
         O = open(out+'_legend.dot', 'w')
         print("digraph digraphname {", file=O)
@@ -133,16 +139,22 @@ def driver(OG, data):
     parser = argparse.ArgumentParser(prog='graph.py')
 
     parser.add_argument("-w", "--width", dest="width", default=.75, type=float, action='store',
-        metavar="width", help="width of node" )
+        metavar="width", help="width of node, default is 0.75" )
 
     parser.add_argument("-p", "--penwidth", dest="penwidth", default=1, type=float, action='store',
-        metavar="penwidth", help="thickness of edges" )
+        metavar="penwidth", help="thickness of edges, default is 1.0" )
 
     parser.add_argument("-a", '--arrowsize', dest='arrowsize', default=1, type=float, metavar='arrowsize',
-        help='multiplicative scale factor for arrowheads' )
+        help='multiplicative scale factor for arrowheads, default is 1.0' )
 
     parser.add_argument("-l", '--legend', dest='legend', default=False, type=bool, metavar='legend',
-        help='multiplicative scale factor for arrowheads' )
+        help='if True generates legend in a separate file, default is False' )
+
+    parser.add_argument("-o", '--out', dest='out', default='graph', type=str, metavar='out',
+        help='prefix of output file, default is graph' )
+
+    parser.add_argument("-i", '--id', dest='id', default=0, type=int, metavar='id',
+        help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId' )
 
     args = parser.parse_args(data[1:])
 
@@ -150,8 +162,10 @@ def driver(OG, data):
     penwidth = args.penwidth
     arrowsize = args.arrowsize
     legend = args.legend
-
-    plotGraph(OG, width, penwidth, arrowsize, legend)
+    out = args.out
+    id = args.id
+    
+    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, id=id)
 
 
 
