@@ -50,22 +50,22 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
     for t,c in zip(OG.get_object_types(),colors):
     
         print(f"{t} -> {c}",file=sys.stderr)
-        print(f"node [fillcolor = {c}, shape=%s]" % shape, file=O)
+        print(f"node [fillcolor = {c}, shape = {shape}]", file=O)
         for o in OG[t]:
             if id == 0:
                 print(o2K(o), file=O)
             elif id == 1:
-                print(f"node [label=\"%s\"] %s" % (o.oId, o2K(o)), file=O)
+                print(f"node [label=\"{o.oId}\"] {o2K(o)}", file=O)
             elif id == 2:
-                print(f"node [label=\"%s/%s\"] %s" % (o.oType, o.oId, o2K(o)), file=O)               
+                print(f"node [label=\"{o.oType}/{o.oId}\"] {o2K(o)}", file=O)               
         print('', file=O)
 
     print('''
     edge [color = black,
     ''', file=O)
     print(
-          "penwidth= %f," % penwidth,
-          "arrowsize= %f," % arrowsize
+          f"penwidth = {penwidth},",
+          f"arrowsize = {arrowsize},"
     , file=O)
     print("]", file=O)
 
@@ -89,7 +89,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
         style = filled,
         ''', file=O)
         print(
-            "width = %f," % width
+            "width = {width),"
             , file=O)
         print('''
         color = grey,
