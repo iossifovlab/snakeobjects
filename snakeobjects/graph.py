@@ -89,7 +89,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
         style = filled,
         ''', file=O)
         print(
-            "width = {width),"
+            f"width = {width},"
             , file=O)
         print('''
         color = grey,
@@ -105,7 +105,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
           ''', file=O)
         for t,c in zip(OG.get_object_types(),colors):
     
-            print(f"node [ fillcolor=%s ] %s_s" % (c, t), file=O)
+            print(f"node [ fillcolor={c} ] {t}_s", file=O)
         print(' ', file=O)
 
         print("node [shape=none, fillcolor=none]", file=O)
@@ -113,23 +113,23 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
 
         for t in OG.get_object_types():
     
-            print("node [ label=%s ] %s_n" % (t, t), file=O)
+            print(f"node [ label={t} ] {t}_n", file=O)
 
         print(' ', file=O)
         for t in OG.get_object_types():
     
-            print("{ rank=same; %s_n;%s_s }" % (t, t), file=O)
+            print("{ rank=same; %s_n;%s_s }" % (t,t), file=O)
 
         print('', file=O)
         print("edge [style=invis]", file=O)
         for t in OG.get_object_types():
     
-            print(f"%s_n -> %s_s" % (t, t), file=O)
+            print(f"{t}_n -> {t}_s", file=O)
         print('', file=O)
         names = OG.get_object_types()
         for i in range(len(names)-1):
     
-            print(f"%s_s -> %s_s" % (names[i], names[i+1]), file=O)
+            print(f"{names[i]}_s -> {names[i+1]}_s", file=O)
         print('', file=O)
         print("}", file=O)
         O.close()
