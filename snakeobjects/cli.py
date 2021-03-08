@@ -55,9 +55,22 @@ Creates targets for object in the object graph by running snakemake with profile
 <arguments to snakemake> determine which targets will be created and what resources 
 will be used''',
 
-    "graph": '''sobjects graph [<width> <penwidth> <arrowsize>] [<objectGraph json file>]
+    "graph": '''sobject graph [-w width] [-p penwidth] [-a arrowsize] [-l legend] [-o out] [-i id] [-s shape]
 
-Prints to stdout dot file for project ObjectGraph. Defaults values for width, penwidth, and arrowsize are 0.05, 0.1, 0.1. If fourth argument is provided, the dot file for the object graph in json file will be created'''
+optional arguments:
+  -h, --help            show this help message and exit
+  -w width, --width width
+                        width of node, default is 0.75
+  -p penwidth, --penwidth penwidth
+                        thickness of edges, default is 1.0
+  -a arrowsize, --arrowsize arrowsize
+                        multiplicative scale factor for arrowheads, default is 1.0
+  -l legend, --legend legend
+                        if True generates legend in a separate file, default is False
+  -o out, --out out     prefix of output file, default is graph
+  -i id, --id id        place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId
+  -s shape, --shape shape
+                        shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html'''
 
 }
 
