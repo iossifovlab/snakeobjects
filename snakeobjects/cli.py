@@ -66,8 +66,8 @@ optional arguments:
   -a arrowsize, --arrowsize arrowsize
                         multiplicative scale factor for arrowheads, default is 1.0
   -l legend, --legend legend
-                        if True generates legend in a separate file, default is False
-  -o out, --out out     prefix of output file, default is graph
+                        Name of the output legend file, default is no legend
+  -o out, --out out     name of the output file, default is stdout
   -i id, --id id        place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId
   -s shape, --shape shape
                         shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html'''

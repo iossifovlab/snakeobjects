@@ -17,7 +17,7 @@ Step 1
 
 An empty directory is both a valid ``snakeobjects`` project and a valid
 ``snakeobjects`` pipeline directory.  We will use here such a minimal and
-useless project to introduce the some of the basic steps for working with
+useless project to introduce some of the basic steps for working with
 ``snakeobjects`` projects and pipelines. Let's create an empty directory and go
 in it:
 
@@ -30,7 +30,7 @@ Step 2
 ------
 
 We can then use the :option:`sobjects describe` tool to get basic information about
-the proejct and the pipeline:
+the project and the pipeline:
 
 .. code-block:: bash
 
