@@ -58,6 +58,10 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
                 print(f"node [label=\"{o.oId}\"] {o2K(o)}", file=O)
             elif id == 2:
                 print(f"node [label=\"{o.oType}/{o.oId}\"] {o2K(o)}", file=O)               
+            elif id == 3:
+                lbl = "\n".join([f"{o.oType}/{o.oId}"] + [f"{n}: {v}" for n,v in o.params.items()])
+                print(f"node [label=\"{lbl}\"] {o2K(o)}", file=O)               
+        print('', file=O)
         print('', file=O)
 
     print('''
@@ -154,7 +158,7 @@ def driver(OG, data):
         help='prefix of output file, default is graph' )
 
     parser.add_argument("-i", '--id', dest='id', default=0, type=int, metavar='id',
-        help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId' )
+        help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId, 3 - oType/oId and parameters' )
 
     parser.add_argument("-s", '--shape', dest='shape', default='circle', type=str, metavar='shape',
         help='shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html' )
