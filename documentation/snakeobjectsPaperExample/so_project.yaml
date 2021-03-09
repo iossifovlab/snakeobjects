@@ -1,0 +1,4 @@
+inputDir: "[P:projectDir]/input"
+chrAllFile: "[C:inputDir]/chrAll.fa"
+pedigree: "[C:inputDir]/collection.ped"
+fastqDir: "[C:inputDir]/fastq"
