@@ -26,7 +26,7 @@ colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
 def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id=0, shape='circle'):
-    O = open(out+'.dot', 'w')
+    O = open(out+'.dot', 'w') if not out == 'stdout' else sys.stdout
     print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
     print("digraph digraphname {", file=O)
     print('''
@@ -84,7 +84,7 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
     O.close()
     
     if legend:
-        O = open(out+'_legend.dot', 'w')
+        O = open(legend, 'w')
         print("digraph digraphname {", file=O)
         print('''
         graph [ size = "60,60" ];
@@ -151,11 +151,11 @@ def driver(OG, data):
     parser.add_argument("-a", '--arrowsize', dest='arrowsize', default=1, type=float, metavar='arrowsize',
         help='multiplicative scale factor for arrowheads, default is 1.0' )
 
-    parser.add_argument("-l", '--legend', dest='legend', default=False, type=bool, metavar='legend',
-        help='if True generates legend in a separate file, default is False' )
+    parser.add_argument("-l", '--legend', dest='legend', default="", type=str, metavar='legend',
+        help='Name of the output legend file, default is no legend' )
 
-    parser.add_argument("-o", '--out', dest='out', default='graph', type=str, metavar='out',
-        help='prefix of output file, default is graph' )
+    parser.add_argument("-o", '--out', dest='out', default='stdout', type=str, metavar='out',
+        help='name of the output file, default is stdout' )
 
     parser.add_argument("-i", '--id', dest='id', default=0, type=int, metavar='id',
         help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId, 3 - oType/oId and parameters' )
