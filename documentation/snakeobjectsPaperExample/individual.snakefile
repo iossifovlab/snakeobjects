@@ -1,15 +1,10 @@
 add_targets("fastq.bam", "sample.bam", "sample.bam.bai")
 
 rule align:
-    input:
-        refFile       = DT("chrAll.fa"),
-        refFileBwaIdx = DT("chrAll.bwaIndex.flag"),
-    output:
-        T("fastq.bam")
-    params:
-        fqId   = P("fqId")
-    resources: 
-        mem_mb = 5*1024
+    input: refFile = DT("chrAll.fa"), refFileBwaIdx = DT("chrAll.bwaIndex.flag"),
+    output: T("fastq.bam")
+    params: fqId   = P("fqId")
+    resources: mem_mb = 5*1024
     threads: 5
     log: **LFS('align')    
     shell: 
