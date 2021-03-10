@@ -1,4 +1,4 @@
-add_targets()
+add_targets("allDenovoCalls.txt")
 
 add_targets("allDenovoCalls.txt")
 
