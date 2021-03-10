@@ -7,7 +7,6 @@ rule callDenovos:
   output: T("denovo_calls.txt")
   params:
     bed = PP("target")
-  log: **LFS("denovo_calls")
   shell:
-    "(time call_denovo.py {input.bams} {params.bed} > {output} 2>{log.E}) 2> {log.T}"
+    "call_denovo.py {input.bams} {params.bed} > {output}"
 

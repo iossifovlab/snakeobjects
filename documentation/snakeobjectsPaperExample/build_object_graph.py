@@ -13,5 +13,5 @@ def run(proj, OG):
         if r['fatherId'] == '.' or r['motherId'] == '.': continue
         OG.add('trio',r['personId'], 
                deps=[OG['individual',r[i]] for i in ['fatherId', 'motherId','personId']])
-    OG.add('trioSummary','o',deps=OG['trio'])
+    OG.add('denovo','o',deps=OG['trio'])
     
