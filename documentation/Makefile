@@ -21,9 +21,14 @@ snakeobjectsTutorial.tgz:
 	for d in `find snakeobjectsTutorial -name objects`; do rm -r $$d; done
 	tar czf $@ snakeobjectsTutorial
 
+snakeobjectsPaperExample.tgz: 
+	for d in `find snakeobjectsPaperExample -name __pycache__`; do rm -r $$d; done
+	for d in `find snakeobjectsPaperExample -name objects`; do rm -r $$d; done
+	tar czf $@ snakeobjectsPaperExample
+
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-html: Makefile snakeobjectsTutorial.tgz 
+html: Makefile snakeobjectsTutorial.tgz snakeobjectsPaperExample.tgz
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 deploy: html
@@ -32,3 +37,4 @@ deploy: html
 clean:
 	rm -rf _build
 	rm -rf snakeobjectsTutorial.tgz
+	rm -rf snakeobjectsPaperExample.tgz
