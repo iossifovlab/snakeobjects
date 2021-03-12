@@ -18,7 +18,8 @@ community of the ``snakemake`` users.
     :maxdepth: 1
 
     gettingStarted
-    tutorial 
+    tutorial
+    examples
     documentation 
     specialTopics 
     terms
