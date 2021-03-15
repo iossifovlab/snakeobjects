@@ -1,4 +1,4 @@
-add_targets("quals.svg")
+add_targets("quals.svg","all.vcf")
 
 rule bcftools_call:
     input:
