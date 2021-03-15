@@ -63,10 +63,10 @@ Opening it in excel with a little formatting can get:
   :alt: allDenovoCalls.txt
 
 
-snakemakeTutorial Example
-=========================
+Snakemake Tutorial Example
+==========================
 
-This section explains how to load and execute small project reimplementing in snakeobject `snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html/>`. We assume that you will work or a Linux or Mac. In
+This section explains how to load and execute small project reimplementing in snakeobject `snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_. We assume that you will work or a Linux or Mac. In
 addition, we assume that you have a conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
