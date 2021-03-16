@@ -5,7 +5,7 @@ Additional Examples
 Paper Example
 =============
 
-This section explains how to load and execute small project described in ``snakeobjects`` paper. We assume that you will work or a Linux on Mac. In
+This section explains how to load and execute small project described in ``snakeobjects`` paper. We assume that you will work or a Linux or Mac. In
 addition, we assume that you have a conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
@@ -62,3 +62,16 @@ Opening it in excel with a little formatting can get:
 .. image:: _static/paperExample-allDenovoCalls.png
   :alt: allDenovoCalls.txt
 
+
+Snakemake Tutorial Example
+==========================
+
+This section explains how to load and execute small project reimplementing in snakeobject `snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_. We assume that you will work or a Linux or Mac. In
+addition, we assume that you have a conda or miniconda installed (`Conda
+Installation
+<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
+Everything else needed is inclucded in the
+:download:`snakemakeTutorialExample.tgz <./snakemakeTutorialExample.tgz>`. When you
+download and extract (``tar xzf snakemakeTutorialExample.tgz``) file, you will
+get a directory called ``snakeomakeTutorialExample``. We assume here that this directory is placed in /tmp, but you can place it elsewhere.
+You can then follow the same steps as described in the ``Paper example`` above.
