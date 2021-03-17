@@ -13,17 +13,17 @@ batch of exome sequence data generated from 100 families comprised of mother,
 father, and a child and we were asked to examine the quality of the data and to
 identify the *de novo* substitutions in the 100 children. A *de novo*
 substitution is a nucleotide at a given position in a child that is not present
-in her parents. 
+in his/her parents. 
 
 Setup
 =====
 
 ``snakeobjects`` and this tutorial are tested and work well on Linux; they
-don't work on Windows. So we assume that you will work on a Linux on Mac. In
+don't work on Windows. We assume that you will work on a Linux or Mac. In
 addition, we assume that you have a conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
-Everything else needed to follow this tutorial is inclucded in the
+Everything else needed to follow this tutorial is included in the
 :download:`snakeobjectsTutorial.tgz <./snakeobjectsTutorial.tgz>`. When you
 download and extract (``tar xzf snakeobjectsTutorial.tgz``) the file, you will
 get a directory called ``snakeobjectsTutorial``. In the examples that follow we
@@ -35,28 +35,28 @@ else.
 The ``snakeobjectsTutorial`` folder contains one file named ``environment.yml``
 and two subdirectories: ``input``, and ``solutions``.
 
-The ``envirnoment.yml`` file defines the conda environment we will use
-troughout the tutorial:
+The ``environment.yml`` file defines the conda environment we will use
+throughout the tutorial:
 
  
 .. literalinclude:: snakeobjectsTutorial/environment.yml
 
-To create the ``snakeobjectsTutorial`` evironment and to activate it we can use
-the follwoing commands:
+To create the ``snakeobjectsTutorial`` environment and to activate it we can use
+the following commands:
 
 .. code-block:: bash
 
     (base) .........................$ cd /tmp/snakeobjectsTutorial 
     (base) /tmp/snakeobjectsTutorial$ conda env create 
-    (base) /tmp/snakeobjectsTutorial$ conda activate snake 
+    (base) /tmp/snakeobjectsTutorial$ conda activate snakeobjectsTutorial
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ 
 
-The command line prompt shows the activate conda environment and the current
-working directory. We will show this long prompt every where below to remind
+The command line prompt shows the activated conda environment and the current
+working directory. We will show this long prompt everywhere below to remind
 you that you must work under the ``snakeobjectsTutorial`` environment and
 because a lot of the commands depend on the current working directory.  
 
-The ``input`` directory naturally contains the input data for our project.
+The ``input`` directory contains the input data for our project.
 Inside it you will find a short ``README.txt`` file describing the contents.
 Briefly, the directory contains the reference genome (``chrAll.fa``), the known
 genes (``genes.txt``), and the regions targeted by the exome capture
