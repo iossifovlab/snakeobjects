@@ -64,13 +64,13 @@ genes (``genes.txt``), and the regions targeted by the exome capture
 first 1MB of the human chromosome 1 that contains 54 transcripts from 36
 different genes. The genes include 67 protein coding regions/exons that are
 targeted by the hypothetical exome capture. 
-There are also 768 fastq files in the sub-directory ``input/fastq`` grouped
-into 384 pairs of read 1---read 2 files (i.e.
+There are also 768 fastq files in the sub-directories of ``input/fastq`` grouped
+into 384 pairs of read 1---read 2 files (i.e.,
 ``fastq/FC0A03F0C/L007/bcL_R1.fastq.gz`` and
-``fastq/FC0A03F0C/L007/bcL_R2.fastq.gz``. This a typical structure of the
+``fastq/FC0A03F0C/L007/bcL_R2.fastq.gz``. This is a typical structure of the
 output for the so-called paired-end sequencing. In addition, there is a file
 called ``fastqs.txt`` providing the additional information for each of the
-fastq files (i.e. the individuals for each of the fastq files) and the
+fastq files (i.e., the individuals for each of the fastq files) and the
 ``collection.ped`` file describing the 100 trio families using a standard
 pedigree file that has one line for each of the 300 individuals. 
 
@@ -87,11 +87,11 @@ We will build a pipeline for achieving our goals or identifying the *de novo*
 variants and the judging the quality of the data by small steps. We will start
 with a simple pipeline that counts the number of pairs of reads for each fastq run. 
 
-Step 1.1. Create project and pipline directories
-------------------------------------------------
+Step 1.1. Create project and pipeline directories
+-------------------------------------------------
 
-First, let's create a directory called ``pipeline`` where will create add the
-pipeline's components and a directory called ``project`` where will store the
+First, let's create a directory called ``pipeline`` where we will add the
+pipeline's components and a directory called ``project`` where we will store the
 results of the pipeline. We will assume that you create these directories in 
 the ``snakeobjectsTutorial`` directory:  
 
@@ -118,18 +118,19 @@ This ``so_project.yaml`` configures our first snakeobjects project. The first
 line specifies that the pipeline that will operate on this project is contained
 in the directory ``../pipeline`` relative to the project directory. The
 ``[P:projectDir]`` is an example for *interpolation* feature available in the
-project configuration files. Alternatively (and possibly preferably), we could
+project configuration files. Alternatively, we could
 have specified the pipeline directory using a full path
 (``/tmp/snakeobjectsTutorial/pipeline``). The second line adds a configuration
 property called ``inputDir`` that points to the input directory that was given
-to us. Here we have also configured relatively to the project directory which
-is convenient for the purposes of the tutorial. The ``inputDir`` will not
-directory be used by the pipeline, but is convenient to define several of the
-project properties relative to the ``inputDir``. Indeed, the next two
+to us. Here we have also used a path relative to the project directory, which
+is convenient for the purposes of the tutorial. The ``inputDir`` parameter will not
+be used by the pipeline directly. We will only use it in the ``so_project.yaml`` file
+to define the values of other project parameters relative to the `inputDir`.
+Indeed, the next two
 properties  ``fastqsFile`` and ``fastqDir`` are defined succinctly based on the
 ``inputDir`` and point to the table describing the fastq files and to the
 directory containing the fastq files. Using ``inputDir`` is optional --- we
-could have defined the fastqDir as ``"[P:projectDir/../input/fastq"`` or with a
+could have defined the fastqDir as ``"[P:projectDir]/../input/fastq"`` or with a
 full path to the directory, ``/tmp/snakeobjectsTutorial/input/fastq``.
 
 To check if the configuration was successful, we can use the :option:`sobjects
@@ -152,7 +153,7 @@ directory or any of its subdirectories):
 
 
 The result should show that sobjects has determined the project and the pipeline directories 
-and that the fastqdir and fastqsFile project properties point to the correct locations:
+and that the fastqDir and fastqsFile project properties point to the correct locations:
 
 .. code-block:: bash
 
@@ -177,8 +178,8 @@ pipeline. So far the pipeline directory is empty. The first thing to do when
 starting a pipeline is to create the ``build_object_graph.py`` script. In the 
 **Step 1** we will create a very simple graph that contains one object for each 
 fastq pairs of files. The fastq pairs are listed in the fastqs.txt file in the input
-directory and we have already ensured that our project has a prarameters 
-(``fastqsFile``) that points on the fastqs.txt. The contents of our first 
+directory and we have already ensured that our project has a parameter 
+(``fastqsFile``) that points to the fastqs.txt. The contents of our first 
 ``build_object_graph.py`` are shown below. You should create a file named 
 ``build_object_graph.py`` in the pipeline directory and copy the shown contents
 in the file.
@@ -229,7 +230,7 @@ The above says that we have created an object graph that has 384 objects of
 type ``fastq``, that is exactly what we expected. 
 
 Importantly, the :option:`sobjects prepare` command created a directory
-``objects`` in the project directory. The ``objects`` contains large number of
+``objects`` in the project directory. The ``objects`` directory contains large number of
 subdirectories and two files:
 
 .. code-block:: bash
@@ -253,20 +254,20 @@ pipeline. In addition, there are directories for each object from the objects
 graph where the objects' targets will be stored: the
 ``objects/fastq/FC0A03F09.L006.G`` directory will contain the targets for the
 object of type ``fastq`` and object id ``FC0A03F09.L006.G``. Each of the object
-directories has also a log subdirectory (i.e.
+directories has also a log subdirectory (i.e.,
 ``objects/fastq/FC0A03F09.L006.G/log``) where log files associated with the
 object will be stored (more about log files later). 
 
 In addition, the :option:`sobjects prepare` created one file,
-``fastq.snakefile``, in pipeline directory. This is not a typical behaviour: as
-a rule **sobjects** only updates the project directory (and to be more
+``fastq.snakefile``, in pipeline directory. This is not a typical behavior: as
+a rule, **sobjects** only updates the project directory (and to be more
 specific, only its ``objects`` subdirectory), but when we start a new pipeline
 it's handy to have placeholders for the object type snakemake files be created
 for us. The content if the new ``fastq.snakefile`` is very simple: 
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-1.5/pipeline/fastq.snakefile
 
-This simple one line accomplishes nothing but reminding us that next step would
+This simple one line accomplishes nothing but reminding us that the next step would
 be to declare the targets to be created for objects of  type ``fastq``. There
 is one special target automatically added to every object file, and it is
 called ``T("obj.flag")``. It is created after all the other targets for the
@@ -278,15 +279,15 @@ shortly.
 Step 1.5. Execute the dummy project 
 -----------------------------------
 
-After we have *prepared* the project, it time to execute it. This is done by
-:option:`sobjects run` command. This commands requires at least one argument to
+After we have *prepared* the project, it is time to execute it. This is done by
+:option:`sobjects run` command. This command requires at least one argument to
 that we use to control how to execute the pipeline:  ``-j`` means that we can
 use all the available local cores to execute the pipeline; ``-j 1`` means that
 we can use only one of the local cores; ``-j 2`` means that we can use 2 local
 cores, etc. Alternatively, we can add ``--profile <cluster profile>`` option
 which indicate that we will execute the pipeline by submitting jobs to the
 computation cluster defined by the ``<cluster profile>``.  Executing pipelines
-on cluster will be covered later. For now we would use the simplest ``-j`` form
+on cluster will be covered later. For now, we would use the simplest ``-j`` form
 to execute the *dummy* pipeline we have developed so far. We can specify more
 options to the :option:`sobjects run` command that control the execution of the
 pipeline and here we would use the ``-q`` command that instructs the underlying
@@ -320,12 +321,12 @@ be created for the project and is naturally executed only 1 time. The
 ``so_fastq_obj`` rule is used to build an object of type ``fastq`` and since we
 have 384 such objects in our graph this rule is used for 384 jobs.  
 
-The :option:`sobjects run` command added a ``objects/.snakemake`` directory
+The :option:`sobjects run` command added the ``objects/.snakemake`` directory
 where ``snakemake`` stored internal information related to the execution. This
 may come handy for figuring out errors in complex situation but we will not
-cover the ``snakemake`` privates in this tutoria and refer you to the
+cover the ``snakemake`` privates in this tutorial and refer you to the
 ``snakemake``'s documentation for more information.  Most importantly,
-:option:`sobjects run` created a ``obj.flag`` file in directories for each
+:option:`sobjects run` created an ``obj.flag`` file in directories for each
 object: 
 
 .. code-block:: bash
@@ -342,15 +343,15 @@ object:
     objects/fastq/FC0A03F06.L008.I/obj.flag
     objects/fastq/FC0A03F06.L008.I/log
 
-These files correspond the ``T("obj.flag")`` target and are created only after
+These files represent the ``T("obj.flag")`` target and are created only after
 all of the other targets for the object are created. As we have not yet added
-any other targets, only the ``obj.flags`` are create for the objects. 
+any other targets, only the ``obj.flags`` are created for the objects. 
 
-The pipline and the project configuration we have developped so far are
+The pipeline and the project configuration we have developed so far are
 included in the ``solutions/step-1.5 directory``.
 
-Step 1.6. Add a usefull target 
-------------------------------
+Step 1.6. Add a useful target 
+-----------------------------
 
 Next, we will add an explicit target that does something useful: we will create
 a target called ``pairNumber.txt`` for objects of type ``fastq`` that will
@@ -366,19 +367,19 @@ implied by the name of the snakemake file ``fastq.snakemake``) will have a
 target named ``pairNumber.txt``.
 
 Next is a ``snakemake`` rule we have called ``countReads`` that describes how
-such target is to be created: the output clause on line 5 shows that this rule
+to create the target: the output clause on line 5 shows that this rule
 will generate the ``T("pairNumber.txt")`` target.  As input (line 4), the rule
 will use the two files pointed by the fastq object's parameters called ``R1``
 and ``R2``.  To obtain the value of ``R1`` and ``R2`` parameters for the object
-the rule operates on the rule uses the extension function :py:func:`.P`. As a
-reminder, these parameters were set so that their values are full file paths to
-the read 1 and read 2 files object within the ``input/fastq`` directory for the
+the rule uses the extension function :py:func:`.P`.
+These parameters were set so that their values are full file paths to
+the read 1 and read 2 files within the ``input/fastq`` directory for the
 fastq object.
 
 We use the ``run`` clause of the ``countReads`` rule to implement the
 generation of the outputs from inputs by a python snipped. There are
 alternative clauses that can be used instead of ``run`` that allow different
-ways to implement the output generation (i.e. with ``shell`` clause we can use
+ways to implement the output generation (i.e., with ``shell`` clause we can use
 shell commands, like ``cat``, ``echo`` to generate the outputs). Later in the
 tutorial we will demonstrate how to use some of these alternatives. 
 
@@ -392,11 +393,11 @@ fastq/{oid}/pairNumber.txt``.)
 
 The actual implementation is fairly trivial assuming one knows a bit about the
 way pair-end sequencing results are represented in the fastq files. Briefly, in
-pair-end sequencing a small (i.e. 200-500 base-pairs) linear DNA fragments from the
+pair-end sequencing a small (i.e., 200-500 base-pairs) linear DNA fragments from the
 genome are sequenced and for each fragment the sequencing machine first reads
-several (i.e. 100) nucleotides from one side (read 1) of the fragment and next
-several nucleotides from the other end (read 2) of the fragment.  The read 1s
-from all fragments are stored in read 1 fastq file and the read 2s are
+several (i.e., 100) nucleotides from one side (read 1) of the fragment and 
+several nucleotides from the other end (read 2) of the fragment.  The first reads 
+from all fragments are stored in read 1 fastq file and the second reads are
 stored in the read 2 fastq file.  Importantly, the order of the fragments in
 the read 1 and read 2 fastq files is the same, so that the first read in read 1
 fastq files is from the same DNA fragment as the first read in the read 2 fastq
@@ -406,14 +407,17 @@ line, sequence line, separator line, base-quality line).
 Step 1.7. Create a test project
 -------------------------------
 
-We just improved our pipleine to do something usefull. In a large project usefull 
-tasks usually take a lot of computational resoruces and a lot or time. To be 
-able to easily test if the updated pipeline works well it is a good idea to 
-have a small test project configured to operate on a small subset of the input data.
-Here we will do just that. Even though the complete tutorial input data is small 
-enough that it can be processed on a single processor for less than a minute,
-this is a useful demonstration of how easy it is to maintain and operate on 
-multiple projects with the same ``snakeobjects`` pipeline. 
+We just improved our pipeline to do something useful. In a large project tasks
+usually take a lot of computational resources and a lot or time. To be able to
+easily test if the updated pipeline works well it is a good idea to have a test
+project configured to operate on a small subset of the input data.  Here we
+will do just that. Even though the complete tutorial input data is small enough
+that the pipeline we have created so far can process it all on a single
+processor for 2-3 minutes, this is a useful demonstration of how easy it is to
+maintain and operate on multiple projects with the same ``snakeobjects``
+pipeline. Moreover, we will extends the pipeline substantially and the final
+pipeline at the end of the tutorial can take as much as one hour on a single
+processor to process the full project.  
 
 We can create the new projectTest with the following simple commands:
 
@@ -422,7 +426,7 @@ We can create the new projectTest with the following simple commands:
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cd .. 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ mkdir projectTest
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ cd projectTest
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ cp ../project/so_project.yaml
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ cp ../project/so_project.yaml .
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial$ head -16 ../input/fastqs.txt  > fastqs-small.txt
 
 and replace line 5 in ``projectTest/so_project.yaml`` file
@@ -458,7 +462,7 @@ projects:
         31
     ...
 
-The run finishes almost instantaneously and as a results we can find the
+The run finishes almost instantaneously and as a result we can find the
 pairNumber.txt files for each of the 9 fastq objects created for the
 projectTest:
 
@@ -498,7 +502,7 @@ sequencing reads are represented in 4 lines in the fastq files.
 Step 1.8. Re-run the project 
 ----------------------------
 
-Now that have verified that updated pipeline works, it is time to count the
+Now that have verified that the updated pipeline works, it is time to count the
 pair numbers for the complete project:
 
 .. code-block:: bash
@@ -516,7 +520,7 @@ pair numbers for the complete project:
     cat: 'objects/fastq/*/pairNumber.txt': No such file or directory
 
 The results seem strange. ``snakemake`` doesn't seem to run any jobs and the
-``pairNumber.txt`` targets are not created. One way to figure out what's going
+``pairNumber.txt`` targets are not created. One way to figure out what's going on
 is to run ``snakemake`` in verbose mode, by removing the ``-q`` flag:
  
 .. code-block:: bash
@@ -534,11 +538,11 @@ is to run ``snakemake`` in verbose mode, by removing the ``-q`` flag:
     Nothing to be done.
     Complete log: /tmp/snakeobjectsTutorial/project/objects/.snakemake/log/2021-02-25T114732.563671.snakemake.log
 
-``snakemake`` says that there is nothing to do. This is a peculiar behaviour of
+``snakemake`` says that there is nothing to do. This is a peculiar behavior of
 ``snakemake`` that manifests anytime we add a new targets and rules to a
-pipeline and we need to create the new targets in a projects that was
+pipeline and we need to create the new targets in a project that was
 successfully executed prior to the addition. The way to overcome this is to
-force ``snakemake`` to created all targets built by the new rule:
+force ``snakemake`` to create all targets built by the new rule:
 
 .. code-block:: bash
 
@@ -587,7 +591,7 @@ Step 1.9. Add a summary object
 ------------------------------
 
 It will be convenient to combine all the ``pairNumber.txt`` files into one file
-that can easily be open in tools like Excel to get a global understanding of
+that can easily be opened in tools like Excel to get a global understanding of
 the pair counts across all the fastq runs. Such aggregation need is fairly
 typical in workflows and is easy to implement in ``snakeobjects``. We will add
 one object in the object graph that will be responsible for aggregating
@@ -614,12 +618,12 @@ content:
 The first target, called  ``allPairNumers.txt``, is created by the
 ``gatherPairNumbers`` rule, as indicated by the ``output:
 T("allPairNumbers.txt")`` clause. This rule for the first time in the tutorial
-shows the use of the most interesting of the ``snakeojbects``'s functions,
+shows the use of the most interesting of the ``snakeobjects``'s functions,
 :py:func:`.DT`. The :py:func:`.DT` function here specifies that the input of
 the rule will be the ``pairNumber.txt`` targets of the objects the current
-object depends on. The current objects is of type ``fastqSummary`` (this is
+object depends on. The current object is of type ``fastqSummary`` (this is
 clear by name of the snakefile) and the object graphs generated by our pipeline
-here is only one object of this type. We we made this object to be dependent on
+here is only one object of this type. We made this object to be dependent on
 the all the ``fastq`` objects. Thus, the input for this rule will be all the
 ``pairNubmer.txt`` targets of the ``fastq`` objects. The implementation of the
 rule uses the ``cat`` and ``sort`` unix tools through the ``shell`` clause. The
@@ -665,8 +669,8 @@ scratch to make sure that the complete pipeline functions properly:
     ....
 
 In the highlighted command we removed the ``objects`` subdirectory and with
-that we lost all previously built targets for the ``projectTest``. So the
-``sobject run`` command than needed recreate all the targets.  For the large
+that we lost all previously built targets for the ``projectTest``. So, the
+``sobjects run`` command than needed recreate all the targets.  For the large
 ``project`` we will only create the new targets:
 
 .. code-block:: bash
@@ -692,7 +696,7 @@ that we lost all previously built targets for the ``projectTest``. So the
         4
         ....
 
-Here we did not removed the ``objects`` subdirectory and the targets that were
+Here we did not remove the ``objects`` subdirectory and the targets that were
 built the last time we executed the pipeline for the large ``project`` were
 preserved. The ``sobjects prepare`` command created one new object (the
 ``fastqSummary/o``) and the ``sobjects run`` created its targets.  Both the
@@ -728,8 +732,8 @@ sample. The alignment is the process of finding the location in the reference
 genome that each read originated from. This can be accomplished if for every
 read we scored every possible location in the reference genome for how well it
 matches the given read and if we selected the location that resembled the read
-best. But genomes tend to be large (i.e. human genome contains ~3 billion
-positions) and the number of reads we need to align is also large (i.e. we may
+best. But genomes tend to be large (i.e., human genome contains ~3 billion
+positions) and the number of reads we need to align is also large (i.e., we may
 have tens or even hundreds of millions of reads for each of tens, hundreds, or
 thousands of samples we work with). The naive strategy thus fails miserably.
 Fortunately, there are tools that use powerful indexing approaches and
@@ -748,8 +752,8 @@ genotypes.  An important quality characteristic of the sequence dataset is the
 distribution of the number of reads covering positions of interest across
 samples. We refer to this distribution as 'coverage' distribution below.
  
-Step 2.1. Refernce genome indexing
-----------------------------------
+Step 2.1. Reference genome indexing
+-----------------------------------
 
 The bwa's approach to alignment is to create an index for the reference genome.
 This index is then used to speed up alignment of the fastq files. We will
@@ -806,7 +810,7 @@ files next to the reference genome fasta (.fa) file.
 
 **Third**, the ``makeBwaIndex`` rule uses a ``conda`` clause, indicating that
 the rule should be executed with a different conda environment than the one we
-run ``sobejcts`` in. The ``conda`` clause's argument (``env-bwa.yaml``) points
+run ``sobjects`` in. The ``conda`` clause's argument (``env-bwa.yaml``) points
 to a file that describes the new environment to be created for this rule.  We
 usually place such files in pipeline directory and in this case we add the
 following content to the ``.../pipeline/env-bwa.yaml`` file:
@@ -818,17 +822,17 @@ The ``bwakit`` is the conda package that contains the ``bwa`` tool and the
 alignment results generated by ``bwa``.  We will re-use the same environment in
 different rules that directly use ``samtools`` shortly.  In this case we could
 have easily added bwa and samtools to our global environment
-(``snakeobjectsTutoria/envirnoment.yml`` file). But it often happens that we
-can not build one environment that has all the tools necessary for all rules in
+(``snakeobjectsTutorial/environment.yml`` file), but it often happens that we
+cannot build one environment that has all the tools necessary for all rules in
 a pipeline because the rules may have contradictory requirements. For example,
 two rules may require two different versions of the same tool, or rules may use
-tools that depend on different version of the python. Such conflict cases are
+tools that depend on different version of the python. Such conflicts are
 easily handled by allowing different environments for different rules.
 Unfortunately, the ``conda`` clauses are not used by default and we need to
 explicitly provide a ``--use-conda`` parameter to ``snakemeke``. We will show
 how to do that through ``sobjects run`` shortly.
 
-**Forth**, we added the ``resources`` clause. This clause enable us to let
+**Forth**, we added the ``resources`` clause. This clause enables us to let
 ``snakemake`` know what are the resource needs to execute the given rule.
 Indexing of the small reference genome provided with the tutorial does not need
 large amounts of memory but indexing the complete human genome with ``bwa``
@@ -837,14 +841,14 @@ particularly important when we run ``sobjects`` or ``snakemake`` on a
 computational cluster, where job scheduling and monitoring are guided by such
 requirements.  
 
-**Fifth**, the rule uses the ``snakemakes``'s ``log`` clause together with
+**Fifth**, the rule uses the ``snakemake``'s ``log`` clause together with
 ``snakeobjects``' convenience function :py:func:`.LFS` to configure log files
-where we can store information about how the execution of the rule went. The
+where we can store information about the execution of the rule. The
 :py:func:`.LFS` function configures three log files associated with the object
 the rule operates on and stored into the object's log directory.  The three log
-files are: ``log.O`` typically used for standard ouptput, ``log.E`` used for
-standard error, and ``log.T`` used for timing info and are named ``<log
-name>-out.txt``, ``<log name>-err.txt`` , and ``<log name>-time.txt``,
+files are: ``log.O`` typically used for standard output, ``log.E`` used for
+standard error, and ``log.T`` used for timing measures. The names for these log files 
+``<log name>-out.txt``, ``<log name>-err.txt`` , and ``<log name>-time.txt``,
 respectively, where the ``<log name>`` is the parameter given to the
 :py:func:`.LFS` function.  For example, the ``log.O`` from our ``makeBwaIndex``
 rule for the ``projectTest`` project is:
@@ -925,7 +929,7 @@ that it is building a conda environment based on the ``env-bwa.yaml`` file.
 Finally, the list of the ``objects/reference/o`` directory shows that the
 ``chrAll.bwaIndex.flag`` was created together with the five files
 (``chrAll.fa.amb``, ``chrAll.fa.ann``, ``chrAll.fa.bwt``, ``chrAll.fa.pac``,
-and ``chrAll.fa.sa``), that actually contain the bwa index. The list also shows
+and ``chrAll.fa.sa``), that contain the bwa index. The list also shows
 the three log files that were created and the last command shows the content of
 the ``bwa_index-time.txt`` one that tells us that took 0.633s to create this
 index. 
@@ -950,7 +954,7 @@ end of our ``pipeline/fastq.snakefile`` file:
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.2/pipeline/fastq.snakefile
     :emphasize-lines: 22-43
 
-The new target, ``fastq.bam``, is a ``bam`` file. ``bam`` is a well accepted
+The new target, ``fastq.bam``, is a ``bam`` file. ``bam`` is a well-accepted
 binary file standard format for storing the results of alignments. ``sam``
 files are the text version of the ``bam`` files. The ``bwa`` tool we use for
 alignment generates sam format that is easily converted into the more efficient
@@ -973,15 +977,15 @@ this rule only after all its inputs have been created which is important here
 because ``bwa`` implicitly requires the index files that must have been
 prepared before the ``chrAll.bwaIndex.flag`` is created. The ``refFile`` and
 ``refFileBwaIndex`` are set to point to the ``chrAll.fa`` and
-``chrAll.bwaIndex.flag`` targets of the dependency ``referece/o`` object, while
+``chrAll.bwaIndex.flag`` targets of the dependency ``reference/o`` object, while
 ``R1File`` and ``R2File`` are taken for the current object's parameters ``R1``
 and ``R2``.
 
-Also for the first time, the ``align`` rule shows the ``snakemake``'s
+Also, for the first time, the ``align`` rule shows the ``snakemake``'s
 ``params`` and ``threads`` clauses. The ``params`` clause allows each execution
 of the rule to be tuned by use of rule specific parameters. With
 ``snakeobjects`` we often set the rule's parameters with values taken from
-parameters of the object the rule operates on (i.e. :py:func:`.P`) or from
+parameters of the object the rule operates on (i.e., :py:func:`.P`) or from
 global project parameters (:py:func:`.PP`). The parameters of the rule can then
 be used in the implementation of the rule using constructs like
 ``{params.sId}``. The ``threads`` clause is the way to inform ``snakemake`` of
@@ -997,7 +1001,7 @@ account the number of cores configured on the individual cluster nodes and how
 easy it is to schedule a job requiring many threads in typical cluster loads or
 when we run large projects. The ability to control the number of threads,
 memory, and other resources separately for each rule makes is possible to
-develop a strategy for balancing the many contradictory requirements.
+develop a strategy for balancing the many conflicting requirements.
 
 We will now create the alignment bam files first for the ``projectsTest`` project 
 and then for the large ``project``. We need to recreate the object graph (by running
@@ -1005,7 +1009,7 @@ and then for the large ``project``. We need to recreate the object graph (by run
 on the ``reference/o``. But unless we start from scratch, by removing the ``objects`` 
 directory, we would need to help ``snakemake`` a bit by asking explicitly to run the 
 ``align`` rule---here we are again in the situation when we add a target to an already 
-complete objects.
+complete object.
 
 .. code-block:: bash
 
@@ -1041,18 +1045,18 @@ alignments on a single computer. One of the most important features of
 pipeline without any change can be executed on a computational cluster by
 simply providing the command line parameter ``--profile=<cluster profile>`` to
 the :option:`sobjects run`.  The ``<cluster profile>`` points to a directory
-that contains the setup necessary to submit a jobs on a given cluster. The
+that contains the setup necessary to submit jobs on a given cluster. The
 configuration of the cluster profiles is beyond the scope of this tutorial.
-But, if you happen to have one available or if go through the steps described
-in :ref:`working-with-clusters` you should by all means execute the
-tutorial pipelines on the your cluster. Note though that the jobs generated
+But, if you happen to have one available or, if go through the steps described
+in :ref:`working-with-clusters`, you should by all means execute the
+tutorial pipelines on your cluster. Note though that the jobs generated
 by running the tutorial projects are all small because we prepared a toy input
 datasets.  For small jobs like these the overhead of submitting and scheduling 
 may be unnecessarily large. When you get a cluster profile
 configured you may also consider adding the ``--profile=<cluster profile>`` to
 the ``default_snakemake_args`` project parameter. Every time that you use
-:option:`sobjects run` for that project the ``snakemake`` will submit jobs the
-cluster instead of running them locally on you computer as it does when you
+:option:`sobjects run` for that project the ``snakemake`` will submit jobs to the
+cluster instead of running them locally on your computer as it does when you
 pass the ``-j`` option. 
 
 Step 2.3. Target coverage by sample and globally 
@@ -1085,7 +1089,7 @@ position in the target and for every sample, we can compute statistics of the
 depth per sample, and visualize the coverage distribution per sample and
 globally across all samples.
 
-To implement this plan we will add a project parameter called ``target`` that
+To implement this plan, we will add a project parameter called ``target`` that
 points to the ``input/targetRegions.bed`` file to the ``so_project.yaml`` for
 our two projects.  For example, the ``projectTest/so_project.yaml`` should look
 like that after the addition of the highlighted line:
@@ -1102,9 +1106,9 @@ by the fastq objects already added to the object graph:
 
 The code above is simple enough (assuming one knows basic python). But the
 resulting graph becomes non-trivial. Before the addition of the ``sample``
-object, there were two dependency types: (1) all ``fastq`` objects depeneded on
+object, there were two dependency types: (1) all ``fastq`` objects depended on
 the single ``reference/o`` object and (2) the single ``fastqSummary/o`` object
-depended on all ``fastq`` objects. Each ``sample`` objects is dependent only on
+depended on all ``fastq`` objects. Each ``sample`` object is dependent only on
 the one, two, or three fastq objects that are related to this sample, breaking
 the one-to-all dependence types.  At the last line we also add the singleton
 ``sampleSummary/o`` object that will be responsible for aggregating statistics
@@ -1126,7 +1130,7 @@ removed when all the downstream rules that use them finish successfully. The
 :py:func:`.DT` function, enables us to concisely define across-objects target
 dependencies. The figure below, shows a graphical representation of the target
 dependency relationship of the targets of one of the ``sample`` objects
-overlaid on top of the object-graph dependency relation ships. 
+overlaid on top of the object-graph dependency relationships. 
 
 .. image:: _static/sampleTargets.png
   :width: 4000 
@@ -1220,7 +1224,8 @@ It's implementation is shown below:
     :linenos:
 
 It is implemented in python and you should copy the above in a file called
-``call_denovo.py`` in our pipeline directory. The only quality this
+``call_denovo.py`` in our pipeline directory and make sure that it is flagged as 
+executable (``chmod +x call_denovo.py``. The only quality this
 implementation has is that it is short. Otherwise, it is a poorly coded
 (although not impossible, it will be a challenge for one to understand it), and
 performs poorly. But it would do for the purposes of the tutorial. The ones of
@@ -1271,7 +1276,7 @@ the handling between the cases and controls.
 We will use the ``collections.ped`` file in the ``build_object_graph.py``
 pipeline script to create the ``trio`` objects. As already done multiple times,
 we will add a project parameter (``pedigree``) in our two projects that points
-to the ``collections.ped`` file. After the addition, the ``so_projects.yaml``
+to the ``collection.ped`` file. After the addition, the ``so_projects.yaml``
 file for the ``projectTest`` looks like:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/final/projectTest/so_project.yaml
@@ -1289,7 +1294,7 @@ objects for the father, for the mother, and for the child have already been
 created in the object graph (line 34).  The object id for the ``trio`` objects
 will be set to the sampleId (called ``personId`` in the pedigree file) of the
 child and the newly created ``trio`` are made dependent on the samples for the
-father, mother, and child.  A very important feature of the ``snakeobjects`` is
+father, mother, and child.  A very important feature of ``snakeobjects`` is
 that the order of the dependencies is preserved in the object graph. The
 implementation for the single target of the ``trio`` objects depends on this
 order: father's sample, mother's sample, child's sample. See the content bellow
@@ -1340,8 +1345,8 @@ false *de novo* call--the three ``C``s in the child may all be due to noise, or
 a ``C`` in one of the parents may have failed to get sampled in the few reads
 from that location.
 
-When you successfully execute the large ``project`` you should get a list of 47
-de novo variant. 
+When you successfully execute the large ``project``, you should get a list of 47
+de novo variants. 
 
 Summary
 =======
@@ -1349,8 +1354,8 @@ Summary
 Congratulations to all of you who are reading this sentence! 
 This was an objectively a very long tutorial. 
 For a bit of fun at the end, we will use the :option:`sobjects graph` command to 
-create a visual summary of the many steps for both of small ``projecTest`` and
-the large ``projects`` 
+create a visual summary of the many steps for both of small ``projectTest`` and
+the large ``projects``. 
 
 .. code-block:: bash
 

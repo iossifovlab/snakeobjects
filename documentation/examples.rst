@@ -75,3 +75,9 @@ Everything else needed is inclucded in the
 download and extract (``tar xzf snakemakeTutorialExample.tgz``) file, you will
 get a directory called ``snakeomakeTutorialExample``. We assume here that this directory is placed in /tmp, but you can place it elsewhere.
 You can then follow the same steps as described in the ``Paper example`` above.
+
+Tests Demo Examples
+===================
+
+There are nine mini projects in the directory ``snakeobjects/tests/demos``.
+Each mini project describes some features of snakeobjects.
