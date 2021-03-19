@@ -1,10 +1,6 @@
-add_targets("chrAll.bwaIndex.flag")
-
-rule makeBwaIndex:
-    input: T("chrAll.fa")
-    output: touch(T("chrAll.bwaIndex.flag"))
-    conda: "env-bwa.yaml"
-    resources: mem_mb=10*1024
-    log: **LFS("bwa_index")
-    shell: "(time bwa index {input} -a bwtsw > {log.O} 2> {log.E} ) 2> {log.T}"
-
+add_targets("ref.fa","index.flag")
+rule indexRef:
+  input:  PP("reference")
+  output: T("ref.fa"),touch(T("index.flag"))
+  shell: "ln -s {input} {output[0]} && \
+          bwa index {output[0]} -a bwtsw"

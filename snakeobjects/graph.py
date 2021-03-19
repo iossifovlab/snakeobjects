@@ -10,7 +10,7 @@ import random,sys,argparse
 
 
 clrsStr = '''
-red green blue yellow salmon orange purple mediumslateblue linen powderblue pink skyblue
+red green skyblue yellow salmon orange purple mediumslateblue linen powderblue pink blue
 wheat mintcream magenta transparent olivedrab yellowgreen thistle
 navajowhite sienna tan purple saddlebrown 
 palevioletred orchid steelblue slategray orangered mediumaquamarine seagreen
