@@ -23,7 +23,7 @@ The available commands are described below:
 .. option:: describe
 .. runblock:: console
 
-    $ sobjects help desribe 
+    $ sobjects help describe 
 
 
 .. option:: prepareObjects 
