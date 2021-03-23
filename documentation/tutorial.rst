@@ -104,8 +104,8 @@ This location of the directories is not required. Provided you are willing
 to make few minor changes in the projects' configuration you can create
 the two directories anywhere. 
 
-Step 1.2. Configure the projects
---------------------------------
+Step 1.2. Configure the project
+-------------------------------
 
 Next, we will create a file called ``so_project.yaml`` in the ``project``
 directory with the following content:
@@ -202,8 +202,8 @@ fastq files for the first and for the second reads defined relative to the
 project's ``fastqDir`` parameter, and the ``sampleId`` is assigned the value of
 the ``individual`` column.
 
-Step 1.4. Prepare the projects 
-------------------------------
+Step 1.4. Prepare the project
+-----------------------------
 
 Next we will create the object graph for our project. We do that by using the
 :option:`sobjects prepare` command from within the project directory. We can
@@ -499,8 +499,8 @@ is equal to 4 times the number of pairs (942) reported in the corresponding
 pairNumber.txt file. This is exactly what is expected: as described above,
 sequencing reads are represented in 4 lines in the fastq files. 
 
-Step 1.8. Re-run the project 
-----------------------------
+Step 1.8. Re-run the complete project 
+-------------------------------------
 
 Now that have verified that the updated pipeline works, it is time to count the
 pair numbers for the complete project:
