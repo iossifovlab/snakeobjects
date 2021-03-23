@@ -14,15 +14,15 @@ def load_yaml(file_name):
 
 def find_so_project_directory():
     """     
-    Determines the direcotry for the current snakeobject project.
+    Determines the directory for the current snakeobjects project.
     
     Several approaches are attempted and the first suitable directory found 
     is returned. If everything fails, the current working directory is returned.
 
-    1. If the SO_PROJECT envirnoment variable exits, its values is returned.
+    1. If the SO_PROJECT environment variable exits, its values is returned.
     2. If the current working directory contains a file named so_project.yaml, 
-       the current working direcoty is returned.
-    3. The parents of the current working directory are examined recursivelly 
+       the current working directory is returned.
+    3. The parents of the current working directory are examined recursively 
        and the first one containing so_project.yaml file is returned. 
     """
     if "SO_PROJECT" in os.environ:
@@ -40,7 +40,7 @@ class Project:
     """
         Each objects of the Project class represents a snakeobject project. 
         
-        The project directory is given as the ``directory`` parameter. If ``direcotry`` is none,
+        The project directory is given as the ``directory`` parameter. If ``directory`` is none,
         the :py:func:`find_so_project_directory` function is used to determine the project directory.
 
         A snakeobject project attributes are:
@@ -53,7 +53,7 @@ class Project:
         .. py:attribute:: parameters 
            :type: dict[str,str] 
 
-           a key value dictionalry for global project lelvel parameters
+           a key value dictionary for global project level parameters
 
         .. py:attribute:: objectGraph 
            :type: ObjectGraph

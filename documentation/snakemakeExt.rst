@@ -1,10 +1,10 @@
-.. _snake-extenssions:
+.. _snake-extensions:
 
-snakemake extenssion functions 
+Snakemake extension functions 
 ==============================
 
 
 .. automodule:: snakeobjects.snakeUtils
     :member-order: bysource
-    :members: PP, T, TE, DT, P, DP, LFS
+    :members: add_targets, PP, T, TE, DT, P, DP, LFS
     :undoc-members:

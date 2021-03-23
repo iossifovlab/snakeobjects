@@ -41,8 +41,8 @@ the project and the pipeline:
     Types:
 
 The result shows that we are using a project in the directory
-``/tmp/minimalSO`` and the that this project uses a pipline in the same
-``/tmp/minimalSO`` directory. Floowing, is an empty list of the *Project
+``/tmp/minimalSO`` and that this project uses a pipeline in the same
+``/tmp/minimalSO`` directory. Following, is an empty list of the *Project
 parameters* (no ``so_project.yaml`` file is provided for the project and thus
 there are no project parameters) and an empty list of *Object types* (no
 objects have been added to the object graph so there are no object types used).
@@ -63,10 +63,10 @@ We then use the :option:`sobjects prepareObjects` command to prepare the project
     ./objects/.snakeobjects
     ./objects/.snakeobjects/main.snakefile
 
-This command assembbles as snakefile to be used by ``snakemake`` and stores it
+This command assembles the snakefile to be used by ``snakemake`` and stores it
 in the ``./objects/.snakeobjects/main.snakefile``.  The command would also
-create directories for all objects in the object graph, but scince no objects
-are added to the object graph, no object directories are be created.
+create directories for all objects in the object graph, but, since no objects
+are added to the object graph, no object directories are created.
 
 Step 4
 ^^^^^^
@@ -86,11 +86,11 @@ object in the project:
         1
 
 The command shows the project and pipeline directories it will use and the
-command line used to run ``snakemake``.  All parameters given to ``sobject
+command line used to run ``snakemake``.  All parameters given to ``sobjects
 run`` (i.e. ``-j -q``) are passed directly to ``snakemake``). ``-j`` instructs
 ``snakemake`` to run the pipeline on the local host and to use all the
 available processors and  ``-q`` instruct ``snakemake`` to be *quiet*
-(``snakemake`` is rather verbose by default). Scince, no objects are present in the object
+(``snakemake`` is rather verbose by default). Since no objects are present in the object
 graph, no targets are created. The only change is that ``snakemake`` creates
 its own private directory in ``./objects/.snakemake``.
 

@@ -38,10 +38,11 @@ Pipelines
 
 In ``snakeobjects``, pipelines reside in a *pipeline directory*. The pipeline
 directory and its content are created by the *workflow designer* and define the
-workflow. The pipeline usually contains a python script called
-``build_object_graph.py`` that uses *meta data* associated with the projects
-that use the pipeline to create project's object graph and  a ``<object type>.snakefile`` for each of the
-object types created by the ``build_object_graph.py``. 
+workflow. The pipeline directory usually contains a python script called
+``build_object_graph.py`` that  uses *meta data* associated with a given project
+to create the project's object graph and one snakemake file for each object type 
+used in the object graph.  The pipeline directory can also contain scripts, conda 
+environment definitions, or other artifacts used by the pipeline.
 
 ``build_object_graph.py`` script
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -72,38 +73,28 @@ method to add object to the ``OG``.
 Object-type snakefiles
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Each object-type snakefiles contains
-the list the targets for the object type and the rules for creating the targets.
-The list of targets is defined with a rule for the creating *special* target ``T("obj.flag")``.
-The ``T("obj.flag")`` target for an object will be created only after all the object type targets have been created.
+Each object-type snakefiles declares the list the targets for the object type and the rules for creating the targets.
+The workflow designer uses the :py:func:`.add_targets` function to declare the targets and uses the
+snakemake's syntax to create the rules.
 
 For example, the following rule in the object type snakefile ``sample.snakefile``
 
 .. code-block::
 
-    rule sample_obj:
-       input:
-            T("A.txt"),
-            T("B.txt"),
-            DT("obj.flag")
-       output: 
-            touch(T("obj.flag"))
+    add_targets("A.txt","B.txt")
 
 , decleares that each of the objects of type ``sample`` need two targets
-created (``T("A.txt")`` and ``T("B.txt")``).  Also, the speclial target
-``T("obj.flag")`` will be created only after, the ``T("obj.flag")`` targets are
-created for all objects the objects the current object depends on. This is
-specified by the inclusion of the ``DT("obj.flag")`` list of input targets.
+created (``T("A.txt")`` and ``T("B.txt")``).  
 
-All the rules, including the one for the ``T("obj.flag")`` special target,
-are written using the ``snakemake``'s syntax (https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html) 
+All the rules are written using the ``snakemake``'s syntax (https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html) 
 and use a set of ``snakeobjects`` extension functions (see
-:ref:`snake-extenssions`)  for referring to targets in the current object
-(:py:func:`.T`); to targets in dependency objects (:py:func:`.DT`); to
-parameters of the current object (:py:func:`.P`); to parameters of the
-dependency objects (:py:func:`.DP`); and to global object parameters
-(:py:func:`.PP`).  In addition, the pipeline directory can contain scripts,
-conda environment definitions or other artefacts used by the pipeline. 
+:ref:`snake-extensions`)  for referring to:
+
+    - targets in the current object (:py:func:`.T`); 
+    - targets in dependency objects (:py:func:`.DT`); 
+    - parameters of the current object (:py:func:`.P`); 
+    - parameters of the dependency objects (:py:func:`.DP`); 
+    - global object parameters (:py:func:`.PP`).  
 
 The example below demonstrates the main features of the ``snakeobjects`` rules:
 
@@ -118,39 +109,52 @@ The example below demonstrates the main features of the ``snakeobjects`` rules:
 
 .. TODO: Add description of the example above.
 
-Typical rule has a name, here it is create_B, and several attributes, such as input, output, parameters, log, and shell. 
-Attributes should be indented relative to the term rule. Attributes values are strings or lists of stings separated by commas. They may start on the same line as the attribute name or on separate line in which case they are indented relative its attribute position. 
-The first two lines in this rule use functions :py:func:`.T`  and :py:func:`.DT` to specify the values of input and output files. 
-The values for parameters and log are definen by functions :py:func:`.P` and :py:func:`.LFS`.
-The values of attibutes can be named as in a=T("A.txt") or g=P("gender") and these names could be used for reference in the shell command. Shell attribute value is valid shell command or a list of commands enclosed in quotation marks. Attribute values in shell command are enclosed in curly braces. 
-The complete documentation for snakefiles rules can be fount at
-`Snakemake <https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html>`_.
+Typical rule has a name, here it is create_B, and several attributes, such as
+input, output, parameters, log, and shell.  Attributes should be indented
+relative to the term rule. Attributes values are strings or lists of stings
+separated by commas. They may start on the same line as the attribute name or
+on separate line in which case they are indented relative its attribute
+position.  The first two lines in this rule use functions :py:func:`.T`  and
+:py:func:`.DT` to specify the values of input and output files.  The values for
+parameters and log are defined by functions :py:func:`.P` and :py:func:`.LFS`.
+The values of attributes can be named as in a=T("A.txt") or g=P("gender") and
+these names could be used for reference in the shell command. Shell attribute
+value is valid shell command or a list of commands enclosed in quotation marks.
+Attribute values in shell command are enclosed in curly braces.  The complete
+documentation for snakefiles rules can be found at `Snakemake
+<https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html>`_.
 
 Projects
 --------
 
-A project in ``snakeobjects`` is created by a *workflow user* to apply one
-``snakeobjects`` pipeline.  A project is associated with a *project directory*
-that usually contains a ``so_project.yaml`` file written by the *workflow user*
-to configure the project.  The *workflow user* uses the ``sobjects``
+In ``snakeobjects``, a *workflow user* creates a *project directory*
+and inside a project configuration file called ``so_project.yaml``.
+The ``so_project.yaml`` file contains parameters that specify the pipeline operating on 
+the project, pointers to the input and metadata associated with the project, and 
+parameters that control the processing to configure the project.  
+The *workflow user* uses the ``sobjects``
 command line tool to initialize (usually using the :option:`sobjects prepare`
 command) and to execute (:option:`sobjects run`) the associated
-*pipeline*.  The :option:`sobjects prepare`:
+*pipeline*.  
+
+
+The :option:`sobjects prepare` performs the following steps:
  
-1. creates and object graph (using 
+1. creates an object graph (using 
    the ``build_object_graph.py`` script from the *pipeline*)
    and stores it in the ``snakeobjects``'s private subdirectory ``.snakeobjects`` of the *project directory* 
-   (``<projet directory>/.snakeobjects/OG.json``); 
+   (``<project directory>/objects/.snakeobjects/OG.json``); 
 2. creates an *object diretory* directory for
-   each of the objects in the *object graph* in the ``objects`` subdirectory in the *project directory*; 
+   each of the objects in the *object graph* in the ``objects`` subdirectory of the *project directory* 
+   (``<project directory>/objects/<object type>/<object id>``)
 3. creates the ``<project directory>/.snakeobjects/main.snakefile`` that
    is subsequently used by ``snakemake``; and 
-4. creates the symbolic links based for all object that have ``symlink.<name>`` parameters. 
+4. creates the symbolic links for all object that have ``symlink.<name>`` parameters. 
 
 The targets and the log files created during the execution of the pipeline (:option:`sobjects run`) are 
 stored in the *object directories* in the ``objects`` subdirectory. 
-In addition, ``snakemake`` creates it's own standard internal 
-subdirectory ``.snakemake`` as a subdirectory the *project directory*.
+In addition, ``snakemake`` creates its own standard internal 
+subdirectory ``objects/.snakemake`` as a subdirectory the *project directory*.
 
 ``so_project.yaml`` file
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -168,14 +172,18 @@ project and may include:
   :option:`sobjects run`. 
 
 
-Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[C:<parameter>]``, or ``[P:<project property>]``.
-These meta expressions are replaced with ``interpolation`` function.
-In the first case the expression is replaced by the value of environment variable called 
-``env_variable_name``; in the second case the expression is replaced with the
-value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the
-third case the expression is replaced with the project directory if ``project property`` is ``projectDir``
-and with the pipeline directory if ``project property`` is ``pipelineDir``.
-Iterpolation is applied to all project parameters. If parameter does not contain the above meta expressions, it remaines unaffected; parameters represented by lists and dictionaries are processed recurcively by applying interpolation to all its members.
+Parameter values may contain expressions ``[E:<env_variable_name>]``,
+``[C:<parameter>]``, or ``[P:<project property>]``.  These meta expressions are
+replaced with ``interpolation`` function.  In the first case the expression is
+replaced by the value of environment variable called ``env_variable_name``; in
+the second case the expression is replaced with the value of parameter called
+``parameter`` in the ``so_project.yaml`` file; in the third case the expression
+is replaced with the project directory if ``project property`` is
+``projectDir`` and with the pipeline directory if ``project property`` is
+``pipelineDir``.  Interpolation is applied to all project parameters. If
+parameter does not contain the above meta expressions, it remains unaffected;
+parameters represented by lists and dictionaries are processed recursively by
+applying interpolation to all its members.
   
 
 ``objects`` subdirectory
@@ -186,12 +194,11 @@ The files related to ``snakeobjects`` targets have the following general name::
     <project directory>/objects/<object type>/<object id>/<target name>
 
 For example, the target ``T("A.txt")`` of object of object type ``sample`` and with
-id ``i1232`` will be stored in the files ``<project
-directory>/objects/sample/i1232/A.txt``; 
+id ``i1232`` will be stored in the file ``<project directory>/objects/sample/i1232/A.txt``; 
 
 
 The general form for the ``log.O``, ``log.E``, and ``log.T`` log files referenced 
-using the ``logEFS(<name>)`` function are::
+using the ``LFS(<name>)`` function are::
 
     <project directory>/objects/<object type>/<object id>/log/<name>-out.txt
     <project directory>/objects/<object type>/<object id>/log/<name>-err.txt
@@ -205,54 +212,82 @@ directory>/objects/sample/i1232/log/A-err.txt``.
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This is a private directory reserved for ``snakeobjects`` internal files. Currently, 
-the directory contain two files that may be of interest to the *workflow user*:
+the directory contains two files that may be of interest to the *workflow user*:
 
-* ``.snakeobjets/OG.json`` contains the object graph associated with the project;
-* ``.snakeobjets/main.snakefile`` contains the snakefile that is passed to ``snakemake`` at the 
+* ``objects/.snakeobjects/OG.json`` contains the json representation of the object graph associated with the project;
+* ``objects/.snakeobjects/main.snakefile`` contains the snakefile that is passed to ``snakemake`` at the 
   :option:`sobjects run`. 
 
 Objects types, objects, and object graph
 ----------------------------------------
 
-Object types in ``snakeobjects`` typically correspond to object types in the domain of the 
-*workflow*. For example, in sequence analysis *workflows*, we can have *reference genome*, 
-*library*, *sample*, *individual*, *family*, or *population* object types. ``snakeobjects`` object
-types are characterized by the set of *targets* that will be created for each object of the 
-object type. For example, *sample* may have a ``T("sample.bam")``, 
-a ``T("sample.bai")``, a ``T("sample.vcf")``, and a ``T("depth-histogram.png")``; 
-*reference genome* object type may have a ``T("chr.fa")``, ``T("chr.fa.fai")``, 
-``T("bwa.index")`` targets. 
+Object types in ``snakeobjects`` typically correspond to object types in the
+domain of the *workflow*. For example, in sequence analysis *workflows*, we can
+have *reference genome*, *library*, *sample*, *individual*, *family*, or
+*population* object types. ``snakeobjects`` object types are characterized by
+the set of *targets* that will be created for each object of the object type.
+For example, *sample* may have targets ``T("sample.bam")``,
+``T("sample.bai")``, ``T("sample.vcf")``, and ``T("depth-histogram.png")``;
+*reference genome* object type may have targets ``T("chr.fa")``,
+``T("chr.fa.fai")``, and ``T("bwa.index")``. 
 
-Each ``snakeobjects`` project is associated with one :term:`object graph`
-a structure representing 
-a directed acyclic graph of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
-Each of the objects is from one of the :term:`pipeline`'s object types and is assigned with an *object id* that must be unique string 
-among all objects for the same object type (i.e. there can be only one object of type *individual* with object id *john*).
+Each ``snakeobjects`` project is associated with one :term:`object graph` a
+structure representing a directed acyclic graph of *objects*  (the
+:py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object
+graph* and the objects in the object graph are implemented by the
+:py:class:`.OGO` class).  Each of the objects is from one of the
+:term:`pipeline`'s object types and is assigned with an *object id* that must
+be unique string among all objects for the same object type (i.e., there can be
+only one object of type *individual* with object id *john*).
 
-Each object is also associated with list of dependency objects. The dependency objects are objects whose targets will be used 
-in the creation of the targets of the current object. A target, ``T(t)`` of an object is created by the rule from the snake 
-file of the object's object type
-that has the target in its output clause (i.e. ``ouput: T(t)``). The input clause of the rule may contain other targets from the 
-same object type (:py:func:`.T`), targets in a dependency object (:py:func:`.DT`), or other files.
+Each object is also associated with a list of dependency objects. The dependency
+objects are objects whose targets will be used in the creation of the targets
+of the current object. A target, ``T(t)`` of an object is created by the rule
+from the snakefile of the object's object type that has the target in its
+output clause (i.e., ``output: T(t)``). The input clause of the rule may contain
+other targets from the same object type (:py:func:`.T`), targets in a
+dependency object (:py:func:`.DT`), or other files.
 
-In addition, each object is associated with project parameters, a dictionary of parameter name to parameter value strings that
-provide important information for the creation of the objects targets. 
+In addition, each object is associated with project parameters, a dictionary of
+parameter name to parameter value strings that provide important information
+for the creation of the objects targets.  
+
+Object are typically created by the *pipeline*'s ``build_object_graph.py``
+script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the
+:py:class:`.ObjectGraph`.  The order of the dependency objects is preserved and
+the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the
+bread-first traversal of the object graph. 
+
 For example:
 
 .. code-block::
 
    def run(project,OG):
-       params = {"symlink.sample.bai":"<path_bai>","symlink.sample.bam":"<path_bam>"}
-       dep = [<list of objects>]
-       OG.add(t,i,params,dep)
+        ...
+        OG.add("individual","ann",{"symlink.sample.bam":"/data/bamFiles/ann.bam","diagnosis":"none"}, [])
+        OG.add("individual","tom",{"symlink.sample.bam":"/data/bamFiles/tom.bam","diagnosis":"schizophrenia"}, [])
+        OG.add("individual","liz",{"symlink.sample.bam":"/data/bamFiles/liz.bam","diagnosis":"autism"}, [])
+        ...
+        OG.add("family","johns",{},[OG['individual','ann'],OG['individual','tom'],OG['individual','liz']])
+        ...
+        OG.add("individuals","all",{},OG['individual'])
+        ...
 
-will create simbolic links ``sample.bam`` and ``sample.bai`` to corresponding paths in the directory for object ``i`` of type ``t``. 
+shows the creation of five objects. Three of the objects are of type
+``individual`` and have object ids ``ann``, ``tom``, and ``liz``. Each of the
+tree individuals have two parameters, ``symlink.sample.bam`` and ``diagnosis``,
+and are not dependent on other objects as indicated by the last parameter , ``[]``,
+of the ``add`` function. The ``symlink.sample.bam`` parameter is a special
+parameter that will lead to the creation of a symbolic link called sample.bam in 
+the objects' directories pointing to the bam files associated with each individual, 
+(provided as values to the ``symlink.sample.bam`` parameters).
 
-Object are typically created by the *pipelines*'s ``build_object_graph.py`` script with the :py:meth:`~snakeobjects.ObjectGraph.add` method of the :py:class:`.ObjectGraph`.
-The order of the dependency objects is preserved and the :py:func:`.DT` and :py:func:`.DP` functions will use the order in the 
-bread-first traversal of the object graph. 
+The fourth object is of type ``family``, has object id equal to ``johns``, has not parameters, and is dependent on the 
+the tree individuals, ``ann``, ``tom``, and ``liz``. The last object (``all`` of type ``individuals``) is dependent on all 
+``individuals`` included in the graph. That will include ``ann``, ``tom``, and ``liz`` but may include many more 
+individuals created in the parts of the ``run`` function that are not shown. 
 
 During the execution of the *workflow* targets for of the project's object get created and stored
-in file in the ``objects`` subdirectory of the *project directory*. 
+in files in the ``objects`` subdirectory of the *project directory*. 
 
 

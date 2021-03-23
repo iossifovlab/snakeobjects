@@ -23,12 +23,12 @@ class OGO:
     .. py:attribute:: params 
        :type: dict[str,str] 
 
-       the key-value paramters of the object
+       the key-value parameters of the object
 
     .. py:attribute:: deps 
        :type: list[OGO] 
 
-       the list of the dependenies objects (the object the object depends on)
+       the list of the dependency objects (other objects this object depends on)
 
     """
     def __init__(ogo,oType,oId,params=None,deps=None):
@@ -70,7 +70,7 @@ class ObjectGraphException(Exception):
 class ObjectGraph:
     """
     The class representing the directed acyclic graph representing the relationships among
-    the snakeobject's objects. Each object is defined by a set an **object type** and by **object id**. 
+    the snakeobjects' objects. Each object is defined by a set an **object type** and by **object id**. 
     """
 
     def __init__(self):
@@ -89,7 +89,7 @@ class ObjectGraph:
         The graph (G) indexing has two forms depending of the **key** parameter:
 
         1. ``G[oType]`` returns the **list** of the objects of type ``oType``;
-        2. ``G[oType,oId]`` returns the object of type ``oType`` and ``oId``.
+        2. ``G[oType,oId]`` returns the object with object id ``oId`` and object type type ``oType``.
 
         :rtype: list(OGO) if form 1 is used or OGO if form 2 is used
         """
@@ -112,7 +112,7 @@ class ObjectGraph:
         :param str oType: the object type of the new object.
         :param str oId: the object id of the new object.
         :param params: the parameters of the new object. If None, the new 
-                       object is assigend with no parameters.
+                       object is assigned with no parameters.
         :type params: dict[str,str]
         :param deps: list objects the new object depends on. If None, the new object 
                      depends on no other objects. The objects included in deps should 

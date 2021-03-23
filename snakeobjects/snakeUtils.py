@@ -1,5 +1,4 @@
 """
-Gosho
 """
 
 import traceback 
@@ -45,7 +44,7 @@ def T(t):
 def TE(t): 
     """
     The file name pattern for target ``t`` of the current object suitable as an
-    argument to the expand function (a.k.a. the currly brackets are doubled).
+    argument to the expand function (a.k.a. the curly brackets are doubled).
     """
     return _targetPrefix + _find_object_type() + "/{{oid}}/"  + t
 
@@ -56,15 +55,15 @@ def DT(t, dot=None, level=1, mode='equal'):
 
     :param str t: the name of the target in the dependency objects.
 
-    :param str dot: the object type of the depency objects to be used. If None, 
+    :param str dot: the object type of the dependency objects to be used. If None, 
         dependency objects of all object types will be used.
 
     :param int level: how many levels down the dependency graph to explore. 
-        The default value of 1 indicates that only the objects that the current objects
+        The default value of 1 indicates that only the objects that the current object
         depends on directly will be used. 
 
     :param mode: if set to ``'equal'``, only objects that are exactly **level** steps away 
-        from the current object will be used. If set to ``'lessOrEqual'``, obects of **level**
+        from the current object will be used. If set to ``'lessOrEqual'``, objects of **level**
         steps or less will be used.
     :type mode: ``'equal'`` or ``'lessOrEqual'``
     
@@ -87,15 +86,15 @@ def DP(p,dot=None, level=1, mode='equal'):
 
     :param str p: the name of the parameter of the dependency objects.
 
-    :param str dot: the object type of the depency objects to be used. If None, 
+    :param str dot: the object type of the dependency objects to be used. If None, 
         dependency objects of all object types will be used.
 
     :param int level: how many levels down the dependency graph to explore. 
-        The default value of 1 indicates that only the objects that the current objects
+        The default value of 1 indicates that only the objects that the current object
         depends on directly will be used. 
 
     :param mode: if set to ``'equal'``, only objects that are exactly **level** steps away 
-        from the current object will be used. If set to ``'lessOrEqual'``, obects of **level**
+        from the current object will be used. If set to ``'lessOrEqual'``, objects of **level**
         steps or less will be used.
     :type mode: ``'equal'`` or ``'lessOrEqual'``
     
@@ -108,11 +107,11 @@ def DP(p,dot=None, level=1, mode='equal'):
     
 def LFS(t):
     """
-    A set of three log files, logO, logE, and logT, named after target ``t`` to be used in a rule. 
+    A set of three log files, log.O, log.E, and log.T, named after target ``t`` to be used in a rule. 
 
-    This function is expected to be used in the ``log`` section of the snamemake rules 
+    This function is expected to be used in the ``log`` section of the snakemake rules 
     like ``log: **LFS('bamFile'))``. After that, the rule can use one or more of ``{log.O}``, ``{log.E}``, and 
-    ``{log.T}`` for storing standard output, standard error, or timing information respectivelly. 
+    ``{log.T}`` for storing standard output, standard error, or timing information respectively. 
     """
     a = _targetPrefix + _find_object_type() + "/{oid}/log/" + t 
     r = {
