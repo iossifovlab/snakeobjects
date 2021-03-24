@@ -9,7 +9,7 @@ def load_yaml(file_name):
     config = yaml.safe_load(CF)
     CF.close()
 
-    return config  
+    return config  if config else {}
 
 
 def find_so_project_directory():
