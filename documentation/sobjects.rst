@@ -1,4 +1,6 @@
-``sobjects`` command line tool
+.. _sobjects-commands:
+
+``sobjects`` commands
 ------------------------------
 
 This is the main ``snakeobjects``' command line tools. 
