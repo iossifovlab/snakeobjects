@@ -8,7 +8,7 @@ Working with clusters
 =====================
 
 ``Snakeobjects`` provides transparent access to different cluster architectures
-such as ``slurm``, ``sge``, and others. This is accomplished by placing cluster
+such as ``slurm``, ``SGE``, and others. This is accomplished by placing cluster
 profile path into ``so_project.yaml`` file with the name
 ``default_snakemake_args`` as in this example:
 
@@ -18,20 +18,19 @@ profile path into ``so_project.yaml`` file with the name
 
 Profile folder should contain file ``config.yaml`` with directives specific to
 cluster architecture. For more information on profiles see
-https://github.com/snakemake-profiles/doc.  Access to profile is accomplished
-by command ``submit`` ( :option:`sobjects submit` ).
+https://github.com/snakemake-profiles/doc.  
 
 Multi-part targets
 ==================
 
 Sometimes target computing time exceeds several hours or even days. This
-negatively affects overall project management: unstably of file system,
+negatively affects overall project management: unstable file system,
 failure of computational node, or many other causes may delay processing
 downstream targets. With multiple processing units it may be valuable to split
 a target into sub-targets. In bioinformatics it is convenient to restrict bam
 file processing by extracting data for individual chromosomes and then
 accumulating partial results in a separate target. In ``snakeobjects`` we have
-special functions that make the subdivision of a target into smaller ones with
+special functions that make subdivision of a target into smaller ones with
 the following aggregation of these parts into original target easy to
 accomplish. Below is an example.
 
@@ -72,7 +71,7 @@ Using external tools
 
 TODO
 
-Working wiht GATK
+Working with GATK
 =================
 
 TODO

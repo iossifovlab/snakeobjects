@@ -7,111 +7,106 @@ Getting Started
 Installation
 ============
 
-conda install -c iossifovlab -c bioconda -c conda-forge snakeobjects
+``snakeobjects`` is tested and works well on Linux and Mac; it doesn't work on
+Windows. By far, the easiest method for installing ``snakeobjects`` is to use
+the ``snakeobjects`` conda package available at the iossifovlab channel (SOON AT
+bioconda!!). This method requires a conda or miniconda  installed. (See `Conda
+Installation
+<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).  With
+conda ready, installing ``snakeobjects`` is simple::
 
-Minimal (empty) project and pipeline
-====================================
+    $ conda install -c iossifovlab -c bioconda -c conda-forge snakeobjects
 
-Step 1
-------
+Unfortunately, due to the large number of dependencies associated with
+``snakemake`` this can take several minutes. After ``conda install`` finishes,
+you can use the :option:`sobjects version` command to check  if the
+installation was successful:
+    
+.. runblock:: console
 
-An empty directory is both a valid ``snakeobjects`` project and a valid
-``snakeobjects`` pipeline directory.  We will use here such a minimal and
-useless project to introduce some of the basic steps for working with
-``snakeobjects`` projects and pipelines. Let's create an empty directory and go
-in it:
+    $ sobjects version
 
-.. code-block:: bash
+Hello world pipeline
+====================
 
-    $ mkdir /tmp/minimalSO
-    $ cd /tmp/minimalSO
+We will show how you can create and execute a small pipeline, and we will use
+it to introduce some of the basic steps for working with ``snakeobjects``
+projects and pipelines. 
 
-Step 2
-------
+Let's create a new directory to use both as a pipeline and as a project
+directory.  The directory's location and name do not matter, but we will use
+/tmp/helloWorld for the example below.  In this directory, you should create
+three files. The first file should be called ``build_object_graph.py`` and
+should contain the following two lines:
 
-We can then use the :option:`sobjects describe` tool to get basic information about
-the project and the pipeline:
+.. literalinclude:: helloWorld/build_object_graph.py
 
-.. code-block:: bash
+The second file should be called ``hello.snakefile`` and contain:
 
-    $ sobjects describe
-    WORKING ON PROJECT /tmp/minimalSO
-    WITH PIPELINE /tmp/minimalSO
-    Project parameters:
-    Types:
+.. literalinclude:: helloWorld/hello.snakefile
 
-The result shows that we are using a project in the directory
-``/tmp/minimalSO`` and the that this project uses a pipline in the same
-``/tmp/minimalSO`` directory. Floowing, is an empty list of the *Project
-parameters* (no ``so_project.yaml`` file is provided for the project and thus
-there are no project parameters) and an empty list of *Object types* (no
-objects have been added to the object graph so there are no object types used).
+Finally, the third file should be named ``so_project.yaml`` and should be
+empty.  If you don't want to be bothered creating a directory, copying, and
+pasting, you can instead download and extract (``tar xzf helloWorld.tgz``) the
+files from :download:`helloWorld.tgz <./helloWorld.tgz>`.
 
-Step 3
-^^^^^^
+The ``build_object_graph.py`` and the ``hello.snakefile`` files comprise our
+pipeline.  The ``build_object_graph.py`` is a script that creates the object
+graph for our project containing only one object with object type ``hello`` and
+object id ``world``.  The ``hello.snakefile`` declares that objects of type
+``hello`` have one target, ``result.txt``, and includes the rule to create such
+a target.  The ``so_project.yaml`` file indicates that the directory will be
+used as a ``snakeobjects`` project directory and will contain the results of
+the pipeline's execution. 
 
-We then use the :option:`sobjects prepareObjects` command to prepare the projects for execution: 
-
-.. code-block:: bash
-
-    $ sobjects prepareObjects
-    WORKING ON PROJECT /tmp/minimalSO
-    WITH PIPELINE /tmp/minimalSO
-    $ find .
-    .
-    ./objects
-    ./objects/.snakeobjects
-    ./objects/.snakeobjects/main.snakefile
-
-This command assembbles as snakefile to be used by ``snakemake`` and stores it
-in the ``./objects/.snakeobjects/main.snakefile``.  The command would also
-create directories for all objects in the object graph, but scince no objects
-are added to the object graph, no object directories are be created.
-
-Step 4
-^^^^^^
-
-Finally, we can run :option:`sobjects run` command to create all targets for all the
-object in the project:
+With ``snakeobjects``, we execute a pipeline over a project in two steps:
+:option:`sobjects prepare` and :option:`sobjects run`.  We perform both using
+the ``sobjects`` command-line utility from within our project directory.
 
 .. code-block:: bash
+
+    $ cd /tmp/helloWorld
+
+    $ sobjects prepare
+    # WORKING ON PROJECT /tmp/helloWorld
+    # WITH PIPELINE /tmp/helloWorld
 
     $ sobjects run -j -q
-    WORKING ON PROJECT /tmp/minimalSO
-    WITH PIPELINE /tmp/minimalSO
-    RUNNING: snakemake -s /tmp/minimalSO/objects/.snakeobjects/main.snakefile -d /tmp/minimalSO/objects -j -q
+    # WORKING ON PROJECT /tmp/helloWorld
+    # WITH PIPELINE /tmp/helloWorld
+    UPDATING ENVIRONMENT:
+    export SO_PROJECT=/tmp/helloWorld
+    export SO_PIPELINE=/tmp/helloWorld
+    export PATH=$SO_PIPELINE:$PATH
+    RUNNING: snakemake -s /tmp/helloWorld/objects/.snakeobjects/main.snakefile -d /tmp/helloWorld/objects -j -q
     Job counts:
         count	jobs
-        1	all_main
-        1
+        1	createResult
+        1	so_all_targets
+        1	so_hello_obj
+        3
 
-The command shows the project and pipeline directories it will use and the
-command line used to run ``snakemake``.  All parameters given to ``sobject
-run`` (i.e. ``-j -q``) are passed directly to ``snakemake``). ``-j`` instructs
-``snakemake`` to run the pipeline on the local host and to use all the
-available processors and  ``-q`` instruct ``snakemake`` to be *quiet*
-(``snakemake`` is rather verbose by default). Scince, no objects are present in the object
-graph, no targets are created. The only change is that ``snakemake`` creates
-its own private directory in ``./objects/.snakemake``.
-
-``hello world`` project
-=======================
-
-Here will show how to create a project with only one object with object type ``hello`` and object id ``world``. 
-As above we will use the same directory for the project and for the pipeline:  
+The :option:`sobjects prepare` performs few initialization steps.
+:option:`sobjects run` does the 'heavy lifting' using the ``snakemake`` to
+execute the rules for creating the object targets. The execution of our
+helloWorld pipeline should finish instantly, and we can find the file for the
+result.txt target in the directory ``snakeobjects`` creates for our single
+``hello/world`` object:
 
 .. code-block:: bash
 
-    $ mkdir /tmp/minimalHW
-    $ cd /tmp/minimalHW
+    $ cat /tmp/helloWorld/objects/hello/world/result.txt 
+    hello world
 
-But now will add one object to the project's object graph. To do that we have to create a python 
-file called ``build_object_graph.py`` 
-in the pipeline directory with the following content:
 
-.. code-block::
+What's next
+===========
 
-    def run(proj,OG):
-        OG.add("hello","world")
-
+We strongly suggest that you should examine our extensive :ref:`tutorial` next.
+It introduces all the components necessary to design complex workflows and to
+apply them to large projects.  You can find more examples in the
+:ref:`examples`.  For a high-level overview of ``snakeobjects``, you should
+read the ``snakeobjects`` paper [REF to come].  You can find a detailed
+reference for all of the ``snakeobjects``' components in the rest of this
+documentation package.
 

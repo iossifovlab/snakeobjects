@@ -1,3 +1,5 @@
+.. _tutorial:
+
 ********
 Tutorial
 ********
@@ -13,7 +15,7 @@ batch of exome sequence data generated from 100 families comprised of mother,
 father, and a child and we were asked to examine the quality of the data and to
 identify the *de novo* substitutions in the 100 children. A *de novo*
 substitution is a nucleotide at a given position in a child that is not present
-in his/her parents. 
+in his/her parents at that position. 
 
 Setup
 =====
@@ -104,8 +106,8 @@ This location of the directories is not required. Provided you are willing
 to make few minor changes in the projects' configuration you can create
 the two directories anywhere. 
 
-Step 1.2. Configure the projects
---------------------------------
+Step 1.2. Configure the project
+-------------------------------
 
 Next, we will create a file called ``so_project.yaml`` in the ``project``
 directory with the following content:
@@ -202,8 +204,8 @@ fastq files for the first and for the second reads defined relative to the
 project's ``fastqDir`` parameter, and the ``sampleId`` is assigned the value of
 the ``individual`` column.
 
-Step 1.4. Prepare the projects 
-------------------------------
+Step 1.4. Prepare the project
+-----------------------------
 
 Next we will create the object graph for our project. We do that by using the
 :option:`sobjects prepare` command from within the project directory. We can
@@ -415,7 +417,7 @@ will do just that. Even though the complete tutorial input data is small enough
 that the pipeline we have created so far can process it all on a single
 processor for 2-3 minutes, this is a useful demonstration of how easy it is to
 maintain and operate on multiple projects with the same ``snakeobjects``
-pipeline. Moreover, we will extends the pipeline substantially and the final
+pipeline. Moreover, we will extend the pipeline substantially and the final
 pipeline at the end of the tutorial can take as much as one hour on a single
 processor to process the full project.  
 
@@ -499,8 +501,8 @@ is equal to 4 times the number of pairs (942) reported in the corresponding
 pairNumber.txt file. This is exactly what is expected: as described above,
 sequencing reads are represented in 4 lines in the fastq files. 
 
-Step 1.8. Re-run the project 
-----------------------------
+Step 1.8. Re-run the complete project 
+-------------------------------------
 
 Now that have verified that the updated pipeline works, it is time to count the
 pair numbers for the complete project:
@@ -829,7 +831,7 @@ two rules may require two different versions of the same tool, or rules may use
 tools that depend on different version of the python. Such conflicts are
 easily handled by allowing different environments for different rules.
 Unfortunately, the ``conda`` clauses are not used by default and we need to
-explicitly provide a ``--use-conda`` parameter to ``snakemeke``. We will show
+explicitly provide a ``--use-conda`` parameter to ``snakemake``. We will show
 how to do that through ``sobjects run`` shortly.
 
 **Forth**, we added the ``resources`` clause. This clause enables us to let
@@ -1053,7 +1055,7 @@ tutorial pipelines on your cluster. Note though that the jobs generated
 by running the tutorial projects are all small because we prepared a toy input
 datasets.  For small jobs like these the overhead of submitting and scheduling 
 may be unnecessarily large. When you get a cluster profile
-configured you may also consider adding the ``--profile=<cluster profile>`` to
+configured, you may also consider adding the ``--profile=<cluster profile>`` to
 the ``default_snakemake_args`` project parameter. Every time that you use
 :option:`sobjects run` for that project the ``snakemake`` will submit jobs to the
 cluster instead of running them locally on your computer as it does when you
@@ -1140,7 +1142,7 @@ We want to point out two interesting features used in the ``sample.snakefile``.
 The first one is the ``level=2`` parameter passed on the :py:func:`.DT`
 function call in the rule ``normalizedBam``.  It means that we are referring to
 targets in objects that are two steps away in the object graph. In the specific
-case, the implementation of the rule requires the ``charAll.fa`` file that is
+case, the implementation of the rule requires the ``chrAll.fa`` file that is
 stored as a target of the ``reference/o`` object. The ``sample`` objects do not
 depend directly on the ``reference/o`` object in our graph, but they depend on
 one or more ``fastq`` objects which in turn depend on the ``reference/o``.
@@ -1172,11 +1174,11 @@ our target regions in the ``depth`` rule that saves the resulting depths in the
 depths and (2) to record the percent of the target positions covered by at
 least 1, 10, 20, and 40 reads in the ``coverage-stats.txt`` target. The
 ``coverage.png`` and the ``coverage-stats.txt`` are created by two separate
-rule, both of which use ``depths.txt`` and are implemented by small python
+rules, both of which use ``depths.txt`` and are implemented by small python
 snipped using a ``run:`` clause.
 
 
-To finish the updates to the pipeline you should copy the content bellow to to
+To finish the updates to the pipeline you should copy the content bellow to 
 the ``sampleSummary.snakefile`` in our pipeline: 
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sampleSummary.snakefile
@@ -1218,7 +1220,7 @@ Step 3. Calling *de novo* variants
 To finish the tutorial, we will implement a quick and dirty *de novo* caller
 and will integrate it into our pipeline. Our *de novo* caller will look for 
 *de novo* nucleotides found in children that are not present in their parents. 
-It's implementation is shown below:
+Its implementation is shown below:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/call_denovo.py
     :linenos:
@@ -1276,7 +1278,7 @@ the handling between the cases and controls.
 We will use the ``collections.ped`` file in the ``build_object_graph.py``
 pipeline script to create the ``trio`` objects. As already done multiple times,
 we will add a project parameter (``pedigree``) in our two projects that points
-to the ``collection.ped`` file. After the addition, the ``so_projects.yaml``
+to the ``collection.ped`` file. After the addition, the ``so_project.yaml``
 file for the ``projectTest`` looks like:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/final/projectTest/so_project.yaml
@@ -1360,9 +1362,15 @@ the large ``projects``.
 .. code-block:: bash
 
     (snakeobjectsTutorial) .................$ cd /tmp/snakeobjectsTutorial/solutions
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/solutions$ for s in 1.8 1. ...; do (cd ; sobjects graph | dot -Tpng > a.png); done
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects graph | neato -Tpng > a.png
-
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/solutions$ for s in step-1.8 step-1.9 step-2.1 step-2.2 step-2.3 final; do 
+        (cd $s/projectTest; sobjects prepare; 
+         sobjects graph -i 1 -s box -l lgnd.dot | dot -Tpng > g.png; 
+         cat lgnd.dot | dot -Tpng > lgnd.png); 
+    done 
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/solutions$ for s in step-1.8 step-1.9 step-2.1 step-2.2 step-2.3 final; do 
+        (cd $s/project; sobjects prepare; 
+         sobjects graph -w 0.1 -p 0.2 -a 0.2 | neato -Tpng > g.png); 
+    done 
 
 .. |P18| image:: _static/project-step-1.8-graph.png
     :width: 300
@@ -1376,6 +1384,7 @@ the large ``projects``.
     :width: 300
 .. |P30| image:: _static/project-final-graph.png
     :width: 300
+
 .. |T18| image:: _static/projectTest-step-1.8-graph.png
     :width: 300
 .. |T19| image:: _static/projectTest-step-1.9-graph.png
@@ -1389,21 +1398,34 @@ the large ``projects``.
 .. |T30| image:: _static/projectTest-final-graph.png
     :width: 300
 
-+-----+---------------+-----------------+
-| Step| projectTest   | project         |
-+=====+===============+=================+
-| 1.8 | |T18|         + |P18|           +
-+-----+---------------+-----------------+
-| 1.9 | |T19|         + |P19|           +
-+-----+---------------+-----------------+
-| 2.1 | |T21|         + |P21|           +
-+-----+---------------+-----------------+
-| 2.2 | |T22|         + |P22|           +
-+-----+---------------+-----------------+
-| 2.3 | |T23|         + |P23|           +
-+-----+---------------+-----------------+
-| 3.0 | |T30|         + |P30|           +
-+-----+---------------+-----------------+
+.. |L18| image:: _static/legend-step-1.8.png
+    :width: 300
+.. |L19| image:: _static/legend-step-1.9.png
+    :width: 300
+.. |L21| image:: _static/legend-step-2.1.png
+    :width: 300
+.. |L22| image:: _static/legend-step-2.2.png
+    :width: 300
+.. |L23| image:: _static/legend-step-2.3.png
+    :width: 300
+.. |L30| image:: _static/legend-final.png
+    :width: 300
+
++----+---------------+-----------------+-----------+
+|step| projectTest   | project         |object type+
++====+===============+=================+===========+
+|1.8 | |T18|         + |P18|           +   |L18|   +
++----+---------------+-----------------+-----------+
+|1.9 | |T19|         + |P19|           +   |L19|   +
++----+---------------+-----------------+-----------+
+|2.1 | |T21|         + |P21|           +   |L21|   +
++----+---------------+-----------------+-----------+
+|2.2 | |T22|         + |P22|           +   |L22|   +
++----+---------------+-----------------+-----------+
+|2.3 | |T23|         + |P23|           +   |L23|   +
++----+---------------+-----------------+-----------+
+|3.0 | |T30|         + |P30|           +   |L30|   +
++----+---------------+-----------------+-----------+
 
 
 

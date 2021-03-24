@@ -22,7 +22,7 @@ Without an argument, prints help for all the commands. If one argument
 is given, it should be one of the available commands and help for the given 
 command is shown.''',
 
-    "describe": '''Prints a basic information about the project and the pipeline
+    "describe": '''Prints basic information about the project and the pipeline
 that are used''',
 
     "prepareTest": '''sobjects prepareTest [<arguments to build_object_graph.py>]
@@ -40,20 +40,21 @@ graph''',
 
     "prepareObjects": '''sobjects prepareObjects
 
-Prepares the main snakefile, and the directories and symbolic links for all 
-object in the object graph''',
+Prepares the main.snakefile, and the directories and symbolic links for all 
+objects in the object graph''',
 
     "run": '''sobjects run [<arguments to snakemake>]
 
-Creates targets for object in the object graph by running snakemake. The 
+Creates targets for objects in the object graph by running snakemake. The 
 <arguments to snakemake> determine which targets will be created and what resources 
 will be used''',
 
     "submit": '''sobjects submit [<arguments to snakemake>]
 
-Creates targets for object in the object graph by running snakemake with profile specified in default_snakemake_args directive of so_project.yaml. The 
-<arguments to snakemake> determine which targets will be created and what resources 
-will be used''',
+Creates targets for objects in the object graph by running snakemake with
+profile specified in default_snakemake_args directive of so_project.yaml. The
+<arguments to snakemake> determine which targets will be created and what
+resources will be used''',
 
     "graph": '''sobject graph [-w width] [-p penwidth] [-a arrowsize] [-l legend] [-o out] [-i id] [-s shape]
 
@@ -89,7 +90,7 @@ def cli(args=None):
         print(__version__)
         return
     elif command in ["help", "-h", "--help"]:
-        print("snakeobject %s\n" % (__version__))
+        print("Snakeobjects %s\n" % (__version__))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
         # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")

@@ -16,6 +16,11 @@ help:
 
 .PHONY: help Makefile html
 
+helloWorld.tgz: 
+	for d in `find helloWorld -name __pycache__`; do rm -r $$d; done
+	for d in `find helloWorld -name objects`; do rm -r $$d; done
+	tar czf $@ helloWorld
+
 snakeobjectsTutorial.tgz: 
 	for d in `find snakeobjectsTutorial -name __pycache__`; do rm -r $$d; done
 	for d in `find snakeobjectsTutorial -name objects`; do rm -r $$d; done
@@ -32,8 +37,8 @@ snakemakeTutorialExample.tgz:
 	tar czf $@ snakemakeTutorialExample
 
 # Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-html: Makefile snakeobjectsTutorial.tgz snakeobjectsPaperExample.tgz snakemakeTutorialExample.tgz
+# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS). 
+html: Makefile snakeobjectsTutorial.tgz snakeobjectsPaperExample.tgz snakemakeTutorialExample.tgz helloWorld.tgz
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 deploy: html
