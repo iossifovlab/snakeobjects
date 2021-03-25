@@ -13,7 +13,7 @@
 #
 import os
 import sys
-autodoc_mock_imports = ['_tkinter']
+
 
 # -- Project information -----------------------------------------------------
 
