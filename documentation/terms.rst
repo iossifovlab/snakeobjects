@@ -6,9 +6,9 @@ Glossary
     pipeline
         The pipeline usually contains a python script called ``build_object_graph.py`` that uses *meta data* associated with the projects that use the pipeline to create project's object graph and  a ``<object type>.snakefile`` for each of the object types created by the ``build_object_graph.py``. It also may contain executable files: python scripts, bash scripts, etc. as well as environment yaml files used in the workflow.
 
-
     project
         Directory containing ``so_project.yaml`` file with definition of parameters used in building object graph and in executing the pipeline.
+
 
     object graph
         `Object graph` is a structure representing a directed acyclic graph of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
@@ -63,3 +63,4 @@ Glossary
 
     meta data, or metadata
         The project `meta data` can have an arbitrary form (a list input files; a csv file; relation database, etc.) and is usually used to generate the project-specific object graph.
+
