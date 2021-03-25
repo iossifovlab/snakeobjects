@@ -13,7 +13,7 @@
 #
 import os
 import sys
-import sphinx_autorun
+
 
 # -- Project information -----------------------------------------------------
 
