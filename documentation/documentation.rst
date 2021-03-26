@@ -130,7 +130,7 @@ Projects
 In ``snakeobjects``, a *workflow user* creates a *project directory*
 and inside a project configuration file called ``so_project.yaml``.
 The ``so_project.yaml`` file contains parameters that specify the pipeline operating on 
-the project, pointers to the input and metadata associated with the project, and 
+the project, pointers to the input and :term:`metadata` associated with the project, and 
 parameters that control the processing to configure the project.  
 The *workflow user* uses the ``sobjects``
 command line tool to initialize (usually using the :option:`sobjects prepare`

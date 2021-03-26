@@ -9,7 +9,7 @@ Introduction
 
 In this tutorial we will gradually build a complex example that mimics closely
 a realistic scenario using simulated data. We will pretend to be a
-bioinformatician involved in a large project for examining *de novo* mutations
+bioinformatician involved in a large :term:`project` for examining *de novo* mutations
 in a set of children. We were just given a directory  containing the first
 batch of exome sequence data generated from 100 families comprised of mother,
 father, and a child and we were asked to examine the quality of the data and to
@@ -76,7 +76,7 @@ fastq files (i.e., the individuals for each of the fastq files) and the
 ``collection.ped`` file describing the 100 trio families using a standard
 pedigree file that has one line for each of the 300 individuals. 
 
-Finally, the ``solutions`` subdirectory contains the state of the pipeline and
+Finally, the ``solutions`` subdirectory contains the state of the :term:`pipeline` and
 the projects at various stages (steps) of the tutorial. For example,
 ``solutions/step-2.4`` contains the state after we have completed Step 2.4. For
 the impatient, the ``solutions/final`` contains the complete pipeline built by
@@ -109,7 +109,7 @@ the two directories anywhere.
 Step 1.2. Configure the project
 -------------------------------
 
-Next, we will create a file called ``so_project.yaml`` in the ``project``
+Next, we will create a file called :term:`so_project.yaml` in the ``project``
 directory with the following content:
 
 
@@ -127,7 +127,7 @@ property called ``inputDir`` that points to the input directory that was given
 to us. Here we have also used a path relative to the project directory, which
 is convenient for the purposes of the tutorial. The ``inputDir`` parameter will not
 be used by the pipeline directly. We will only use it in the ``so_project.yaml`` file
-to define the values of other project parameters relative to the `inputDir`.
+to define the values of other :term:`project parameters` relative to the `inputDir`.
 Indeed, the next two
 properties  ``fastqsFile`` and ``fastqDir`` are defined succinctly based on the
 ``inputDir`` and point to the table describing the fastq files and to the
@@ -177,7 +177,7 @@ Step 1.3. Create the build_object_graph.py
 
 Now that have configured our first project, we will turn our attention to the 
 pipeline. So far the pipeline directory is empty. The first thing to do when 
-starting a pipeline is to create the ``build_object_graph.py`` script. In the 
+starting a pipeline is to create the :term:`build_object_graph.py` script. In the 
 **Step 1** we will create a very simple graph that contains one object for each 
 fastq pairs of files. The fastq pairs are listed in the fastqs.txt file in the input
 directory and we have already ensured that our project has a parameter 
@@ -189,7 +189,7 @@ in the file.
 .. literalinclude:: snakeobjectsTutorial/solutions/step-1.5/pipeline/build_object_graph.py
 
 The ``run`` function is given the project (``proj``) for which it will create a
-new object graph and object graph instance (``OG``) that it should add the new
+new object graph and :term:`object graph` instance (``OG``) that it should add the new
 objects into. In the first two lines, the function accesses the necessary
 parameters through ``proj.parameters``: the ``fastqDir`` pointing to the
 directory with the fastq files and the ``fastqsFile`` pointing to the table
@@ -249,8 +249,8 @@ subdirectories and two files:
     objects/fastq/FC0A03F0F.L007.E/log
     objects/fastq/FC0A03F06.L008.I
 
-The ``objects/.snakeobjects/OG.json`` file stores the object graph that was
-just created and the ``objects/.snakeobjects/main.snakefile`` is the projects
+The :term:`objects/.snakeobjects/OG.json` file stores the object graph that was
+just created and the :term:`objects/.snakeobjects/main.snakefile` is the projects
 specific snakefile that will be provided to the snakemake upon execution of the
 pipeline. In addition, there are directories for each object from the objects
 graph where the objects' targets will be stored: the
@@ -264,7 +264,7 @@ In addition, the :option:`sobjects prepare` created one file,
 ``fastq.snakefile``, in pipeline directory. This is not a typical behavior: as
 a rule, **sobjects** only updates the project directory (and to be more
 specific, only its ``objects`` subdirectory), but when we start a new pipeline
-it's handy to have placeholders for the object type snakemake files be created
+it's handy to have placeholders for the :term:`object type` snakemake files be created
 for us. The content if the new ``fastq.snakefile`` is very simple: 
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-1.5/pipeline/fastq.snakefile
@@ -371,7 +371,7 @@ target named ``pairNumber.txt``.
 Next is a ``snakemake`` rule we have called ``countReads`` that describes how
 to create the target: the output clause on line 5 shows that this rule
 will generate the ``T("pairNumber.txt")`` target.  As input (line 4), the rule
-will use the two files pointed by the fastq object's parameters called ``R1``
+will use the two files pointed by the fastq :term:`object's parameters` called ``R1``
 and ``R2``.  To obtain the value of ``R1`` and ``R2`` parameters for the object
 the rule uses the extension function :py:func:`.P`.
 These parameters were set so that their values are full file paths to
