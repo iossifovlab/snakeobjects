@@ -9,6 +9,7 @@ dependencies:
   - setuptools
   - pytest-cov
   - sphinx
+  - sphinx-autorun
   - conda-build
   - anaconda-client
   - snakemake-minimal>5.20
