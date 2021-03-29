@@ -4,25 +4,25 @@ snakeobjects package
 
 Project class
 -------------
-.. autoclass :: Project
+.. autoclass :: snakeobjects.Project
    :members: 
 
 ObjectGraph class
 -----------------
-.. autoclass :: ObjectGraph
+.. autoclass :: snakeobjects.ObjectGraph
    :members: 
    :special-members: __getitem__
 
 
 
 
-.. autoclass :: ObjectGraph.OGO
+.. autoclass :: snakeobjects.ObjectGraph.OGO
    :members: 
 
 
 find_project_directory function
 -------------------------------
-.. autofunction :: Project.find_so_project_directory
+.. autofunction :: snakeobjects.Project.find_so_project_directory
 
 load_object_graph function
 --------------------------
