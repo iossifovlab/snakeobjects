@@ -228,5 +228,5 @@ snakemake --snakefile .snakeobjects/main.snakefile  $default_options $*
 
 if __name__ == '__main__':
     import sys
-    print("BBBBBBB")
+    #print("BBBBBBB")
     cli(sys.argv[1:])
