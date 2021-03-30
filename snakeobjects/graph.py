@@ -25,7 +25,7 @@ palegreen slategrey
 colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
-def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id=0, shape='circle'):
+def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', text='id', shape='circle'):
     O = open(out+'.dot', 'w') if not out == 'stdout' else sys.stdout
     print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
     print("digraph digraphname {", file=O)
@@ -52,14 +52,14 @@ def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', id
         print(f"{t} -> {c}",file=sys.stderr)
         print(f"node [fillcolor = {c}, shape = {shape}]", file=O)
         for o in OG[t]:
-            if id == 0:
+            if text == '':
                 print(o2K(o), file=O)
-            elif id == 1:
+            elif text == 'oId':
                 print(f"node [label=\"{o.oId}\"] {o2K(o)}", file=O)
-            elif id == 2:
-                print(f"node [label=\"{o.oType}/{o.oId}\"] {o2K(o)}", file=O)               
-            elif id == 3:
-                lbl = "\n".join([f"{o.oType}/{o.oId}"] + [f"{n}: {v}" for n,v in o.params.items()])
+            elif text == 'oType:oId':
+                print(f"node [label=\"{o.oType}: {o.oId}\"] {o2K(o)}", file=O)               
+            elif text == 'params':
+                lbl = "\n".join([f"{o.oType}: {o.oId}"] + [f"{n}: {v}" for n,v in o.params.items()])
                 print(f"node [label=\"{lbl}\"] {o2K(o)}", file=O)               
         print('', file=O)
         print('', file=O)
@@ -157,8 +157,8 @@ def driver(OG, data):
     parser.add_argument("-o", '--out', dest='out', default='stdout', type=str, metavar='out',
         help='name of the output file, default is stdout' )
 
-    parser.add_argument("-i", '--id', dest='id', default=0, type=int, metavar='id',
-        help='place id labels in nodes: 0 - no id, 1 - oid, 2 - oType/oId, 3 - oType/oId and parameters' )
+    parser.add_argument("-t", '--text', dest='text', default='', type=str, metavar='text',
+        help='place text in nodes: [|oId|oType:oId|params], default no text' )
 
     parser.add_argument("-s", '--shape', dest='shape', default='circle', type=str, metavar='shape',
         help='shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html' )
@@ -169,10 +169,10 @@ def driver(OG, data):
     arrowsize = args.arrowsize
     legend = args.legend
     out = args.out
-    id = args.id
+    text = args.text
     shape = args.shape
     
-    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, id=id, shape=shape)
+    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, text=text, shape=shape)
 
 
 
