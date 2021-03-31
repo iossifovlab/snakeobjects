@@ -84,8 +84,7 @@ def help(args=None):
                 print(helpData[hCmd])
             else:
                 print("The command", hCmd, "is unknown")
-                return 1
-        return
+    return
 
 if __name__ == '__main__':
     help(sys.argv[1:])
