@@ -82,9 +82,10 @@ def cli(args=None):
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
         return
 
+    from _version import get_versions
+    _l_version = get_versions()['version']
     if command in ["help", "-h", "--help"]:
-        from _version import get_versions
-        print("Snakeobjects %s\n" % (get_versions()['version']))
+        print("Snakeobjects %s\n" % (_l_version))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
         # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
@@ -105,10 +106,9 @@ def cli(args=None):
             return 1
         return
 
-    from snakeobjects import __version__
 
     if command == "version":
-        print(__version__)
+        print(_l_version)
         return
 
     from snakeobjects import Project, ObjectGraph, load_object_graph, graph
