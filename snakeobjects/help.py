@@ -1,5 +1,6 @@
 import os,sys
 
+args = sys.argv[1:]
 helpData = {
     "version": "prints the version",
 
@@ -86,3 +87,5 @@ def help(args=None):
                 print("The command", hCmd, "is unknown")
                 return 1
         return
+
+help(args)
