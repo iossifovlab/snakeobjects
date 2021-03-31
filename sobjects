@@ -1,4 +1,4 @@
 #!/bin/bash
 
-python ../snakeobjects/cli.py  $*
+python snakeobjects/cli.py  $*
 
