@@ -1,16 +1,5 @@
-from argparse import ArgumentParser
-from snakeobjects import __version__, Project, ObjectGraph, load_object_graph, graph
-import importlib.resources as importlib_resources
-import os,sys,yaml
-from importlib.util import spec_from_file_location, module_from_spec
+import os,sys
 
-def load_yaml(file_name):
-
-    CF = open(file_name, 'r')
-    config = yaml.safe_load(CF)
-    CF.close()
-
-    return config  
 
 helpData = {
     "version": "prints the version",
@@ -75,6 +64,13 @@ optional arguments:
 
 }
 
+def load_yaml(file_name):
+
+    CF = open(file_name, 'r')
+    config = yaml.safe_load(CF)
+    CF.close()
+
+    return config  
 
 def cli(args=None):
     if not args:
@@ -86,11 +82,10 @@ def cli(args=None):
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
         return
 
-    if command == "version":
-        print(__version__)
-        return
-    elif command in ["help", "-h", "--help"]:
-        print("Snakeobjects %s\n" % (__version__))
+    from _version import get_versions
+    _l_version = get_versions()['version']
+    if command in ["help", "-h", "--help"]:
+        print("Snakeobjects %s\n" % (_l_version))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
         # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
@@ -110,6 +105,16 @@ def cli(args=None):
             print("Help accepts at most one argument.")
             return 1
         return
+
+
+    if command == "version":
+        print(_l_version)
+        return
+
+    from snakeobjects import Project, ObjectGraph, load_object_graph, graph
+    import importlib.resources as importlib_resources
+    import yaml
+    from importlib.util import spec_from_file_location, module_from_spec
 
     proj = Project()
     print("# WORKING ON PROJECT", proj.directory)

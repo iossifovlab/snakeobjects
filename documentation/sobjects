@@ -1,7 +1,5 @@
 #!/bin/bash
 
-python ../snakeobjects/help.py  $*
-
-
-
+echo PYTHONPATH is $PYTHONPATH
+python ../snakeobjects/cli.py  $*
 
