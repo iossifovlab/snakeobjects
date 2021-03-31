@@ -49,3 +49,4 @@ clean:
 	rm -rf snakeobjectsTutorial.tgz
 	rm -rf snakeobjectsPaperExample.tgz
 	rm -rf snakemakeTutorialExample.tgz
+	rm -rf helloWorld.tgz

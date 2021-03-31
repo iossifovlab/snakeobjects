@@ -57,3 +57,16 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+def createTgz(dname):
+    cmd = "for d in `find "+dname+" -name __pycache__`; do rm -r $d; done"
+    os.system(cmd)
+    cmd = "for d in `find "+dname+" -name objects`; do rm -r $d; done"
+    os.system(cmd)
+    cmd = "tar czf "+dname+".tgz "+dname
+    os.system(cmd)
+    
+createTgz('helloWorld')
+createTgz('snakeobjectsTutorial')
+createTgz('snakeobjectsPaperExample')
+createTgz('snakemakeTutorialExample')
