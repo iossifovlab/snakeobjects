@@ -1,6 +1,4 @@
-import importlib.resources as importlib_resources
 import os,sys
-from importlib.util import spec_from_file_location, module_from_spec
 
 helpData = {
     "version": "prints the version",
@@ -71,7 +69,7 @@ def help(args=None):
     command = args[0]
 
     if command in ["help", "-h", "--help"]:
-        print("Snakeobjects %s\n" % (__version__))
+        #print("Snakeobjects %s\n" % (__version__))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
         # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
