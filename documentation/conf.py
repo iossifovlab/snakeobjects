@@ -70,7 +70,8 @@ def createTgz(dname):
     cmd = "tar czf "+dname+".tgz "+dname
     os.system(cmd)
     
-createTgz('helloWorld')
 createTgz('snakeobjectsTutorial')
 createTgz('snakeobjectsPaperExample')
 createTgz('snakemakeTutorialExample')
+# createTgz('helloWorld')
+os.system('git status > helloWorld.tgz')
