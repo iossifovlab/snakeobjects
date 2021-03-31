@@ -83,7 +83,7 @@ def cli(args=None):
         return
 
     if command in ["help", "-h", "--help"]:
-        from ._version import get_versions
+        from _version import get_versions
         print("Snakeobjects %s\n" % (get_versions()['version']))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
