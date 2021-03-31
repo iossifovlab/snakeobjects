@@ -1,7 +1,5 @@
 import os,sys
 
-args = sys.argv[1:]
-
 helpData = {
     "version": "prints the version",
 
@@ -89,4 +87,5 @@ def help(args=None):
                 return 1
         return
 
-help(args)
+if __name__ == '__main__':
+    help(sys.argv[1:])
