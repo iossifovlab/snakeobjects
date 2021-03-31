@@ -1,4 +1,4 @@
 #!/bin/bash
-
+echo "PYTHONPATH is" $PYTHONPATH 
 python ../snakeobjects/cli.py  $*
 
