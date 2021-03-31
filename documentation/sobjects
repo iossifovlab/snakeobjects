@@ -1,6 +1,6 @@
 #!/bin/bash
 
-python ../snakeobjects/cli.py  $*
+python ../snakeobjects/help.py  $*
 
 
 
