@@ -89,4 +89,5 @@ def help(args=None):
     return
 
 if __name__ == '__main__':
+    import sys
     help(sys.argv[1:])
