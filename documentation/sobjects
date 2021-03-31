@@ -2,5 +2,5 @@
 
 echo "PYTHONPATH is" $PYTHONPATH 
 
-#python ../snakeobjects/cli.py  $*
+python ../snakeobjects/cli.py  $*
 
