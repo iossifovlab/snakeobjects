@@ -77,4 +77,4 @@ createTgz('snakemakeTutorialExample')
 createTgz('helloWorld')
 
 if "READTHEDOCS" in os.environ:
-    system('git checkout -- conf.py')
+    os.system('git checkout -- conf.py')
