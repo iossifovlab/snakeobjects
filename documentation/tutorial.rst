@@ -7,13 +7,13 @@ Tutorial
 Introduction
 ============
 
-In this tutorial we will gradually build a complex example that mimics closely
+In this tutorial we will gradually build a complex example that closely mimics
 a realistic scenario using simulated data. We will pretend to be a
 bioinformatician involved in a large :term:`project` for examining *de novo* mutations
 in a set of children. We were just given a directory  containing the first
 batch of exome sequence data generated from 100 families comprised of mother,
 father, and a child and we were asked to examine the quality of the data and to
-identify the *de novo* substitutions in the 100 children. A *de novo*
+identify *de novo* substitutions in the 100 children. A *de novo*
 substitution is a nucleotide at a given position in a child that is not present
 in his/her parents at that position.
 
@@ -22,7 +22,7 @@ Setup
 
 ``snakeobjects`` and this tutorial are tested and work well on Linux; they
 don't work on Windows. We assume that you will work on a Linux or Mac. In
-addition, we assume that you have a conda or miniconda installed (`Conda
+addition, we assume that you have conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
 Everything else needed to follow this tutorial is included in the
@@ -62,7 +62,7 @@ Inside it you will find a short ``README.txt`` file describing the contents.
 Briefly, the directory contains the reference genome (``chrAll.fa``), the known
 genes (``genes.txt``), and the regions targeted by the exome capture
 (``targetRegions.txt``).  For the purposes of the tutorial we will use only the
-first 1MB of the human chromosome 1 that contains 54 transcripts from 36
+first 1MB of human chromosome 1 that contains 54 transcripts from 36
 different genes. The genes include 67 protein coding regions/exons that are
 targeted by the hypothetical exome capture.
 There are also 768 fastq files in the sub-directories of ``input/fastq`` grouped
@@ -153,8 +153,9 @@ directory or any of its subdirectories):
     Object types:
 
 
-The result should show that sobjects has determined the project and the pipeline directories
-and that the fastqDir and fastqsFile project properties point to the correct locations:
+The result should show that sobjects has determined the project and the pipeline
+directories and that the ``fastqDir`` and ``fastqsFile`` project properties
+point to the correct locations:
 
 .. code-block:: bash
 
@@ -834,25 +835,25 @@ explicitly provide a ``--use-conda`` parameter to ``snakemake``. We will show
 how to do that through ``sobjects run`` shortly.
 
 **Forth**, we added the ``resources`` clause. This clause enables us to let
-``snakemake`` know what are the resource needs to execute the given rule.
+``snakemake`` know what the resource needs are to execute the given rule.
 Indexing of the small reference genome provided with the tutorial does not need
 large amounts of memory but indexing the complete human genome with ``bwa``
-uses 10Gb. Declaring the required resources  for each rule that uses a lot is
+uses 10Gb. Declaring the required resources for each rule that uses a lot is
 particularly important when we run ``sobjects`` or ``snakemake`` on a
 computational cluster, where job scheduling and monitoring are guided by such
 requirements.
 
-**Fifth**, the rule uses the ``snakemake``'s ``log`` clause together with
+**Fifth**, the rule uses ``snakemake``'s ``log`` clause together with
 ``snakeobjects``' convenience function :py:func:`.LFS` to configure log files
 where we can store information about the execution of the rule. The
 :py:func:`.LFS` function configures three log files associated with the object
 the rule operates on and stored into the object's log directory.  The three log
 files are: ``log.O`` typically used for standard output, ``log.E`` used for
-standard error, and ``log.T`` used for timing measures. The names for these log files
-``<log name>-out.txt``, ``<log name>-err.txt`` , and ``<log name>-time.txt``,
-respectively, where the ``<log name>`` is the parameter given to the
-:py:func:`.LFS` function.  For example, the ``log.O`` from our ``makeBwaIndex``
-rule for the ``projectTest`` project is:
+standard error, and ``log.T`` used for timing measures. The names for these log
+files are ``<log name>-out.txt``, ``<log name>-err.txt`` , and
+``<log name>-time.txt``, respectively, where the ``<log name>`` is the
+parameter given to the :py:func:`.LFS` function.  For example, the ``log.O``
+from our ``makeBwaIndex`` rule for the ``projectTest`` project is:
 ``/mnt/snakeobjectsTutorial/projectTest/objects/reference/o/log/bwa_index-out.txt``
 
 To actually create the bwa index for our projects, we need to execute
@@ -959,8 +960,8 @@ The new target, ``fastq.bam``, is a ``bam`` file. ``bam`` is a well-accepted
 binary file standard format for storing the results of alignments. ``sam``
 files are the text version of the ``bam`` files. The ``bwa`` tool we use for
 alignment generates sam format that is easily converted into the more efficient
-bam formant using ``samtools``.  That is the reason we required samtools to be
-part of the ``env-bwa.yaml`` conda environment that is re-used in the new
+bam format using ``samtools``.  That is the reason we required samtools to be
+part of the ``env-bwa.yaml`` conda environment which we here re-use in our new
 ``align`` rule.  In the new rule, we avoid storing the large sam files by
 piping (``|``) the sam output of ``bwa`` through ``samtools`` and storing only
 the significantly smaller ``bam`` files.
@@ -982,7 +983,7 @@ prepared before the ``chrAll.bwaIndex.flag`` is created. The ``refFile`` and
 ``R1File`` and ``R2File`` are taken for the current object's parameters ``R1``
 and ``R2``.
 
-Also, for the first time, the ``align`` rule shows the ``snakemake``'s
+Also, for the first time, the ``align`` rule shows ``snakemake``'s
 ``params`` and ``threads`` clauses. The ``params`` clause allows each execution
 of the rule to be tuned by use of rule specific parameters. With
 ``snakeobjects`` we often set the rule's parameters with values taken from
@@ -1047,8 +1048,10 @@ pipeline without any change can be executed on a computational cluster by
 simply providing the command line parameter ``--profile=<cluster profile>`` to
 the :option:`sobjects run`.  The ``<cluster profile>`` points to a directory
 that contains the setup necessary to submit jobs on a given cluster. The
-configuration of the cluster profiles is beyond the scope of this tutorial.
-But, if you happen to have one available or, if go through the steps described
+configuration of the cluster profiles is beyond the scope of this tutorial
+publicly available profiles and descriptions can be found
+`here <https://github.com/snakemake-profiles/doc>`_).
+If you happen to have one available or, if go through the steps described
 in :ref:`working-with-clusters`, you should by all means execute the
 tutorial pipelines on your cluster. Note though that the jobs generated
 by running the tutorial projects are all small because we prepared a toy input
@@ -1079,7 +1082,7 @@ two or three fastq runs.
 
 It is important to verify if we have enough sequencing reads for each sample.
 One way to check if the number of reads is 'enough' is to examine the
-distribution of the number reads covering the positions of interest (or
+distribution of the number of reads covering the positions of interest (or
 coverage). In our project, the positions of interest are represented by the
 ``targetRegions.txt`` file in the input directory.  To measure the coverage
 (and to be able to identify *de novo* variants later) it is convenient to merge
@@ -1099,7 +1102,7 @@ like that after the addition of the highlighted line:
     :emphasize-lines: 8
 
 We will then update the ``build_object_graph.py`` script in our pipeline by
-adding few lines (highlighted below) that create the sample objects referenced
+adding a few lines (highlighted below) that create the sample objects referenced
 by the fastq objects already added to the object graph:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/build_object_graph.py
@@ -1117,7 +1120,7 @@ from all ``sample`` objects.
 
 We will add six targets for the objects of type ``sample``. The target
 definition, their relationships, and rules that create them are shown below and
-you should copy the following content to a file called ``sample.sankefile``
+you should copy the following content to a file called ``sample.snakefile``
 within the pipeline directory.
 
 .. literalinclude:: snakeobjectsTutorial/solutions/step-2.3/pipeline/sample.snakefile
@@ -1125,7 +1128,7 @@ within the pipeline directory.
 The six targets are related in a complex within-object and across-object target
 dependencies represented by the input and output clauses of the rules. In
 addition, to the six targets the ``sample.snakefile`` uses a temporary target
-``T("raw.bam")``. It is declared as temporary using the ``snakemake``'s
+``T("raw.bam")``. It is declared as temporary using ``snakemake``'s
 function ``temp``. Temporary targets are created as normal targets but are
 removed when all the downstream rules that use them finish successfully. The
 :py:func:`.DT` function, enables us to concisely define across-objects target
@@ -1184,13 +1187,13 @@ the ``sampleSummary.snakefile`` in our pipeline:
 
 ``sampleSummary`` objects has two targets. The first one is called
 ``allCoveratStats.txt`` and its implementation aggregates the
-``coverage-stats.txt`` from all the ``sample`` objects and sorts the by the
+``coverage-stats.txt`` from all the ``sample`` objects and sorts by the
 percent of the target covered by at least 20 reads (the 4th column in the
 ``coverage-stats.txt`` files). The second target, called ``allCoverages.png``,
 is a figure showing the coverage statistics across all samples.
 
 By now, it should be clear how execute the updated pipeline for the two
-projects: change the working directory to the project directory; do ``sbojects
+projects: change the working directory to the project directory; do ``sobjects
 prepare`` (we need to run prepare because we updated the
 ``build_object_graph.py`` script and we need to create a new object graph); do
 ``sobjects run -j``.
@@ -1201,7 +1204,7 @@ Once you have successfully run the two projects you should have a figure like
   :width: 400
   :alt: An example sample-coverate.png figure.
 
-for each sample. The ``...sampleSummary/o/allCoverages.png`` for the ``projectTest`` and
+for each sample. The ``objects/sampleSummary/o/allCoverages.png`` for the ``projectTest`` and
 for the large ``project`` should look like:
 
 .. image:: _static/projectTest-allCoverages.png
@@ -1229,8 +1232,8 @@ It is implemented in python and you should copy the above in a file called
 executable (``chmod +x call_denovo.py``. The only quality this
 implementation has is that it is short. Otherwise, it is a poorly coded
 (although not impossible, it will be a challenge for one to understand it), and
-performs poorly. But it would do for the purposes of the tutorial. The ones of
-you who actually care about finding *de novo* variants should improve
+performs poorly. But it would do for the purposes of the tutorial. Those of
+you who actually care about finding *de novo* variants should improve this
 implementation substantially or, even better, replace it all together with a
 'proper' de novo caller.
 
@@ -1250,8 +1253,8 @@ additional packages, numpy and pandas, used by the ``call_denovo.py`` script.
 The ``call_denovo.py`` script iterates over all the regions in the
 ``targetFile`` and counts the number of reads supporting each of the four
 nucleotides, A, C, G, and T at every position within the current region. For
-positions that are covered by reads in the tree bam files (see the mysterious
-line 25), the script checks if there are *de novo* alleles.  *De novo* allele
+positions that are covered by reads in the three bam files (see the mysterious
+line 25), the script checks if there are *de novo* alleles. A *de novo* allele
 is reported if all of the following criteria are met:
 
     * the allele is seen in 3 or more reads in the child (line 29);
@@ -1299,7 +1302,7 @@ father, mother, and child.  A very important feature of ``snakeobjects`` is
 that the order of the dependencies is preserved in the object graph. The
 implementation for the single target of the ``trio`` objects depends on this
 order: father's sample, mother's sample, child's sample. See the content bellow
-and copy it into the new ``trio.snakemake`` file in the pipeline directory:
+and copy it into the new ``trio.snakefile`` file in the pipeline directory:
 
 .. literalinclude:: snakeobjectsTutorial/solutions/final/pipeline/trio.snakefile
     :emphasize-lines: 5
@@ -1342,7 +1345,7 @@ and both parents have more than 10 reads covering the ``chr1:965184`` position
 novo* allele are thus met. All the criteria are also met for the other two
 reported *de novo* variants. But, the third variant (the new ``C`` at
 ``chr1:930177``) just barely meets the cut-offs and it is possible that it is a
-false *de novo* call--the three ``C``s in the child may all be due to noise, or
+false *de novo* call--the three ``C`` s in the child may all be due to noise, or
 a ``C`` in one of the parents may have failed to get sampled in the few reads
 from that location.
 
@@ -1353,7 +1356,7 @@ Summary
 =======
 
 Congratulations to all of you who are reading this sentence!
-This was an objectively a very long tutorial.
+This was an objectively very long tutorial.
 For a bit of fun at the end, we will use the :option:`sobjects graph` command to
 create a visual summary of the many steps for both of small ``projectTest`` and
 the large ``projects``.
