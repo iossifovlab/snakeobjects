@@ -63,15 +63,18 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 def createTgz(dname):
-    cmd = "for d in `find "+dname+" -name __pycache__`; do rm -r $d; done"
-    os.system(cmd)
-    cmd = "for d in `find "+dname+" -name objects`; do rm -r $d; done"
-    os.system(cmd)
-    cmd = "tar czf "+dname+".tgz "+dname
-    os.system(cmd)
+    if not os.path.exists(dname+".tgz"):
+        cmd = "for d in `find "+dname+" -name __pycache__`; do rm -r $d; done"
+        os.system(cmd)
+        cmd = "for d in `find "+dname+" -name objects`; do rm -r $d; done"
+        os.system(cmd)
+        cmd = "tar czf "+dname+".tgz "+dname
+        os.system(cmd)
     
 createTgz('snakeobjectsTutorial')
 createTgz('snakeobjectsPaperExample')
 createTgz('snakemakeTutorialExample')
-# createTgz('helloWorld')
-os.system('(git status; git diff conf.py) > helloWorld.tgz')
+createTgz('helloWorld')
+
+if "READTHEDOCS" in os.environ:
+    system('git checkout -- conf.py')
