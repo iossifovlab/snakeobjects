@@ -82,7 +82,7 @@ def cli(args=None):
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
         return
 
-    from snakeobjects._version import get_versions
+    from _version import get_versions
     _l_version = get_versions()['version']
     if command in ["help", "-h", "--help"]:
         print("Snakeobjects %s\n" % (_l_version))
