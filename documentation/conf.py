@@ -16,9 +16,9 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 os.environ['PATH'] += ":."
 if 'PYTHONPATH' in os.environ:
-    os.environ['PYTHONPATH'] += (":" + os.path.abspath('..'))
+    os.environ['PYTHONPATH'] += (":" + os.path.abspath('..') + ":" + os.path.abspath('../snakeobjects'))
 else:
-    os.environ['PYTHONPATH'] = os.path.abspath('..')
+    os.environ['PYTHONPATH'] = (os.path.abspath('..') + ":" + os.path.abspath('../snakeobjects'))
 # -- Project information -----------------------------------------------------
 
 project = 'snakeobjects'
