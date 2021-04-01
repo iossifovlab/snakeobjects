@@ -2,9 +2,7 @@
 snakeobjects
 ============
 
-.. image:: https://readthedocs.org/projects/snakeobjects/badge/?version=latest
-:target: https://snakeobjects.readthedocs.io/en/latest/?badge=latest
-:alt: Documentation Status
+.. image:: https://readthedocs.org/projects/snakeobjects/badge/?version=latest :target: https://snakeobjects.readthedocs.io/en/latest/?badge=latest :alt: Documentation Status
 
 
 Overview
