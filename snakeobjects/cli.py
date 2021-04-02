@@ -85,7 +85,6 @@ def cli(args=None):
     if "READTHEDOCS" in os.environ:
         from _version import get_versions
         __version__ = get_versions()['version']
-        print("get_versions", get_versions())
     else:
         from snakeobjects import __version__
 
