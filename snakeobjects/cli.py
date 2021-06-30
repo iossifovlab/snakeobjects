@@ -153,8 +153,10 @@ def cli(args=None):
         proj.prepare_objects()
     elif command == "run":
         sargs = ['snakemake',
-                        '-s', proj.directory + '/objects/.snakeobjects/main.snakefile', 
-                        '-d', proj.directory + '/objects']
+                        #'-s', proj.directory + '/objects/.snakeobjects/main.snakefile',
+                '-s', proj.directory + '/Snakefile', 
+                        #'-d', proj.directory + '/objects']
+                 '-d', proj.directory]
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]

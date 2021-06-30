@@ -64,7 +64,8 @@ class Project:
     def __init__(self,directory=None):
         self.directory = directory if directory else find_so_project_directory()
         self._porojectFileName = self.directory + "/so_project.yaml"
-        self._objectGraphFileName = self.directory + "/objects/.snakeobjects/OG.json"
+
+        self._objectGraphFileName = self.directory + "/OG.json"
 
         if os.path.isfile(self._porojectFileName):
             self.parameters = load_yaml(self._porojectFileName)
@@ -120,13 +121,14 @@ class Project:
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
-            if not os.path.isabs(ppd):
-                ppd = self.directory + "/" + ppd
+            #if not os.path.isabs(ppd):
+            #    ppd = self.directory + "/" + ppd
         elif "SO_PIPELINE" in os.environ:
             ppd = os.environ['SO_PIPELINE']
         else:
             ppd = self.directory
-        return os.path.abspath(ppd)
+        #return os.path.abspath(ppd)
+        return ppd
 
 
     '''
@@ -152,11 +154,12 @@ class Project:
             print(f"unkown command {cmd}. The known commands are 'prepareTest' and 'prepare'")
     '''
     def ensure_snakeobject_private_directory(self):
-        sopd = self.directory + "/objects/.snakeobjects"
-        if not os.path.exists(sopd):
-            os.makedirs(sopd)
-        return sopd
-
+        #sopd = self.directory + "/objects/.snakeobjects"
+        #if not os.path.exists(sopd):
+        #    os.makedirs(sopd)
+        #return sopd
+        return self.directory
+    
     def save_object_graph(self):
         self.objectGraph.save(self.ensure_snakeobject_private_directory() + "/OG.json")
 
@@ -172,8 +175,8 @@ class Project:
         return sfile
         
     def write_main_snakefile(self):
-        mf=self.ensure_snakeobject_private_directory() + "/main.snakefile"
-
+        #mf=self.ensure_snakeobject_private_directory() + "/main.snakefile"
+        mf=self.ensure_snakeobject_private_directory() + "/Snakefile"
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
             f.write(header)
