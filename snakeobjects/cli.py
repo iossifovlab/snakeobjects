@@ -167,6 +167,9 @@ def cli(args=None):
         os.environ['SO_PROJECT']  = proj.directory
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
+        # CLOUD related reorganization
+        # if --default-prefix and --default-providare in in the isargs:
+        # call upload_project_files_to_remote(provider,prefix)
         os.execvp('snakemake',sargs)
     elif command == "submit":
         sargs = []

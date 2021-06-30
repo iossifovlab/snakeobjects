@@ -4,6 +4,8 @@
 import traceback 
 from collections import OrderedDict, defaultdict
 
+# CLOUD related reorganization
+# _targetPrefix = "objects"
 _targetPrefix = ""
 _OG = None
 _project = None
