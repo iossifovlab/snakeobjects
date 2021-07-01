@@ -185,13 +185,6 @@ class Project:
                
                 sfile = self.ensure_object_type_snakefile_exists(ot) 
 
-                # CLOUD related reorganization
-                # add the following ot the main snakefile
-                #
-                # if os.envinor["SO_USE_REMOTE"] == 'yes':
-                #   get the value of  --default-provider and --default-prefix from snakemake somehow.
-                #   call download_project_files_from_remote(provider,prefix)
-
                 f.write(f'include: "{sfile}"\n')
 
                 f.write(f'rule so_all_{ot}:\n')

@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+from snakemake.io import _IOFile as SIO
+
 '''
 <pipeline directory>
 typeA.snakefile
@@ -37,11 +40,11 @@ def get_project_files():
 def upload_project_files_to_remote(provider,prefix):
     RP = get_remote_provider(provider)
     for f in get_project_files():
-        RP.remote(f"{prefix}/{f}").upload_to_remote()
+        SIO(RP.remote(f"{prefix}/{f}")).upload_to_remote()
 
 def download_project_files_from_remote(provider,prefix):
     RP = get_remote_provider(provider)
     for f in get_project_files():
-        RP.remote(f"{prefix}/{f}").download_from_remote()
+        SIO(RP.remote(f"{prefix}/{f}")).download_from_remote()
 
 
