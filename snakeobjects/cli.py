@@ -172,6 +172,11 @@ def cli(args=None):
         # CLOUD related reorganization
         # if --default-prefix and --default-providare in in the isargs:
         # call upload_project_files_to_remote(provider,prefix)
+        import configargparse 
+        parser=configargparse.ArgumentParser()
+        ARGS = parser.parse_args(sargs)
+        if ARGS.default-remote-prefix and ARGS.default-remote-prefix:
+            upload_project_files_to_remote(ARGS.default-remote-prefix,default-remote-prefix)
         os.execvp('snakemake',sargs)
     elif command == "submit":
         sargs = []
