@@ -168,14 +168,14 @@ class Project:
         self.create_object_directories()
 
     def ensure_object_type_snakefile_exists(self,ot):
-        sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
+        #sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
+        sfile = ot + ".snakefile"
         if not os.path.exists(sfile): 
             with open(sfile, 'w') as f:
                 f.write(f'add_targets()\n')
         return sfile
         
     def write_main_snakefile(self):
-        #mf=self.ensure_snakeobject_private_directory() + "/main.snakefile"
         mf=self.ensure_snakeobject_private_directory() + "/Snakefile"
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
@@ -193,10 +193,10 @@ class Project:
 
                 f.write(f'rule so_{ot}_obj:\n')
                 f.write(f'  input: get_targets("{ot}")\n')
-                f.write(f'  output: touch("{ot}/{{oid}}/obj.flag")\n\n') 
+                f.write(f'  output: touch("objects/{ot}/{{oid}}/obj.flag")\n\n') 
 
     def get_object_flag(self,o):
-        return f'{o.oType}/{o.oId}/obj.flag'
+        return f'objects/{o.oType}/{o.oId}/obj.flag'
 
     def get_object_directory(self,o):
         return f'{self.directory}/objects/{o.oType}/{o.oId}'
