@@ -158,25 +158,25 @@ class Project:
         #if not os.path.exists(sopd):
         #    os.makedirs(sopd)
         #return sopd
-        return self.directory
+        #return self.directory
+        return self.get_pipeline_directory()
     
     def save_object_graph(self):
-        self.objectGraph.save(self.ensure_snakeobject_private_directory() + "/OG.json")
+        self.objectGraph.save(self._objectGraphFileName)
 
     def prepare_objects(self):
         self.write_main_snakefile()
         self.create_object_directories()
 
     def ensure_object_type_snakefile_exists(self,ot):
-        #sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
-        sfile = ot + ".snakefile"
+        sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
         if not os.path.exists(sfile): 
             with open(sfile, 'w') as f:
                 f.write(f'add_targets()\n')
         return sfile
         
     def write_main_snakefile(self):
-        mf=self.ensure_snakeobject_private_directory() + "/Snakefile"
+        mf=self.get_pipeline_directory() + "/Snakefile"
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
             f.write(header)
@@ -184,7 +184,7 @@ class Project:
             for ot in self.objectGraph.get_object_types():
                
                 sfile = self.ensure_object_type_snakefile_exists(ot) 
-
+                sfile = ot + ".snakefile"
                 f.write(f'include: "{sfile}"\n')
 
                 f.write(f'rule so_all_{ot}:\n')
