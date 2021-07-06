@@ -12,7 +12,7 @@ if ("SO_CONTAINER" in os.environ and
    os.environ["SO_CONTAINER"] == 'yes' and 
    args.default_remote_prefix and 
    args.default_remote_prefix):
-	upload_project_files_to_remote(args.default_remote_prefix,
+	download_project_files_from_remote(args.default_remote_prefix,
 		default_remote_prefix)
 
 project = Project()
