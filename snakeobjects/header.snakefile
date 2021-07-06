@@ -7,13 +7,14 @@ from snakeobjects.remoteProjects import download_project_files_from_remote
 import os,sys
 
 if ("SO_CONTAINER" in os.environ and
-   "SO_PROJECT_REMOTE" in os.environ and_
+   "SO_PROJECT_REMOTE" in os.environ and
    os.environ["SO_CONTAINER"] == 'yes'):
       provider, bucket = os.environ["SO_PROJECT_REMOTE"].split(":") 
-	 download_project_files_from_remote(provider,bucket)
-         os.system("export SO_PROJECT=" + bucket)
+      download_project_files_from_remote(provider,bucket)
+      os.environ['SO_PROJECT'] = bucket
 	
 project = Project()
+os.environ['PATH']=project.get_pipeline_directory()+":"+ os.environ['PATH']
 
 set_project(project)
 
