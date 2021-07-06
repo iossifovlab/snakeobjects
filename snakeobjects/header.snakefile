@@ -10,9 +10,9 @@ args = parser.parse_args(sys.argv)
 
 if ("SO_CONTAINER" in os.environ and
    os.environ["SO_CONTAINER"] == 'yes' and 
-   args.default_remote_prefix and 
+   args.default_remote_provider and 
    args.default_remote_prefix):
-	download_project_files_from_remote(args.default_remote_prefix,
+	download_project_files_from_remote(args.default_remote_provider,
 		default_remote_prefix)
 
 project = Project()
