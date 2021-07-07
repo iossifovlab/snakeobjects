@@ -14,7 +14,7 @@ if ("SO_CONTAINER" in os.environ and
       os.environ['SO_PROJECT'] = bucket
 	
 project = Project()
-os.environ['PATH']=project.get_pipeline_directory()+":"+ os.environ['PATH']
+os.environ['PATH']=project.properties['so_pipeline']+":"+ os.environ['PATH']
 
 set_project(project)
 
