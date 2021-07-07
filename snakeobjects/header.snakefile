@@ -15,6 +15,8 @@ if ("SO_CONTAINER" in os.environ and
 	
 project = Project()
 os.environ['PATH']=project.get_pipeline_directory()+":"+ os.environ['PATH']
+os.system('chmod +x workflow/*.py')
+
 
 set_project(project)
 
