@@ -125,8 +125,8 @@ class Project:
                 ppd = self.directory + "/" + ppd
         elif "SO_PIPELINE" in os.environ:
             ppd = os.environ['SO_PIPELINE']
-        elif os.path.exists(self.directory+"/workflow"):
-            return self.directory+"/workflow"
+        elif os.path.exists("workflow"):
+            return os.path.abspath("workflow")
         else:
             ppd = self.directory
         return os.path.abspath(ppd)
