@@ -129,7 +129,7 @@ class Project:
             return self.directory+"/workflow"
         else:
             ppd = self.directory
-        return ppd
+        return os.path.abspath(ppd)
 
 
     '''
