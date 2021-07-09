@@ -130,10 +130,11 @@ class Project:
             #    ppd = self.directory + "/" + ppd
         elif "SO_PIPELINE" in os.environ:
             ppd = os.environ['SO_PIPELINE']
+        elif os.path.exists("workflow"):
+            return os.path.abspath("workflow")
         else:
             ppd = self.directory
-        #return os.path.abspath(ppd)
-        return ppd
+        return os.path.abspath(ppd)
 
 
     '''
@@ -163,10 +164,11 @@ class Project:
         #if not os.path.exists(sopd):
         #    os.makedirs(sopd)
         #return sopd
-        return self.directory
+        #return self.directory
+        return self.get_pipeline_directory()
     
     def save_object_graph(self):
-        self.objectGraph.save(self.ensure_snakeobject_private_directory() + "/OG.json")
+        self.objectGraph.save(self._objectGraphFileName)
 
     def prepare_objects(self):
         self.write_main_snakefile()
@@ -180,8 +182,7 @@ class Project:
         return sfile
         
     def write_main_snakefile(self):
-        #mf=self.ensure_snakeobject_private_directory() + "/main.snakefile"
-        mf=self.ensure_snakeobject_private_directory() + "/Snakefile"
+        mf=self.get_pipeline_directory() + "/Snakefile"
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
             f.write(header)
@@ -189,7 +190,7 @@ class Project:
             for ot in self.objectGraph.get_object_types():
                
                 sfile = self.ensure_object_type_snakefile_exists(ot) 
-
+                sfile = ot + ".snakefile"
                 f.write(f'include: "{sfile}"\n')
 
                 f.write(f'rule so_all_{ot}:\n')
@@ -198,10 +199,10 @@ class Project:
 
                 f.write(f'rule so_{ot}_obj:\n')
                 f.write(f'  input: get_targets("{ot}")\n')
-                f.write(f'  output: touch("{ot}/{{oid}}/obj.flag")\n\n') 
+                f.write(f'  output: touch("objects/{ot}/{{oid}}/obj.flag")\n\n') 
 
     def get_object_flag(self,o):
-        return f'{o.oType}/{o.oId}/obj.flag'
+        return f'objects/{o.oType}/{o.oId}/obj.flag'
 
     def get_object_directory(self,o):
         return f'{self.directory}/objects/{o.oType}/{o.oId}'

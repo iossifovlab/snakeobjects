@@ -1,5 +1,5 @@
 import os,sys
-
+from snakeobjects.remoteProjects import upload_project_files_to_remote
 
 helpData = {
     "version": "prints the version",
@@ -153,10 +153,8 @@ def cli(args=None):
         proj.prepare_objects()
     elif command == "run":
         sargs = ['snakemake',
-                        #'-s', proj.directory + '/objects/.snakeobjects/main.snakefile',
-                '-s', proj.directory + '/Snakefile', 
-                        #'-d', proj.directory + '/objects']
-                 '-d', proj.directory]
+                '-s', proj.get_pipeline_directory() + '/Snakefile', 
+                '-d', proj.directory]
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]
@@ -172,6 +170,12 @@ def cli(args=None):
         # CLOUD related reorganization
         # if --default-prefix and --default-providare in in the isargs:
         # call upload_project_files_to_remote(provider,prefix)
+        from snakemake import get_argument_parser
+        parser=get_argument_parser()
+        ARGS = parser.parse_args(sargs)
+        if ARGS.default_remote_provider and ARGS.default_remote_prefix:
+            upload_project_files_to_remote(ARGS.default_remote_provider,
+                                           ARGS.default_remote_prefix)
         os.execvp('snakemake',sargs)
     elif command == "submit":
         sargs = []

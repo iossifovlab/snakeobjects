@@ -12,6 +12,9 @@ RUN /bin/bash -c "cd /app && pip install . && \
 
 # Make RUN commands use the new environment:
 RUN echo "conda activate snakemake" >> ~/.bashrc
+ENV SO_PIPELINE workflow
+ENV SO_PROJECT .
+ENV SO_CONTAINER "yes"
 SHELL ["/bin/bash", "--login", "-c"]
 
 
