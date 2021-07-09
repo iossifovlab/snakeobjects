@@ -1,10 +1,10 @@
 inputPath: "/asdgalsdlgas/asdgas"
 BATCH: "1"
 l: ['ivan', '[E:INPUT_DIRECTORY]', 'boris']
-d: {'PD': '[P:projectDir]', 'ID':'[E:INPUT_DIRECTORY]'}
-ref: "[E:INPUT_DIRECTORY]/[C:BATCH]/ref.fa"
+d: {'PD': '[D:project]', 'ID':'[E:INPUT_DIRECTORY]'}
+ref: "[E:INPUT_DIRECTORY]/[PP:BATCH]/ref.fa"
 
-refi: "[P:projectDir]/ref.fai"
-pa: "[P:pipelineDir]/gosho.txt"
+refi: "[D:project]/ref.fai"
+pa: "[D:pipeline]/gosho.txt"
 
-pedigree: "[C:inputPath]/my.ped"
+pedigree: "[PP:inputPath]/my.ped"

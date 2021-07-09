@@ -80,7 +80,8 @@ class Project:
             self.objectGraph = ObjectGraph()
 
     def interpolate(self,O,oo=None):
-        ptn = re.compile(r'(\[[\w]\:(\w+)\])(\w*)')
+        ptn = re.compile(r'(\[(\w+)\:(\w+)\])(\w*)')
+        
         
         if type(O) == int or type(O) == float:
             return O
@@ -90,32 +91,32 @@ class Project:
             return {k:self.interpolate(v) for k,v in O.items()}
         elif type(O) == str:
             for s in ptn.findall(O):
-                letter = s[0][1]
-                name = s[1]
-                if letter =='O':
+                iType = s[1]
+                name = s[2]
+                if iType == 'P':
                     if not oo:
                         raise ProjectException("object interpolation requires an object")
                     if name not in oo.params:
                         raise ProjectException("parameter %s is not defined for the object %s" % (name, oo.k()))
                     O = O.replace(s[0],oo.params[name])
-                if letter =='E':
+                elif iType == 'E':
                     if not name in os.environ:
                         raise ProjectException("Varianble %s is not defined" % name)
                     O = O.replace(s[0],os.environ[name])
-                elif letter =='C':
+                elif iType == 'PP':
                     if not name in self.parameters:
                         raise ProjectException('Parameter %s is not defined' % name)
                     O = O.replace(s[0],self.parameters[name])
-                elif letter =='P':
-                    if name == "projectDir":
+                elif iType == 'D':
+                    if name == "project":
                         pv = self.directory
-                    elif name == "pipelineDir":
+                    elif name == "pipeline":
                         pv = self.get_pipeline_directory()
                     else:
                         raise ProjectException('The project property %s is unknonw.' % name)
                     O = O.replace(s[0],pv)
                 else:
-                    raise ProjectException('Letter [%s: ...] is unknown; can be only E|C|P.' % letter)
+                    raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D.' % iType)
             return O
 
     def _run_parameter_interpolation(self):
@@ -199,13 +200,13 @@ class Project:
 
                 f.write(f'rule so_{ot}_obj:\n')
                 f.write(f'  input: get_targets("{ot}")\n')
-                f.write(f'  output: touch("objects/{ot}/{{oid}}/obj.flag")\n\n') 
+                f.write(f'  output: touch("{ot}/{{oid}}/obj.flag")\n\n') 
 
     def get_object_flag(self,o):
-        return f'objects/{o.oType}/{o.oId}/obj.flag'
+        return f'{o.oType}/{o.oId}/obj.flag'
 
     def get_object_directory(self,o):
-        return f'{self.directory}/objects/{o.oType}/{o.oId}'
+        return f'{self.directory}/{o.oType}/{o.oId}'
 
     def create_object_directories(self):
         for tp in sorted(self.objectGraph.get_object_types()):

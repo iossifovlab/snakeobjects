@@ -13,17 +13,14 @@ Snakefile
 	.snakemake
 		...
 		...
-	#.sobjects
 	OG.json
-
-	objects			
 		
-		typeA
-			O.A.1
-				T.A.1.a     "typeA/O.A.1/T.A.1.a"
-			O.A.2
-		typeB
-			O.B.1
+    typeA
+        O.A.1
+            T.A.1.a     "typeA/O.A.1/T.A.1.a"
+        O.A.2
+    typeB
+        O.B.1
 '''
 def get_remote_provider(provider): 
     if provider == "GS":
