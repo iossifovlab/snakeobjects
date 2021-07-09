@@ -50,6 +50,13 @@ def TE(t):
     """
     return _targetPrefix + _find_object_type() + "/{{oid}}/"  + t
 
+def EF(s): 
+    ot = _find_object_type()
+    def _DT(wc):
+        o = _OG[ot,wc.oid]
+        return _project.interpolate(s,o)
+    return _DT 
+
 def DT(t, dot=None, level=1, mode='equal'): 
     """
     List of files for the targets named ``t`` of the dependency objects (the objects the 

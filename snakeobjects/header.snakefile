@@ -1,6 +1,6 @@
 shell.prefix("set -o pipefail; ")
 from snakeobjects import Project 
-from snakeobjects.snakeUtils import set_project, T, TE, DT, LFS, P, DP, PP, B, add_targets, get_targets
+from snakeobjects.snakeUtils import set_project, T, TE, DT, LFS, P, DP, PP, B, EF, add_targets, get_targets
 
 # CLOUD related reorganization
 # add the following ot the main snakefile
