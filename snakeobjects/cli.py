@@ -20,6 +20,20 @@ Uses the build_object_graph.py in the pipeline directory to create a new object
 graph and prints statistics of the current and the new object graph. The project 
 is not modified at all.''',
 
+    "buildObjectGraph": '''sobjects buildObjectGraph [<arguments to build_object_graph.py>]
+
+Uses the build_object_graph.py in the pipeline directory to create a new object 
+graph and stores it on the file OG.json in the project directory.''',
+
+    "createMain": '''sobjects createMain
+
+Uses the objectGraph OG.json to write in the pipeline directory the Snakefile.''',
+
+    "createSymbolicLinks": '''sobjects createSymbolicLinks
+
+Uses the objectGraph OG.json to create object directories for objects that have symbolic 
+links in object's parameters.''',
+
     "prepare": '''sobjects prepare [<arguments to build_object_graph.py>]
 
 First, uses the build_object_graph.py in the pipeline directory 
@@ -132,19 +146,20 @@ def cli(args=None):
             spec.loader.exec_module(foo)
             newObjectGraph = ObjectGraph()
             foo.run(proj,newObjectGraph,*args[1:])
-            proj.objectGraph = newObjectGraph 
-            proj.save_object_graph()
+            return newObjectGraph 
         else:
             print(f'ERROR: There is no {bldObjGraphPy}')
             exit(1)
     if command == "buildObjectGraph":
-        buildObjectGraph()
+        newObjectGraph = buildObjectGraph()
+        proj.objectGraph = newObjectGraph 
+        proj.save_object_graph()
     elif command in ["createMain", "createSnakefile"]:
         proj.write_main_snakefile()
     elif command == "createSymbolicLinks":
         proj.create_symbolic_links()
     elif command in ["prepare","prepareTest"]:
-        buildObjectGraph()
+        newObjectGraph = buildObjectGraph()
         if command == "prepareTest":
             print("Current graph stats")
             print("+++++++++++++++++++")
@@ -154,6 +169,8 @@ def cli(args=None):
             print("+++++++++++++++")
             newObjectGraph.print_stats()
         else:
+            proj.objectGraph = newObjectGraph 
+            proj.save_object_graph()
             proj.write_main_snakefile()
             proj.create_symbolic_links()
     elif command in ["prepareObjects"]:
