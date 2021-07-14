@@ -27,6 +27,20 @@ The available commands are described below:
 
     $ sobjects help describe 
 
+.. option:: buildObjectGraph
+.. runblock:: console
+
+    $ sobjects help buildObjectGraph
+
+.. option:: createMain
+.. runblock:: console
+
+    $ sobjects help createMain
+
+.. option:: createSymbolicLinks
+.. runblock:: console
+
+    $ sobjects help createSymbolicLinks
 
 .. option:: prepareObjects 
 .. runblock:: console
