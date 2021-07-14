@@ -1,12 +1,12 @@
 add_targets('sample.bam', 'sample.bam.bai')
 rule align:
-  input:  ref=DT('ref.fa'), idx=DT('index.flag')
+  input:  ref=DT('ref.fa'), idx=DT('index.flag'),
+  r1=EF(PP('fastqDirectory')+"[P:fqId]_1.fqz"),
+  r2=EF(PP('fastqDirectory')+"[P:fqId]_2.fqz")
   output: temp(T('fastq.bam'))
-  params: fD=PP('fastqDirectory'), fI=P('fqId')
   shell:  "bwa mem -R '@RG\\tID:RG1\\tSM:{wildcards.oid}' \
-              {input.ref} {params.fD}/{params.fI}_1.fqz   \
-                          {params.fD}/{params.fI}_2.fqz | \
-           samtools view -Sb - > {output}"
+              {input.ref} {input.r1} {input.r2} |         \
+               samtools view -Sb - > {output}"
 rule sort:
   input:  T('fastq.bam')
   output: T('sample.bam')
