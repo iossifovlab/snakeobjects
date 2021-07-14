@@ -124,19 +124,27 @@ def cli(args=None):
     proj = Project()
     print("# WORKING ON PROJECT", proj.directory)
     print("# WITH PIPELINE", proj.get_pipeline_directory())
-
-    if command in ["prepare","prepareTest"]:
+    def buildObjectGraph():
         bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
         if os.path.isfile(bldObjGraphPy):
             spec = spec_from_file_location("build_object_graph", bldObjGraphPy)
             foo = module_from_spec(spec)
             spec.loader.exec_module(foo)
-            
             newObjectGraph = ObjectGraph()
             foo.run(proj,newObjectGraph,*args[1:])
+            proj.objectGraph = newObjectGraph 
+            proj.save_object_graph()
         else:
             print(f'ERROR: There is no {bldObjGraphPy}')
             exit(1)
+    if command == "buildObjectGraph":
+        buildObjectGraph()
+    elif command in ["createMain", "createSnakefile"]:
+        proj.write_main_snakefile()
+    elif command == "createSymbolicLinks":
+        proj.create_symbolic_links()
+    elif command in ["prepare","prepareTest"]:
+        buildObjectGraph()
         if command == "prepareTest":
             print("Current graph stats")
             print("+++++++++++++++++++")
@@ -146,11 +154,10 @@ def cli(args=None):
             print("+++++++++++++++")
             newObjectGraph.print_stats()
         else:
-            proj.objectGraph = newObjectGraph 
-            proj.save_object_graph()
-            proj.prepare_objects()
+            proj.write_main_snakefile()
+            proj.create_symbolic_links()
     elif command in ["prepareObjects"]:
-        proj.prepare_objects()
+        proj.create_symbolic_links()
     elif command == "run":
         sargs = ['snakemake',
                 '-s', proj.get_pipeline_directory() + '/Snakefile', 
@@ -220,6 +227,22 @@ def cli(args=None):
     elif command == "graph":
         print(args, file=sys.stderr)
         graph.driver(proj.objectGraph, args)
+    elif command == "cleanProject":
+        import shutil
+        
+        if os.path.exists(proj.directory+'/.snakemake'):
+            val = input('delete .snakemake (y/n):')
+            if val == 'y':
+                shutil.rmtree(os.path.abspath(proj.directory+'/.snakemake'))
+        if os.path.exists(proj.directory+'/OG.json'):
+            val = input('delete OG.json (y/n):')
+            if val == 'y':
+                os.remove(os.path.abspath(proj.directory+'/OG.json')) 
+        val = input('delete all object directories (y/n):')
+        if val == 'y':   
+            for ot in proj.objectGraph.get_object_types():
+                if os.path.exists(proj.directory+'/'+ot):
+                    shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
     else:
         print("Don't know the command:", command)
         return 1

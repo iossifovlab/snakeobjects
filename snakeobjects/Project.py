@@ -174,7 +174,7 @@ class Project:
     def prepare_objects(self):
         self.write_main_snakefile()
         self.create_object_directories()
-
+    
     def ensure_object_type_snakefile_exists(self,ot):
         sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
         if not os.path.exists(sfile): 
@@ -184,8 +184,19 @@ class Project:
         
     def write_main_snakefile(self):
         mf=self.get_pipeline_directory() + "/Snakefile"
+        from snakeobjects import __version__
+        o_types = ','.join(sorted(self.objectGraph.get_object_types()))
+        if os.path.exists(mf):
+            with open(mf) as f:
+                old_version = f.readline().strip('\n\r').split(' ')[1]
+                old_o_types = f.readline().strip('\n\r').split(' ')[2]
+            if old_version == __version__ and old_o_types == o_types:
+                return 
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
+            
+            f.write(f'#snakeobjects {__version__}\n')
+            f.write(f'#Snakeobjects types: {o_types}\n')
             f.write(header)
 
             for ot in self.objectGraph.get_object_types():
@@ -208,22 +219,21 @@ class Project:
     def get_object_directory(self,o):
         return f'{self.directory}/{o.oType}/{o.oId}'
 
-    def create_object_directories(self):
+    def create_symbolic_links(self):
         for tp in sorted(self.objectGraph.get_object_types()):
             for o in self.objectGraph[tp]:
                 oDir = self.get_object_directory(o)
 
-                logDir = oDir + "/log"
-                if not os.path.exists(logDir):
-                    os.makedirs(logDir)
-
                 for k,v in list(o.params.items()):
                     if not k.startswith("symlink."):
                         continue
+                    if not os.path.exists(oDir):
+                        os.makedirs(oDir)
                     dst = oDir + "/" + k[8:]
                     src = v
                     os.system("ln -sf %s %s" % (src,dst))
                     os.system("touch -h -r %s %s" % (src,dst))
+                    
 
     def get_all_object_flags(self,oType=None):
         OG = self.objectGraph

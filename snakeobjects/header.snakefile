@@ -18,7 +18,6 @@ so_pipeline=project.get_pipeline_directory()
 os.environ['PATH']=so_pipeline + ":" + os.environ['PATH']
 os.system('chmod +x '+ so_pipeline + '/*.py')
 
-
 set_project(project)
 
 rule so_all_targets:
