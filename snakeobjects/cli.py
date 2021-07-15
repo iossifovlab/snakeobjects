@@ -12,7 +12,7 @@ is given, it should be one of the available commands and help for the given
 command is shown.''',
 
     "describe": '''Prints basic information about the project and the pipeline
-that are used''',
+that are used.''',
 
     "prepareTest": '''sobjects prepareTest [<arguments to build_object_graph.py>]
 
@@ -38,26 +38,25 @@ links in object's parameters.''',
 
 First, uses the build_object_graph.py in the pipeline directory 
 to create an object graph for the snakeobjects project. Then prepares the main 
-snakefile, and the directories and symbolic links for all object in the object 
-graph''',
+snakefile (Snakefile in the pipeline directory), and the directories and symbolic links 
+for all object in the object graph that have symbolic links in their parameters.''',
 
     "prepareObjects": '''sobjects prepareObjects
 
-Prepares the main.snakefile, and the directories and symbolic links for all 
-objects in the object graph''',
+Create directories for objects in the object graph with symbolic links in their parameters.''',
 
     "run": '''sobjects run [<arguments to snakemake>]
 
 Creates targets for objects in the object graph by running snakemake. The 
 <arguments to snakemake> determine which targets will be created and what resources 
-will be used''',
+will be used.''',
 
     "submit": '''sobjects submit [<arguments to snakemake>]
 
 Creates targets for objects in the object graph by running snakemake with
 profile specified in default_snakemake_args directive of so_project.yaml. The
 <arguments to snakemake> determine which targets will be created and what
-resources will be used''',
+resources will be used.''',
 
     "graph": '''sobject graph [-w width] [-p penwidth] [-a arrowsize] [-l legend] [-o out] [-i id] [-s shape]
 
@@ -248,14 +247,14 @@ def cli(args=None):
         import shutil
         
         if os.path.exists(proj.directory+'/.snakemake'):
-            val = input('delete .snakemake (y/n):')
+            val = input('Delete .snakemake? (y/n):')
             if val == 'y':
                 shutil.rmtree(os.path.abspath(proj.directory+'/.snakemake'))
         if os.path.exists(proj.directory+'/OG.json'):
-            val = input('delete OG.json (y/n):')
+            val = input('Delete OG.json? (y/n):')
             if val == 'y':
                 os.remove(os.path.abspath(proj.directory+'/OG.json')) 
-        val = input('delete all object directories (y/n):')
+        val = input('Delete all object directories? (y/n):')
         if val == 'y':   
             for ot in proj.objectGraph.get_object_types():
                 if os.path.exists(proj.directory+'/'+ot):
