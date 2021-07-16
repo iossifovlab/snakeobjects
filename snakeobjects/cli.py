@@ -205,6 +205,11 @@ def cli(args=None):
         if default_remote_provider and default_remote_prefix:
             upload_project_files_to_remote(default_remote_provider,
                                            default_remote_prefix)
+            # consider adding
+            # if "--kubernetes" in sargs:
+            #     os.environ['SO_KUBERNETES'] = f"{default_remote_provider}:{default_remote_prefix}
+            #
+        
         os.execvp('snakemake',sargs)
     elif command == "submit":
         sargs = []
