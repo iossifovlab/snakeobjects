@@ -85,6 +85,15 @@ def load_yaml(file_name):
 
     return config  
 
+def get_arg_value(args,arg):
+            try:
+                i = args.index(arg)
+            except ValueError:
+                return None 
+            if i+1 >= len(args):    
+                return None
+            return args[i+1]
+        
 def cli(args=None):
     if not args:
         args = sys.argv[1:]
@@ -191,24 +200,14 @@ def cli(args=None):
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
 
-        def get_arg_value(args,arg):
-            try:
-                i = args.index(arg)
-            except ValueError:
-                return None 
-            if i+1 >= len(args):    
-                return None
-            return args[i+1]
-        
         default_remote_provider = get_arg_value(sargs,'--default-remote-provider')
         default_remote_prefix = get_arg_value(sargs,'--default-remote-prefix')
         if default_remote_provider and default_remote_prefix:
             upload_project_files_to_remote(default_remote_provider,
                                            default_remote_prefix)
-            # consider adding
-            # if "--kubernetes" in sargs:
-            #     os.environ['SO_KUBERNETES'] = f"{default_remote_provider}:{default_remote_prefix}
-            #
+
+        if "--kubernetes" in sargs:
+            os.environ['SO_KUBERNETES'] = f"{default_remote_provider}:{default_remote_prefix}"
         
         os.execvp('snakemake',sargs)
     elif command == "submit":
