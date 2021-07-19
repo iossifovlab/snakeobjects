@@ -5,22 +5,17 @@ from snakeobjects.remoteProjects import download_project_files_from_remote
 
 # CLOUD related reorganization
 import os,sys
-from snakeobjects.cli import get_arg_value
-#''' THIS IS BROKEN!!
-if os.environ["SO_CONTAINER"] == 'yes'):
-  provider = get_arg_value(sargs,'--default-remote-provider')
-  bucket = get_arg_value(sargs,'--default-remote-prefix')
-  if provider and bucket:
+
+if ("SO_CONTAINER" in os.environ and 
+  "SO_KUBERNETES" in os.environ and
+  os.environ["SO_CONTAINER"] == 'yes'):
+    provider, bucket = os.environ["SO_KUBERNETES].split(":")
     download_project_files_from_remote(provider,bucket)
-
-if SO_KUBERNETES in os.environ:
-  os.environ['SO_PIPELINE'] = "." #or "/source" # ???
-  os.environ['SO_PROJECT'] = "./" + bucket 
-  fixPP = os.environ['SO_PIPELINE'] + "/fix_permissions.sh"
-  if is_file(fixPP):
-    os.system("sh fixPP")
-
-#'''	
+    os.environ['SO_PIPELINE'] = "."
+    os.environ['SO_PROJECT'] = "./" + bucket 
+    fixPP = os.environ['SO_PIPELINE'] + "/fix_permissions.sh"
+    if os.path.exists(fixPP):
+      os.system("sh fixPP")
 
 project = Project()
 so_pipeline=project.get_pipeline_directory()
