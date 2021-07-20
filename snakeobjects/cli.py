@@ -206,7 +206,7 @@ def cli(args=None):
             upload_project_files_to_remote(default_remote_provider,
                                            default_remote_prefix)
 
-        if "--kubernetes" or "--google-lifesciences" in sargs:
+        if "--kubernetes" in sargs or "--google-lifesciences" in sargs:
             os.environ['SO_REMOTE'] = f"{default_remote_provider}:{default_remote_prefix}"
         
         os.execvp('snakemake',sargs)
