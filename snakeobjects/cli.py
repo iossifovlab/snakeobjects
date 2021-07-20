@@ -206,11 +206,12 @@ def cli(args=None):
             upload_project_files_to_remote(default_remote_provider,
                                            default_remote_prefix)
 
-        if "--kubernetes" in sargs:
-            os.environ['SO_KUBERNETES'] = f"{default_remote_provider}:{default_remote_prefix}"
+        if "--kubernetes" or "--google-lifesciences" in sargs:
+            os.environ['SO_REMOTE'] = f"{default_remote_provider}:{default_remote_prefix}"
         
         os.execvp('snakemake',sargs)
     elif command == "submit":
+        from snakeobjects.Project import ProjectException
         sargs = []
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()

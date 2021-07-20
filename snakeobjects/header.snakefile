@@ -7,11 +7,11 @@ from snakeobjects.remoteProjects import download_project_files_from_remote
 import os,sys
 
 if ("SO_CONTAINER" in os.environ and 
-  "SO_KUBERNETES" in os.environ and
+  "SO_REMOTE" in os.environ and
   os.environ["SO_CONTAINER"] == 'yes'):
-    provider, bucket = os.environ["SO_KUBERNETES"].split(":")
+    provider, bucket = os.environ["SO_REMOTE"].split(":")
     download_project_files_from_remote(provider,bucket)
-    os.environ['SO_PIPELINE'] = "."
+    os.environ['SO_PIPELINE'] = "workflow"
     os.environ['SO_PROJECT'] = "./" + bucket 
     fixPP = os.environ['SO_PIPELINE'] + "/fix_permissions.sh"
     if os.path.exists(fixPP):
