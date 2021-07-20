@@ -15,7 +15,7 @@ if ("SO_CONTAINER" in os.environ and
     os.environ['SO_PROJECT'] = "./" + bucket 
     fixPP = os.environ['SO_PIPELINE'] + "/fix_permissions.sh"
     if os.path.exists(fixPP):
-      os.system("sh fixPP")
+      os.system("bash %s" % fixPP)
 
 project = Project()
 so_pipeline=project.get_pipeline_directory()
