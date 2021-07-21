@@ -212,7 +212,7 @@ def cli(args=None):
             if default_remote_provider and default_remote_prefix:
                 os.environ['SO_REMOTE'] = f"{default_remote_provider}:{default_remote_prefix}"
             else:
-                os.environ['SO_remote'] = ''
+                os.environ['SO_REMOTE'] = ''
         
         os.execvp('snakemake',sargs)
     elif command == "submit":
