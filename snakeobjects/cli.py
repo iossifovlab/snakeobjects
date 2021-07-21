@@ -208,12 +208,12 @@ def cli(args=None):
 
         if ("--kubernetes" in sargs 
             or "--google-lifesciences" in sargs 
-            or "--use-singularity" in args):
+            or "--use-singularity" in sargs):
             if default_remote_provider and default_remote_prefix:
                 os.environ['SO_REMOTE'] = f"{default_remote_provider}:{default_remote_prefix}"
             else:
-                os.environ['SO_REMOTE'] = ''
-        
+                os.environ['SO_REMOTE'] = 'singularity'
+            #sargs += ["--envvars SO_REMOTE "]
         os.execvp('snakemake',sargs)
     elif command == "submit":
         from snakeobjects.Project import ProjectException
