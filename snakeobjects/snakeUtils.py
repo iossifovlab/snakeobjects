@@ -4,7 +4,9 @@
 import traceback 
 from collections import OrderedDict, defaultdict
 
+# CLOUD related reorganization
 _targetPrefix = ""
+#_targetPrefix = ""
 _OG = None
 _project = None
 _objectTypeTargets = defaultdict(list) 
@@ -47,6 +49,13 @@ def TE(t):
     argument to the expand function (a.k.a. the curly brackets are doubled).
     """
     return _targetPrefix + _find_object_type() + "/{{oid}}/"  + t
+
+def EF(s): 
+    ot = _find_object_type()
+    def _DT(wc):
+        o = _OG[ot,wc.oid]
+        return _project.interpolate(s,o)
+    return _DT 
 
 def DT(t, dot=None, level=1, mode='equal'): 
     """

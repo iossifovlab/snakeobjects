@@ -1,0 +1,7 @@
+familyId	personId	fatherId	motherId	sex	affected	fastqId
+fam1	john	.	.	M	no	F1L1BA
+fam1	merry	.	.	F	no	F1L1BB
+fam1	tom	.	.	M	no	F1L2BC
+fam1	bob	john	merry	M	yes	F2L1BA
+fam1	anna	john	merry	F	no	F2L2BA
+fam1	liz	tom	merry	F	yes	F2L7B3
