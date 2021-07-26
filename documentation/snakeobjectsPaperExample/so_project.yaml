@@ -1,6 +1,6 @@
-so_pipeline:    "[P:projectDir]"
-inputDir:       "[P:projectDir]/input"
-reference:      "[C:inputDir]/chrAll.fa"
-pedigree:       "[C:inputDir]/collection.ped"
-fastqDirectory: "[C:inputDir]/fastq"
-targetRegions:  "[C:inputDir]/targetRegions.txt"
+
+so_pipeline: "workflow"
+data:        "data"
+ref:         "[PP:data]/genome.fa"
+samplesDir:  "[PP:data]/samples/"
+default_snakemake_args: --use-conda -j

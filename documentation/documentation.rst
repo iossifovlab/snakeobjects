@@ -92,8 +92,9 @@ and use a set of ``snakeobjects`` extension functions (see
 
     - targets in the current object (:py:func:`.T`); 
     - targets in dependency objects (:py:func:`.DT`); 
+    - targets defined by project and object properies (:py:func:`.EF`);  
     - parameters of the current object (:py:func:`.P`); 
-    - parameters of the dependency objects (:py:func:`.DP`); 
+    - parameters of the dependency objects (:py:func:`.DP`);
     - global object parameters (:py:func:`.PP`).  
 
 The example below demonstrates the main features of the ``snakeobjects`` rules:
@@ -130,7 +131,7 @@ Projects
 In ``snakeobjects``, a *workflow user* creates a *project directory*
 and inside a project configuration file called ``so_project.yaml``.
 The ``so_project.yaml`` file contains parameters that specify the pipeline operating on 
-the project, pointers to the input and :term:`metadata` associated with the project, and 
+the project, pointers to the input data and :term:`metadata` associated with the project, and 
 parameters that control the processing to configure the project.  
 The *workflow user* uses the ``sobjects``
 command line tool to initialize (usually using the :option:`sobjects prepare`
@@ -142,19 +143,18 @@ The :option:`sobjects prepare` performs the following steps:
  
 1. creates an object graph (using 
    the ``build_object_graph.py`` script from the *pipeline*)
-   and stores it in the ``snakeobjects``'s private subdirectory ``.snakeobjects`` of the *project directory* 
-   (``<project directory>/objects/.snakeobjects/OG.json``); 
-2. creates an *object diretory* directory for
-   each of the objects in the *object graph* in the ``objects`` subdirectory of the *project directory* 
-   (``<project directory>/objects/<object type>/<object id>``)
-3. creates the ``<project directory>/.snakeobjects/main.snakefile`` that
+   and stores it in the *project directory* 
+   (``<project directory>/OG.json``); 
+2. creates in the project directory an *object directory* for
+   all objects in the *object graph* that have ``symlink.<name>`` parameters (``<project directory>/<object type>/<object id>``);
+3. creates the ``<pipeline directory>/Snakefile`` that
    is subsequently used by ``snakemake``; and 
 4. creates the symbolic links for all object that have ``symlink.<name>`` parameters. 
 
 The targets and the log files created during the execution of the pipeline (:option:`sobjects run`) are 
-stored in the *object directories* in the ``objects`` subdirectory. 
-In addition, ``snakemake`` creates its own standard internal 
-subdirectory ``objects/.snakemake`` as a subdirectory the *project directory*.
+stored in the *object directories*. If object directory is not created in the step 2. of `sobjects prepare` command, snakemake creates them automaticly. 
+In addition, ``snakemake`` creates its standard internal 
+subdirectory ``<project directory>/.snakemake``.
 
 ``so_project.yaml`` file
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -165,7 +165,7 @@ project and may include:
 * a ``so_pipeline`` parameter that points to the *pipeline directory* for the
   pipeline that will operate on the project (a relative paths are relative 
   based on the project directory);
-* parameters pointing to the input that will be used by the project; 
+* parameters pointing to the input data that will be used by the project; 
 * parameters pointing to the meta-data describing the projects input; 
 * a ``default_snakemake_args`` parameter that specifies the command line 
   arguments that are passed to ``snakemake`` at every invocation of 
@@ -173,50 +173,31 @@ project and may include:
 
 
 Parameter values may contain expressions ``[E:<env_variable_name>]``,
-``[C:<parameter>]``, or ``[P:<project property>]``.  These meta expressions are
-replaced with ``interpolation`` function.  In the first case the expression is
-replaced by the value of environment variable called ``env_variable_name``; in
-the second case the expression is replaced with the value of parameter called
-``parameter`` in the ``so_project.yaml`` file; in the third case the expression
-is replaced with the project directory if ``project property`` is
-``projectDir`` and with the pipeline directory if ``project property`` is
-``pipelineDir``.  Interpolation is applied to all project parameters. If
-parameter does not contain the above meta expressions, it remains unaffected;
-parameters represented by lists and dictionaries are processed recursively by
-applying interpolation to all its members.
+ ``[PP:parameter]``, ``[D:project]``, and ``[D:pipeline]``.  These meta expressions are replaced with ``interpolation`` function.  In the first case the expression is replaced by the value of environment variable called ``env_variable_name``; in the second case the expression is replaced with the value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the third and the fourth cases the expression is replaced correspondingly with the ``project directory`` and the ``pipline directory``.  Interpolation is applied to all project parameters. If parameter does not contain the above meta expressions, it remains unaffected; parameters represented by lists and dictionaries are processed recursively by applying interpolation to all its members. Parameters that are defined for objects in the build_object_graph.py can be referred to in the snakefile rules with the expressions ``[P:parameter]`` or with functions (:py:func:`.P`).
   
 
-``objects`` subdirectory
-^^^^^^^^^^^^^^^^^^^^^^^^
+``objects`` subdirectories
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The files related to ``snakeobjects`` targets have the following general name::
 
-    <project directory>/objects/<object type>/<object id>/<target name>
+    <project directory>/<object type>/<object id>/<target name>
 
 For example, the target ``T("A.txt")`` of object of object type ``sample`` and with
-id ``i1232`` will be stored in the file ``<project directory>/objects/sample/i1232/A.txt``; 
+id ``i1232`` will be stored in the file ``<project directory>/sample/i1232/A.txt``; 
 
 
 The general form for the ``log.O``, ``log.E``, and ``log.T`` log files referenced 
 using the ``LFS(<name>)`` function are::
 
-    <project directory>/objects/<object type>/<object id>/log/<name>-out.txt
-    <project directory>/objects/<object type>/<object id>/log/<name>-err.txt
-    <project directory>/objects/<object type>/<object id>/log/<name>-time.txt
+    <project directory>/<object type>/<object id>/log/<name>-out.txt
+    <project directory>/<object type>/<object id>/log/<name>-err.txt
+    <project directory>/<object type>/<object id>/log/<name>-time.txt
 
 respectively. For example, log file (``log.E``)
 named ``A`` for the sample i1232 object is ``<project
-directory>/objects/sample/i1232/log/A-err.txt``. 
+directory>/sample/i1232/log/A-err.txt``. 
 
-``.snakeobjects`` subdirectory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-This is a private directory reserved for ``snakeobjects`` internal files. Currently, 
-the directory contains two files that may be of interest to the *workflow user*:
-
-* ``objects/.snakeobjects/OG.json`` contains the json representation of the object graph associated with the project;
-* ``objects/.snakeobjects/main.snakefile`` contains the snakefile that is passed to ``snakemake`` at the 
-  :option:`sobjects run`. 
 
 Objects types, objects, and object graph
 ----------------------------------------

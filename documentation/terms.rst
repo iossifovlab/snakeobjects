@@ -13,8 +13,6 @@ Glossary
     object graph
         `Object graph` is a structure representing a directed acyclic graph of *objects*  (the :py:class:`.ObjectGraph` is the ``snakeobjects`` implementation of the *object graph* and the objects in the object graph are implemented by the :py:class:`.OGO` class).
 
-    objects
-        A subdirectory of project directory. Its subdirectories are .snakeobjects, .snakemake, and a subdirectory for each object type in the object graph.
 	
     target
         Target is a file associated with an object and resides in the object directory.
@@ -29,22 +27,19 @@ Glossary
         A file stored in the project directory containing parameters that specify the pipeline operating on the project, pointers to the input and metadata associated with the project, and other parameters that control the processing.
 
     build_object_graph.py
-        A python script that uses meta data associated with the projects to create project’s object graph and  `<object type>.snakefiles` templates for each of the object types that do not have already `<object type>.snakefile` in the pipeline directory. It also creates a directory `objects` in project directory and files `objects/.snakeobjects/main.snakefile`, `objects/.snakeobjects/OG.json` and directories for all objects in object graph.
+        A python script that uses meta data associated with the projects to create project’s object graph. It also creates file `<project_directory>/OG.json`.
 
-    objects/.snakeobjects/OG.json
-        File containing json representation of `object graph`. It is created by command :option:`sobjects prepare`.
+    OG.json
+        File containing json representation of `object graph`. It is created by command :option:`sobjects prepare` or :option:`sobjects buildObjectGraph` .
 
-    objects/.snakeobjects/main.snakefile
-        File passed to snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare`.
+    Snakefile
+        File passed to snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare` or  :option:`sobjects createMain`.
 
-    objects/.snakeobjects/jobscript.sh
-        Bash script created by command :option:`sobjects submit` and passed to corresponding cluster engine command (i.e., 'sbash' for slurm or 'qsub' for sge). Its location is in `objects/.snakeobjects`.
+    jobscript.sh
+        Bash script created by command :option:`sobjects submit` and passed to corresponding cluster engine command (i.e., 'sbash' for slurm or 'qsub' for sge). Its location is in `<project_directory>`.
 
-    objects/.snakeobjects
-        Subdirectory of `objects` directory containing files `jobscript.sh`, `OG.json` and `main.snakefile`.
-
-    objects/.snakemake
-        Subdirectory of `objects` directory that is created by running snakemake. 
+    .snakemake
+        Subdirectory of `<project_directory>` directory that is created by running snakemake. 
 
     sobjects commands
         See full list of command in :ref:`sobjects-commands`.

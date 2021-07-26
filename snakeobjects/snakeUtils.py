@@ -51,6 +51,11 @@ def TE(t):
     return _targetPrefix + _find_object_type() + "/{{oid}}/"  + t
 
 def EF(s): 
+    """
+    Argument ``s`` is a string that may include projects parameters as well as 
+    object's parameters as they are definded with PP and P directives in the 
+    so_project.yaml file.
+    """
     ot = _find_object_type()
     def _DT(wc):
         o = _OG[ot,wc.oid]
