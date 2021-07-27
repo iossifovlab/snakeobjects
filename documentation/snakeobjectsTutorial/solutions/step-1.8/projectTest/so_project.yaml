@@ -1,5 +1,5 @@
-so_pipeline: "[P:projectDir]/../pipeline"
+so_pipeline: "[D:project]/../pipeline"
 
-inputDir: "[P:projectDir]/../input"
-fastqDir: "[C:inputDir]/fastq"
-fastqsFile: "[P:projectDir]/fastqs-small.txt"
+inputDir: "[D:project]/../input"
+fastqDir: "[PP:inputDir]/fastq"
+fastqsFile: "[D:project]/fastqs-small.txt"

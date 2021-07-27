@@ -51,6 +51,10 @@ Creates targets for objects in the object graph by running snakemake. The
 <arguments to snakemake> determine which targets will be created and what resources 
 will be used.''',
 
+    "cleanProjects": '''sobjects cleanProjects [ -f]
+
+Will ask user to remove OG.json, .snakemake, and all objects directories. With -f option all is removed silently.''',
+
     "submit": '''sobjects submit [<arguments to snakemake>]
 
 Creates targets for objects in the object graph by running snakemake with
@@ -181,6 +185,7 @@ def cli(args=None):
             proj.save_object_graph()
             proj.write_main_snakefile()
             proj.create_symbolic_links()
+            proj.objectGraph.print_stats()
     elif command in ["prepareObjects"]:
         proj.create_symbolic_links()
     elif command == "run":

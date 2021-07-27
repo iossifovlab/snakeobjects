@@ -119,7 +119,7 @@ directory with the following content:
 This ``so_project.yaml`` configures our first snakeobjects project. The first
 line specifies that the pipeline that will operate on this project is contained
 in the directory ``../pipeline`` relative to the project directory. The
-``[P:projectDir]`` is an example for *interpolation* feature available in the
+``[D:project]`` is an example for *interpolation* feature available in the
 project configuration files. Alternatively, we could
 have specified the pipeline directory using a full path
 (``/tmp/snakeobjectsTutorial/pipeline``). The second line adds a configuration
@@ -132,7 +132,7 @@ Indeed, the next two
 properties  ``fastqsFile`` and ``fastqDir`` are defined succinctly based on the
 ``inputDir`` and point to the table describing the fastq files and to the
 directory containing the fastq files. Using ``inputDir`` is optional --- we
-could have defined the fastqDir as ``"[P:projectDir]/../input/fastq"`` or with a
+could have defined the fastqDir as ``"[D:project]/../input/fastq"`` or with a
 full path to the directory, ``/tmp/snakeobjectsTutorial/input/fastq``.
 
 To check if the configuration was successful, we can use the :option:`sobjects
@@ -231,39 +231,22 @@ created object graph:
 The above says that we have created an object graph that has 384 objects of
 type ``fastq``, that is exactly what we expected. 
 
-Importantly, the :option:`sobjects prepare` command created a directory
-``objects`` in the project directory. The ``objects`` directory contains large number of
-subdirectories and two files:
-
-.. code-block:: bash
-
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ find objects | head
-    objects
-    objects/.snakeobjects
-    objects/.snakeobjects/OG.json
-    objects/.snakeobjects/main.snakefile
-    objects/fastq
-    objects/fastq/FC0A03F09.L006.G
-    objects/fastq/FC0A03F09.L006.G/log
-    objects/fastq/FC0A03F0F.L007.E
-    objects/fastq/FC0A03F0F.L007.E/log
-    objects/fastq/FC0A03F06.L008.I
+Snakemake usually creates paths to all traget files, so there is no need for snakeobjects to create directories for all object types in advance, however snakeobjects creates directories for objects that have symbolic link parameters.
 
 The :term:`OG.json` file stores the object graph that was
 just created and the :term:`Snakefile` is the projects
 specific snakefile that will be provided to the snakemake upon execution of the
 pipeline. In addition, there are directories for each object from the objects
 graph where the objects' targets will be stored: the
-``objects/fastq/FC0A03F09.L006.G`` directory will contain the targets for the
+``fastq/FC0A03F09.L006.G`` directory will contain the targets for the
 object of type ``fastq`` and object id ``FC0A03F09.L006.G``. Each of the object
 directories has also a log subdirectory (i.e.,
-``objects/fastq/FC0A03F09.L006.G/log``) where log files associated with the
+``fastq/FC0A03F09.L006.G/log``) where log files associated with the
 object will be stored (more about log files later). 
 
 In addition, the :option:`sobjects prepare` created one file,
 ``fastq.snakefile``, in pipeline directory. This is not a typical behavior: as
-a rule, **sobjects** only updates the project directory (and to be more
-specific, only its ``objects`` subdirectory), but when we start a new pipeline
+a rule, **sobjects** only updates the project directory, but when we start a new pipeline
 it's handy to have placeholders for the :term:`object type` snakemake files be created
 for us. The content if the new ``fastq.snakefile`` is very simple: 
 
@@ -304,7 +287,7 @@ pipeline and here we would use the ``-q`` command that instructs the underlying
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
     Job counts:
         count	jobs
         1	so_all_targets
@@ -323,7 +306,7 @@ be created for the project and is naturally executed only 1 time. The
 ``so_fastq_obj`` rule is used to build an object of type ``fastq`` and since we
 have 384 such objects in our graph this rule is used for 384 jobs.  
 
-The :option:`sobjects run` command added the ``objects/.snakemake`` directory
+The :option:`sobjects run` command added the ``./.snakemake`` directory
 where ``snakemake`` stored internal information related to the execution. This
 may come handy for figuring out errors in complex situation but we will not
 cover the ``snakemake`` privates in this tutorial and refer you to the
@@ -333,17 +316,18 @@ object:
 
 .. code-block:: bash
 
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ find objects/fastq  | head
-    objects/fastq
-    objects/fastq/FC0A03F09.L006.G
-    objects/fastq/FC0A03F09.L006.G/obj.flag
-    objects/fastq/FC0A03F09.L006.G/log
-    objects/fastq/FC0A03F0F.L007.E
-    objects/fastq/FC0A03F0F.L007.E/obj.flag
-    objects/fastq/FC0A03F0F.L007.E/log
-    objects/fastq/FC0A03F06.L008.I
-    objects/fastq/FC0A03F06.L008.I/obj.flag
-    objects/fastq/FC0A03F06.L008.I/log
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ find fastq  | head
+    fastq
+    fastq/FC0A03F09.L007.E
+    fastq/FC0A03F09.L007.E/obj.flag
+    fastq/FC0A03F0F.L001.D
+    fastq/FC0A03F0F.L001.D/obj.flag
+    fastq/FC0B03F00.L005.E
+    fastq/FC0B03F00.L005.E/obj.flag
+    fastq/FC0A03F03.L004.D
+    fastq/FC0A03F03.L004.D/obj.flag
+    fastq/FC0A03F0F.L003.I
+
 
 These files represent the ``T("obj.flag")`` target and are created only after
 all of the other targets for the object are created. As we have not yet added
