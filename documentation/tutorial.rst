@@ -249,8 +249,8 @@ subdirectories and two files:
     objects/fastq/FC0A03F0F.L007.E/log
     objects/fastq/FC0A03F06.L008.I
 
-The :term:`objects/.snakeobjects/OG.json` file stores the object graph that was
-just created and the :term:`objects/.snakeobjects/main.snakefile` is the projects
+The :term:`OG.json` file stores the object graph that was
+just created and the :term:`Snakefile` is the projects
 specific snakefile that will be provided to the snakemake upon execution of the
 pipeline. In addition, there are directories for each object from the objects
 graph where the objects' targets will be stored: the

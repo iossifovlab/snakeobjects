@@ -72,7 +72,7 @@ def createTgz(dname):
         os.system(cmd)
     
 createTgz('snakeobjectsTutorial')
-createTgz('snakeobjectsPaperExample')
+createTgz('snakeobjectsPaperSupplementaryExample')
 createTgz('snakemakeTutorialExample')
 createTgz('helloWorld')
 

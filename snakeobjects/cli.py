@@ -261,7 +261,15 @@ def cli(args=None):
         graph.driver(proj.objectGraph, args)
     elif command == "cleanProject":
         import shutil
-        
+        if "-f" in sys.argv:
+            if os.path.exists(proj.directory+'/.snakemake'):
+                shutil.rmtree(os.path.abspath(proj.directory+'/.snakemake'))
+            if os.path.exists(proj.directory+'/OG.json'):
+                os.remove(os.path.abspath(proj.directory+'/OG.json'))
+            for ot in proj.objectGraph.get_object_types():
+                if os.path.exists(proj.directory+'/'+ot):
+                    shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
+            return 0
         if os.path.exists(proj.directory+'/.snakemake'):
             val = input('Delete .snakemake? (y/n):')
             if val == 'y':

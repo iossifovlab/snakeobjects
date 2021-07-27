@@ -1,6 +1,0 @@
-
-so_pipeline: "workflow"
-data:        "data"
-ref:         "[PP:data]/genome.fa"
-samplesDir:  "[PP:data]/samples/"
-default_snakemake_args: --use-conda -j
