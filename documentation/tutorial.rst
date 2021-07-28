@@ -753,7 +753,7 @@ typically name singleton objects. We set one parameter named
 ``symlink.chrAll.fa`` with a value taken from the project's parameter
 ``chrAllFile``. We will add the ``chrAllFile`` parameter to our two projects
 and set it to point to the ``.../input/chrAll.fa`` file.  We can do that by
-adding the line ``chrAllFile: "[C:inputDir]/chrAll.fa"`` to the
+adding the line ``chrAllFile: "[PP:inputDir]/chrAll.fa"`` to the
 ``so_project.yaml`` files of the two projects. (We will assume that you have
 indeed done that!)
 
@@ -774,7 +774,6 @@ pointing to the path ``P``. Specifically, our reference object will have a
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ ls -l reference/o
     total 4
     lrwxrwxrwx 1 yamrom   iossifovlab   56 Feb  8 12:04 chrAll.fa -> /tmp/snakeobjectsTutorial/projectTest/../input/chrAll.fa
-    drwxr-xr-x 2 yamrom   iossifovlab 4096 Feb 27 12:02 log
 
 We will add one target to the ``reference`` object type by copying the
 following in the ``pipeline/reference.snakefile`` file:
@@ -860,7 +859,7 @@ of our projects. For example, after we have added the
 Now let's run the :option:`sobjects run` and examine the results:
 
 .. code-block:: bash
-    :emphasize-lines: 8, 10
+    :emphasize-lines: 10, 11
 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
@@ -991,8 +990,8 @@ develop a strategy for balancing the many conflicting requirements.
 We will now create the alignment bam files first for the ``projectsTest`` project 
 and then for the large ``project``. We need to recreate the object graph (by running
 :option:`sobjects prepare`) because we introduced the new dependence of fastq objects 
-on the ``reference/o``. But unless we start from scratch, by removing the ``objects`` 
-directory, we would need to help ``snakemake`` a bit by asking explicitly to run the 
+on the ``reference/o``. But unless we start from scratch, by removing the ``object's`` 
+directories, we would need to help ``snakemake`` a bit by asking explicitly to run the 
 ``align`` rule---here we are again in the situation when we add a target to an already 
 complete object.
 

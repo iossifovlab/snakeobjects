@@ -231,7 +231,7 @@ class Project:
                         os.makedirs(oDir)
                     dst = oDir + "/" + k[8:]
                     src = v
-                    os.system("ln -f %s %s" % (src,dst))
+                    os.system("ln -sf %s %s" % (src,dst))
                     os.system("touch -h -r %s %s" % (src,dst))
                     
 
