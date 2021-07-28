@@ -51,7 +51,7 @@ Creates targets for objects in the object graph by running snakemake. The
 <arguments to snakemake> determine which targets will be created and what resources 
 will be used.''',
 
-    "cleanProjects": '''sobjects cleanProjects [ -f]
+    "cleanProject": '''sobjects cleanProject [ -f]
 
 Will ask user to remove OG.json, .snakemake, and all objects directories. With -f option all is removed silently.''',
 

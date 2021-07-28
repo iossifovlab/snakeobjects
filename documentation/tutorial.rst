@@ -439,7 +439,7 @@ projects:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/projectTest/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/projectTest/objects -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile  -d /tmp/snakeobjectsTutorial/projectTest -j -q
     Job counts:
         count	jobs
         15	countReads
@@ -454,7 +454,7 @@ projectTest:
 
 .. code-block:: bash
 
-    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cat objects/fastq/*/pairNumber.txt
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cat fastq/*/pairNumber.txt
     FC0A03F09.L006.D	942
     FC0A03F09.L006.E	1037
     FC0A03F09.L006.F	1048
@@ -501,8 +501,8 @@ pair numbers for the complete project:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -q
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | head
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat fastq/*/pairNumber.txt | head
     cat: 'objects/fastq/*/pairNumber.txt': No such file or directory
 
 The results seem strange. ``snakemake`` doesn't seem to run any jobs and the
@@ -519,10 +519,10 @@ is to run ``snakemake`` in verbose mode, by removing the ``-q`` flag:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j
     Building DAG of jobs...
     Nothing to be done.
-    Complete log: /tmp/snakeobjectsTutorial/project/objects/.snakemake/log/2021-02-25T114732.563671.snakemake.log
+    Complete log: /tmp/snakeobjectsTutorial/project/.snakemake/log/2021-02-25T114732.563671.snakemake.log
 
 ``snakemake`` says that there is nothing to do. This is a peculiar behavior of
 ``snakemake`` that manifests anytime we add a new targets and rules to a
@@ -539,7 +539,7 @@ force ``snakemake`` to create all targets built by the new rule:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -R countReads
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -R countReads
     Building DAG of jobs...
     Using shell: /bin/bash
     Provided cores: 192
@@ -558,7 +558,7 @@ targets:
 
 .. code-block:: bash
 
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | head
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat fastq/*/pairNumber.txt | head
     FC0A03F00.L001.D	2265
     FC0A03F00.L001.E	2181
     FC0A03F00.L001.F	2221
@@ -569,7 +569,7 @@ targets:
     FC0A03F00.L002.B	1276
     FC0A03F00.L002.C	1365
     FC0A03F00.L002.D	1760
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat objects/fastq/*/pairNumber.txt | wc -l 
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat fastq/*/pairNumber.txt | wc -l 
     384
 
 
@@ -631,7 +631,7 @@ scratch to make sure that the complete pipeline functions properly:
     :emphasize-lines: 2 
 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cd ../projectTest
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ rm -r objects
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects cleanProject -f
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
@@ -642,7 +642,7 @@ scratch to make sure that the complete pipeline functions properly:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/projectTest/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/projectTest/objects -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest -j -q
     Job counts:
         count	jobs
         15	countReads
@@ -654,8 +654,7 @@ scratch to make sure that the complete pipeline functions properly:
         34
     ....
 
-In the highlighted command we removed the ``objects`` subdirectory and with
-that we lost all previously built targets for the ``projectTest``. So, the
+In the highlighted command we removed ``OG.json``, ``.snakemake``, and all object subdirectories that were created before. This is done with ``-f`` option of the command :option:`sobjects cleanProject`. So, the
 ``sobjects run`` command than needed recreate all the targets.  For the large
 ``project`` we will only create the new targets:
 
@@ -672,7 +671,7 @@ that we lost all previously built targets for the ``projectTest``. So, the
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/project/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/project/objects -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
     Job counts:
         count	jobs
         1	gatherPairNumbers
@@ -687,9 +686,9 @@ built the last time we executed the pipeline for the large ``project`` were
 preserved. The ``sobjects prepare`` command created one new object (the
 ``fastqSummary/o``) and the ``sobjects run`` created its targets.  Both the
 ``projectTest`` and ``project`` projects now have an aggregated
-``allPairNumbers.txt`` file (``.../objects/fastqSummary/o/allPairNumbers.txt``)
+``allPairNumbers.txt`` file (``.../fastqSummary/o/allPairNumbers.txt``)
 and a ``pairNumber.png`` figure.
-(``.../objects/fastqSummary/o/pairNumber.png``). The ``pairNumber.png`` for
+(``...fastqSummary/o/pairNumber.png``). The ``pairNumber.png`` for
 ``projectTest`` should look like:
 
 .. image:: _static/projectTest-pairNumber.png
@@ -772,7 +771,7 @@ pointing to the path ``P``. Specifically, our reference object will have a
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ ls -l objects/reference/o
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ ls -l reference/o
     total 4
     lrwxrwxrwx 1 yamrom   iossifovlab   56 Feb  8 12:04 chrAll.fa -> /tmp/snakeobjectsTutorial/projectTest/../input/chrAll.fa
     drwxr-xr-x 2 yamrom   iossifovlab 4096 Feb 27 12:02 log
@@ -838,7 +837,7 @@ standard error, and ``log.T`` used for timing measures. The names for these log 
 respectively, where the ``<log name>`` is the parameter given to the
 :py:func:`.LFS` function.  For example, the ``log.O`` from our ``makeBwaIndex``
 rule for the ``projectTest`` project is:
-``/mnt/snakeobjectsTutorial/projectTest/objects/reference/o/log/bwa_index-out.txt``
+``/mnt/snakeobjectsTutorial/projectTest/reference/o/log/bwa_index-out.txt``
 
 To actually create the bwa index for our projects, we need to execute
 :option:`sobjects run`.  But to convince ``snakemake`` to notice the ``conda``
@@ -870,7 +869,7 @@ Now let's run the :option:`sobjects run` and examine the results:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/projectTest/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/projectTest/objects --use-conda -j
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j
     Building DAG of jobs...
     Creating conda environment /tmp/snakeobjectsTutorial/pipeline/env-bwa.yaml...
     Downloading and installing remote packages.
@@ -887,22 +886,22 @@ Now let's run the :option:`sobjects run` and examine the results:
     Select jobs to execute...
     ...
 
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ ls -l objects/reference/o/*
-    -rw-r--r-- 1 yamrom iossifovlab       0 Feb 27 17:13 objects/reference/o/chrAll.bwaIndex.flag
-    lrwxrwxrwx 1 yamrom iossifovlab      56 Feb  8 12:04 objects/reference/o/chrAll.fa -> /tmp/snakeobjectsTutorial/projectTest/../input/chrAll.fa
-    -rw-r--r-- 1 yamrom iossifovlab      67 Feb 27 17:13 objects/reference/o/chrAll.fa.amb
-    -rw-r--r-- 1 yamrom iossifovlab     138 Feb 27 17:13 objects/reference/o/chrAll.fa.ann
-    -rw-r--r-- 1 yamrom iossifovlab 1000116 Feb 27 17:13 objects/reference/o/chrAll.fa.bwt
-    -rw-r--r-- 1 yamrom iossifovlab  250007 Feb 27 17:13 objects/reference/o/chrAll.fa.pac
-    -rw-r--r-- 1 yamrom iossifovlab  500064 Feb 27 17:13 objects/reference/o/chrAll.fa.sa
-    -rw-r--r-- 1 yamrom iossifovlab       0 Feb 27 17:13 objects/reference/o/obj.flag
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ ls -l reference/o/*
+    -rw-r--r-- 1 yamrom iossifovlab       0 Feb 27 17:13 reference/o/chrAll.bwaIndex.flag
+    lrwxrwxrwx 1 yamrom iossifovlab      56 Feb  8 12:04 reference/o/chrAll.fa -> /tmp/snakeobjectsTutorial/projectTest/../input/chrAll.fa
+    -rw-r--r-- 1 yamrom iossifovlab      67 Feb 27 17:13 reference/o/chrAll.fa.amb
+    -rw-r--r-- 1 yamrom iossifovlab     138 Feb 27 17:13 reference/o/chrAll.fa.ann
+    -rw-r--r-- 1 yamrom iossifovlab 1000116 Feb 27 17:13 reference/o/chrAll.fa.bwt
+    -rw-r--r-- 1 yamrom iossifovlab  250007 Feb 27 17:13 reference/o/chrAll.fa.pac
+    -rw-r--r-- 1 yamrom iossifovlab  500064 Feb 27 17:13 reference/o/chrAll.fa.sa
+    -rw-r--r-- 1 yamrom iossifovlab       0 Feb 27 17:13 reference/o/obj.flag
 
-    objects/reference/o/log:
+    reference/o/log:
     total 8
     -rw-r--r-- 1 yamrom iossifovlab 494 Feb 27 17:13 bwa_index-err.txt
     -rw-r--r-- 1 yamrom iossifovlab   0 Feb 27 17:12 bwa_index-out.txt
     -rw-r--r-- 1 yamrom iossifovlab  42 Feb 27 17:13 bwa_index-time.txt
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ cat objects/reference/o/log/bwa_index-time.txt 
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ cat reference/o/log/bwa_index-time.txt 
 
     real	0m0.633s
     user	0m0.508s
@@ -912,7 +911,7 @@ The first highlighted line shows that the ``--use-conda`` parameter was indeed
 passed to ``snakemake`` even though we did not explicitly provide it on the
 command line. The second highlighted line shows the message from ``snakemake``
 that it is building a conda environment based on the ``env-bwa.yaml`` file.
-Finally, the list of the ``objects/reference/o`` directory shows that the
+Finally, the list of the ``reference/o`` directory shows that the
 ``chrAll.bwaIndex.flag`` was created together with the five files
 (``chrAll.fa.amb``, ``chrAll.fa.ann``, ``chrAll.fa.bwt``, ``chrAll.fa.pac``,
 and ``chrAll.fa.sa``), that contain the bwa index. The list also shows
@@ -1007,7 +1006,7 @@ complete object.
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/projectTest/objects/.snakeobjects/main.snakefile -d /tmp/snakeobjectsTutorial/projectTest/objects --use-conda -j -R align
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j -R align
     Building DAG of jobs...
     Using shell: /bin/bash
     Provided cores: 192
@@ -1311,7 +1310,7 @@ identical header, without repeating the header multiple times.
 
 We can now re-run the ``project``, and ``projectTest`` with :option:`sobjects
 prepare` and :option:`sobjects run`. Below, we show the
-``.../projectTest/objects/trioSummary/o/allDenovoCalls.txt`` after the
+``.../projectTest/trioSummary/o/allDenovoCalls.txt`` after the
 execution of the ``projectTest`` is done (and with a bit of manual formatting
 in Excel):
 

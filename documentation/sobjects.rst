@@ -64,6 +64,10 @@ The available commands are described below:
 
     $ sobjects help run 
 
+.. option:: cleanProject
+.. runblock:: console
+
+    $ sobjects help cleanProject
 
 .. option:: submit 
 .. runblock:: console
