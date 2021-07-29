@@ -137,29 +137,6 @@ class Project:
             ppd = self.directory
         return os.path.abspath(ppd)
 
-
-    '''
-    def prepare(self, newObjectGraph, ARGV=None):
-
-        if not ARGV: ARGV = sys.argv 
-        cmd = 'prepareTest' if len(ARGV) < 2 else ARGV[1]
-
-        if cmd == 'prepareTest':
-            print("Current graph stats")
-            print("+++++++++++++++++++")
-            self.objectGraph.print_stats()
-            print("\n")
-            print("New graph stats")
-            print("+++++++++++++++")
-            newObjectGraph.print_stats()
-        elif cmd == 'prepare':
-            self.objectGraph = newObjectGraph 
-            os.system("mkdir -p objects/.snakeobjects")
-            self.objectGraph.save(self.directory + "/objects/.snakeobjects/OG.json")
-            self.prepare_objects()
-        else:
-            print(f"unkown command {cmd}. The known commands are 'prepareTest' and 'prepare'")
-    '''
     def ensure_snakeobject_private_directory(self):
         #sopd = self.directory + "/objects/.snakeobjects"
         #if not os.path.exists(sopd):

@@ -119,7 +119,7 @@ def cli(args=None):
         print("Snakeobjects %s\n" % (__version__))
         if len(args) == 1:
             print("Available commands are:\n\t", "\n\t".join(helpData.keys()),"\n",sep="")
-        # print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
+        print("Typical sequence of commands is descripe, prepareTest, prepare, run:\n")
             for cmd,hs in helpData.items():
                 print(cmd)
                 print('#' * len(cmd))
@@ -221,7 +221,7 @@ def cli(args=None):
                 os.environ['SO_REMOTE'] = f"{default_remote_provider}:{default_remote_prefix}"
             else:
                 os.environ['SO_REMOTE'] = 'singularity'
-            #sargs += ["--envvars SO_REMOTE "]
+            sargs += ["--envvars SO_REMOTE "]
         os.execvp('snakemake',sargs)
     elif command == "submit":
         from snakeobjects.Project import ProjectException
@@ -244,7 +244,7 @@ def cli(args=None):
         if not "cluster" in pr_config: 
             ProjectException("cluster in not specified in %s" % profile+"/config.yaml")
         cmd=pr_config["cluster"]
-        # os.chdir(proj.directory + '/objects')
+
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=",proj.directory,sep="") 
         print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
@@ -253,16 +253,16 @@ def cli(args=None):
         os.environ['SO_PROJECT']  = proj.directory
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
         os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
-        if os.system('sobjects jobscript.sh >$SO_PROJECT/objects/.snakeobjects/jobscript.sh'):
+        if os.system('sobjects jobscript.sh >$SO_PROJECT/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
-        with open(proj.directory+'/objects/.snakeobjects/jobscript.sh', 'a') as js:
+        with open(proj.directory+'/jobscript.sh', 'a') as js:
             for k,v in pr_config.items():
                 if not k in 'jobname jobscript cluster cluster-status'.split(' '):
                     js.write('--'+str(k)+' ' + str(v) + ' ')
             js.write(' '.join(args[1:]))
 
-        os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/objects/.snakeobjects/jobscript.sh")
-        #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/objects/.snakeobjects/jobscript.sh"])        
+        os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/jobscript.sh")
+        #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/jobscript.sh"])        
     elif command == "describe":
         print("Project parameters:")
         for k,v in proj.parameters.items():
@@ -298,27 +298,6 @@ def cli(args=None):
     else:
         print("Don't know the command:", command)
         return 1
-
-'''
-if [ -z "$PROJECT_DIR" ]; then
-    export PROJECT_DIR=`pwd`
-fi
-
-if [ -z "$PIPELINE_DIR" ]; then
-    export PIPELINE_DIR=$PROJECT_DIR
-fi
-
-echo "WORKING ON PROJECT" $PROJECT_DIR 
-echo "WITH PIPELINE" $PIPELINE_DIR
-
-cd $PROJECT_DIR/objects
-
-if [ -f "${PROJECT_DIR}/parameters.yaml" ]; then
-    default_options=`grep -P "^default_snakemake_args" ${PROJECT_DIR}/parameters.yaml |cut -d':' -f2`
-fi
-echo "snakemake --snakefile .snakeobjects/main.snakefile  $default_options $*"
-snakemake --snakefile .snakeobjects/main.snakefile  $default_options $*
-'''
 
 if __name__ == '__main__':
     import sys
