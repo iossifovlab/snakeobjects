@@ -195,7 +195,10 @@ def cli(args=None):
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
         sargs += args[1:]
-        # os.chdir(proj.directory + '/objects')
+        if not os.path.exists(proj.directory + '/OG.json'):
+            print("OG.json doesn't exist in " +
+                  proj.directory + ", do 'sobjects prepare' first.")
+            exit(1)
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=",proj.directory,sep="") 
         print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
@@ -222,6 +225,10 @@ def cli(args=None):
         os.execvp('snakemake',sargs)
     elif command == "submit":
         from snakeobjects.Project import ProjectException
+        if not os.path.exists(proj.directory + '/OG.json'):
+            print("OG.json doesn't exist in " +
+                  proj.directory + ", do 'sobjects prepare' first.")
+            exit(1)
         sargs = []
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
