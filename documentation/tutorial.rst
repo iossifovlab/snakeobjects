@@ -503,7 +503,7 @@ pair numbers for the complete project:
     export PATH=$SO_PIPELINE:$PATH
     RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat fastq/*/pairNumber.txt | head
-    cat: 'objects/fastq/*/pairNumber.txt': No such file or directory
+    cat: 'fastq/*/pairNumber.txt': No such file or directory
 
 The results seem strange. ``snakemake`` doesn't seem to run any jobs and the
 ``pairNumber.txt`` targets are not created. One way to figure out what's going on
