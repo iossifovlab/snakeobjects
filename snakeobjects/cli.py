@@ -273,23 +273,33 @@ def cli(args=None):
         graph.driver(proj.objectGraph, args)
     elif command == "cleanProject":
         import shutil
+        sm = proj.directory+'/.snakemake'
+        og = proj.directory+'/OG.json'
+        sf = proj.get_pipeline_directory()+'/Snakefile'
         if "-f" in sys.argv:
-            if os.path.exists(proj.directory+'/.snakemake'):
-                shutil.rmtree(os.path.abspath(proj.directory+'/.snakemake'))
-            if os.path.exists(proj.directory+'/OG.json'):
-                os.remove(os.path.abspath(proj.directory+'/OG.json'))
+            if os.path.exists(sm):
+                shutil.rmtree(os.path.abspath(sm))
+            if os.path.exists(og):
+                os.remove(os.path.abspath(og))
+            if os.path.exists(sf):
+                os.remove(os.path.abspath(sf))                
             for ot in proj.objectGraph.get_object_types():
                 if os.path.exists(proj.directory+'/'+ot):
                     shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
             return 0
-        if os.path.exists(proj.directory+'/.snakemake'):
+        if os.path.exists(sm):
             val = input('Delete .snakemake? (y/n):')
             if val == 'y':
-                shutil.rmtree(os.path.abspath(proj.directory+'/.snakemake'))
-        if os.path.exists(proj.directory+'/OG.json'):
+                shutil.rmtree(os.path.abspath(sm))
+        if os.path.exists(og):
             val = input('Delete OG.json? (y/n):')
             if val == 'y':
-                os.remove(os.path.abspath(proj.directory+'/OG.json')) 
+                os.remove(os.path.abspath(og))
+        if os.path.exists(sf):
+            val = input('Delete Snakefile? (y/n):')
+            if val == 'y':
+                os.remove(os.path.abspath(sf))
+                        
         val = input('Delete all object directories? (y/n):')
         if val == 'y':   
             for ot in proj.objectGraph.get_object_types():

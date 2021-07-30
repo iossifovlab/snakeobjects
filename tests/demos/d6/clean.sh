@@ -1,4 +1,4 @@
 #!/bin/bash
 cd $(dirname "$0")
-rm -rf .snakemake OG.json B P Snakefile
+sobjects cleanProject -f
 
