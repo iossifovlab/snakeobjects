@@ -1,0 +1,4 @@
+input: "[D:project]/input"
+songs:    "[PP:input]/songs/"
+who_sings_what: "[D:project]/people_song.txt"
+
