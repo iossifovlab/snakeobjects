@@ -7,6 +7,7 @@ Additional Examples
 Paper Supplementary Example
 ===========================
 
+
 This section explains how to load and execute small project described Supplementary of ``snakeobjects`` paper. We assume that you will work or a Linux or Mac. In addition, we assume that you have a conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
@@ -67,8 +68,11 @@ Opening it in excel with a little formatting can get:
 Snakemake Tutorial Example
 ==========================
 
-This section explains how to load and execute small project reimplementing in snakeobject `snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_. We assume that you will work or a Linux or Mac. In
-addition, we assume that you have a conda or miniconda installed (`Conda
+This section explains how to load and execute the small project reimplementing
+in snakeobject
+`snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_.
+We assume that you will work or a Linux or Mac. In addition, we assume that you
+have conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
 Everything else needed is inclucded in the
