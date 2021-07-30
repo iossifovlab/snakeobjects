@@ -10,15 +10,18 @@ Installation
 ``snakeobjects`` is tested and works well on Linux and Mac; it doesn't work on
 Windows. By far, the easiest method for installing ``snakeobjects`` is to use
 the ``snakeobjects`` conda package available at the iossifovlab channel (SOON AT
-bioconda!!). This method requires for conda or miniconda to be installed. (See
-`Conda Installation
-<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).  With
-conda ready, installing ``snakeobjects`` is simple::
+bioconda!!). This method requires for conda or miniconda to be installed. (See `Conda
+Installation
+<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).  For faster installation it is recommended to first install mamba::
 
-    $ conda install -c iossifovlab -c bioconda -c conda-forge snakeobjects
+  $ conda install -n base -c conda-forge mamba
 
-Unfortunately, due to the large number of dependencies associated with
-``snakemake`` this can take several minutes. After ``conda install`` finishes,
+With mamba ready, installing ``snakeobjects`` is simple::
+
+  $ conda activate base
+  $ mamba create -c iossifovlab -c bioconda -c conda-forge snakeobjects
+
+After ``conda install`` finishes,
 you can use the :option:`sobjects version` command to check  if the
 installation was successful:
 
@@ -71,31 +74,32 @@ the ``sobjects`` command-line utility from within our project directory.
     # WORKING ON PROJECT /tmp/helloWorld
     # WITH PIPELINE /tmp/helloWorld
 
-    $ sobjects run -j -q
+    sobjects run -j -q
     # WORKING ON PROJECT /tmp/helloWorld
     # WITH PIPELINE /tmp/helloWorld
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/helloWorld
     export SO_PIPELINE=/tmp/helloWorld
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/helloWorld/objects/.snakeobjects/main.snakefile -d /tmp/helloWorld/objects -j -q
-    Job counts:
-        count	jobs
-        1	createResult
-        1	so_all_targets
-        1	so_hello_obj
-        3
+    RUNNING: snakemake -s /tmp/helloWorld/Snakefile -d /tmp/helloWorld -j -q
+    Job stats:
+    job               count    min threads    max threads
+    --------------  -------  -------------  -------------
+    createResult          1              1              1
+    so_all_targets        1              1              1
+    so_hello_obj          1              1              1
+    total                 3              1              1
 
 The :option:`sobjects prepare` performs a few initialization steps.
 :option:`sobjects run` does the 'heavy lifting' using the ``snakemake`` to
 execute the rules for creating the object targets. The execution of our
 helloWorld pipeline should finish instantly, and we can find the file for the
-result.txt target in the directory ``snakeobjects`` creates for our single
+result.txt target in the directory ``hello`` creates for our single
 ``hello/world`` object:
 
 .. code-block:: bash
 
-    $ cat /tmp/helloWorld/objects/hello/world/result.txt 
+    $ cat /tmp/helloWorld/hello/world/result.txt 
     hello world
 
 

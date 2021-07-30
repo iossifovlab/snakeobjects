@@ -4,16 +4,16 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - python=3.8
+  - python>=3.7
   - ipython
   - setuptools
   - pytest-cov
   - sphinx
-  - sphinx-autorun
   - conda-build
   - anaconda-client
   - snakemake-minimal>5.20
   - sphinx_rtd_theme
+  - mamba
   - pip
   - pip:
     - sphinx-autorun

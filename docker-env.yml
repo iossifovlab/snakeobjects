@@ -1,0 +1,10 @@
+name: snakeobjects
+channels:
+  - iossifovlab 
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakeobjects
+
+

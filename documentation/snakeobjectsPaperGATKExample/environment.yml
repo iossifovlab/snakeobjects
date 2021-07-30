@@ -1,4 +1,4 @@
-name: snakeobjectsPaperExample
+name: snakeobjectsGATKExample
 channels:
   - iossifovlab 
   - bioconda
@@ -13,4 +13,6 @@ dependencies:
   - bwakit
   - samtools 
   - pysam
+  - gatk4
+
 

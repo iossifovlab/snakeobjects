@@ -5,7 +5,7 @@ add_targets("sample.bam",
 rule bwa_map:
     input:
         PP("ref"),
-        PP('samplesDir') + "/{oid}.fastq"
+        EF("[PP:samplesDir][P:fqId]")
     output:
         T("sample.bam")
     shell:

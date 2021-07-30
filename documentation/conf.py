@@ -16,9 +16,9 @@ import sys
 sys.path.insert(0, os.path.abspath('..'))
 os.environ['PATH'] += ":."
 if 'PYTHONPATH' in os.environ:
-    os.environ['PYTHONPATH'] += (":" + os.path.abspath('..'))
+    os.environ['PYTHONPATH'] += (":" + os.path.abspath('..') + ":" + os.path.abspath('../snakeobjects'))
 else:
-    os.environ['PYTHONPATH'] = os.path.abspath('..')
+    os.environ['PYTHONPATH'] = (os.path.abspath('..') + ":" + os.path.abspath('../snakeobjects'))
 # -- Project information -----------------------------------------------------
 
 project = 'snakeobjects'
@@ -63,14 +63,18 @@ html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
 
 def createTgz(dname):
-    cmd = "for d in `find "+dname+" -name __pycache__`; do rm -r $d; done"
-    os.system(cmd)
-    cmd = "for d in `find "+dname+" -name objects`; do rm -r $d; done"
-    os.system(cmd)
-    cmd = "tar czf "+dname+".tgz "+dname
-    os.system(cmd)
+    if not os.path.exists(dname+".tgz"):
+        cmd = "for d in `find "+dname+" -name __pycache__`; do rm -r $d; done"
+        os.system(cmd)
+        cmd = "for d in `find "+dname+" -name objects`; do rm -r $d; done"
+        os.system(cmd)
+        cmd = "tar czf "+dname+".tgz "+dname
+        os.system(cmd)
     
-createTgz('helloWorld')
 createTgz('snakeobjectsTutorial')
-createTgz('snakeobjectsPaperExample')
+createTgz('snakeobjectsPaperSupplementaryExample')
 createTgz('snakemakeTutorialExample')
+createTgz('helloWorld')
+
+if "READTHEDOCS" in os.environ:
+    os.system('git checkout -- conf.py')

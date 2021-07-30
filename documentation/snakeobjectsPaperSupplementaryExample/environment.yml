@@ -1,0 +1,16 @@
+name: snakeobjectsPaperSupplementaryExample
+channels:
+  - iossifovlab 
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakeobjects
+  - pandas
+  - numpy
+  - matplotlib
+  - graphviz
+  - bwakit
+  - samtools 
+  - pysam
+
