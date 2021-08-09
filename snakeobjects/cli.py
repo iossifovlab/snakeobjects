@@ -1,5 +1,4 @@
 import os,sys
-from snakeobjects.remoteProjects import upload_project_files_to_remote
 
 helpData = {
     "version": "prints the version",
@@ -211,6 +210,8 @@ def cli(args=None):
         default_remote_provider = get_arg_value(sargs,'--default-remote-provider')
         default_remote_prefix = get_arg_value(sargs,'--default-remote-prefix')
         if default_remote_provider and default_remote_prefix:
+            from snakeobjects.remoteProjects import upload_project_files_to_remote
+
             upload_project_files_to_remote(default_remote_provider,
                                            default_remote_prefix)
 
