@@ -1,5 +1,5 @@
 #!/bin/bash
-# properties = {"type": "single", "rule": "run_snake", "input": {}, "output":{},"params":{}, "log":{}, "wildcards": {}, "local": false, "threads": 1, "resources": {"mem": 8000}, "cluster": {}}
+# properties = {"type": "single", "rule": "run_snake", "input": {}, "output":{},"params":{}, "log":{}, "wildcards": {}, "local": false, "threads": 1, "resources": {"mem": 64000}, "cluster": {}}
  cd $SO_PROJECT/objects && \
 python \
 -m snakemake --snakefile $SO_PROJECT/objects/.snakeobjects/main.snakefile \

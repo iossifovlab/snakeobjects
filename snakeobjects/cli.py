@@ -81,7 +81,7 @@ optional arguments:
 }
 
 def load_yaml(file_name):
-
+    import yaml
     CF = open(file_name, 'r')
     config = yaml.safe_load(CF)
     CF.close()
