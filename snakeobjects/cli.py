@@ -104,6 +104,7 @@ def cli(args=None):
 
 
     if command == "jobscript.sh":
+        import importlib.resources as importlib_resources
         print(importlib_resources.read_text(__package__,'jobscript.sh'),end='')
         return
 

@@ -33,7 +33,7 @@ requirements:
     - pip
   run:
     - python
-    - snakemake-minimal>=6.3
+    - snakemake>=6.3
     # dependencies are defined in setup.py
     {% for dep in data['install_requires'] %}
     - {{ dep.lower() }}
@@ -46,7 +46,7 @@ test:
   requires:
     - pytest
     - pytest-cov
-    - snakemake-minimal>=6.3
+    - snakemake>=6.3
   commands:
     - pytest tests
 
