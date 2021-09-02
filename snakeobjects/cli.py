@@ -24,9 +24,17 @@ is not modified at all.''',
 Uses the build_object_graph.py in the pipeline directory to create a new object 
 graph and stores it on the file OG.json in the project directory.''',
 
-    "createMain": '''sobjects createMain
+    "createSnakefile": '''sobjects createSnakefile
 
-Uses the objectGraph OG.json to write in the pipeline directory the Snakefile.''',
+First, the command finds the list of implemented object types by obtaining the names 
+(without the .snakefile suffix) of *.snakefile files in the pipeline directory. The 
+createSnakefile command then checks if the object graph of the current project uses 
+object types that have no corresponding <object type>.snakefile. In such cases, it 
+creates dummy *.snakefiles for the new object types and extends the list of object 
+types. (The check for new object types in the current project is an esoteric feature 
+helpful for pipeline developers during the development or extension of pipelines.) 
+The command then creates a Snakefile in the pipeline directory based on the complete 
+list of the object types. ''',
 
     "createSymbolicLinks": '''sobjects createSymbolicLinks
 
@@ -35,14 +43,10 @@ links in object's parameters.''',
 
     "prepare": '''sobjects prepare [<arguments to build_object_graph.py>]
 
-First, uses the build_object_graph.py in the pipeline directory 
-to create an object graph for the snakeobjects project. Then prepares the main 
-snakefile (Snakefile in the pipeline directory), and the directories and symbolic links 
-for all object in the object graph that have symbolic links in their parameters.''',
-
-    "prepareObjects": '''sobjects prepareObjects
-
-Create directories for objects in the object graph with symbolic links in their parameters.''',
+    This is a short-cut command equivallent to:
+        sobjects buildObjectGraph [<arguments to build_object_graph.py>] 
+        sobjects createSnakefile
+        sobjects createSymlinks''', 
 
     "run": '''sobjects run [<arguments to snakemake>]
 
@@ -166,7 +170,7 @@ def cli(args=None):
         newObjectGraph = buildObjectGraph()
         proj.objectGraph = newObjectGraph 
         proj.save_object_graph()
-    elif command in ["createMain", "createSnakefile"]:
+    elif command in ["createSnakefile"]:
         proj.write_main_snakefile()
     elif command == "createSymbolicLinks":
         proj.create_symbolic_links()
@@ -273,14 +277,11 @@ def cli(args=None):
         import shutil
         sm = proj.directory+'/.snakemake'
         og = proj.directory+'/OG.json'
-        sf = proj.get_pipeline_directory()+'/Snakefile'
         if "-f" in sys.argv:
             if os.path.exists(sm):
                 shutil.rmtree(os.path.abspath(sm))
             if os.path.exists(og):
                 os.remove(os.path.abspath(og))
-            if os.path.exists(sf):
-                os.remove(os.path.abspath(sf))                
             for ot in proj.objectGraph.get_object_types():
                 if os.path.exists(proj.directory+'/'+ot):
                     shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
@@ -293,10 +294,6 @@ def cli(args=None):
             val = input('Delete OG.json? (y/n):')
             if val == 'y':
                 os.remove(os.path.abspath(og))
-        if os.path.exists(sf):
-            val = input('Delete Snakefile? (y/n):')
-            if val == 'y':
-                os.remove(os.path.abspath(sf))
                         
         val = input('Delete all object directories? (y/n):')
         if val == 'y':   
