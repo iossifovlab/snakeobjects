@@ -32,20 +32,15 @@ The available commands are described below:
 
     $ sobjects help buildObjectGraph
 
-.. option:: createMain
+.. option:: createSnakefile
 .. runblock:: console
 
-    $ sobjects help createMain
+    $ sobjects help createSnakefile
 
 .. option:: createSymbolicLinks
 .. runblock:: console
 
     $ sobjects help createSymbolicLinks
-
-.. option:: prepareObjects 
-.. runblock:: console
-
-    $ sobjects help prepareObjects 
 
 
 .. option:: prepare

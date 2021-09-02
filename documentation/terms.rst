@@ -33,7 +33,7 @@ Glossary
         File containing json representation of `object graph`. It is created by command :option:`sobjects prepare` or :option:`sobjects buildObjectGraph` .
 
     Snakefile
-        File passed to snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare` or  :option:`sobjects createMain`.
+        File passed to snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare` or  :option:`sobjects createSnakefile`.
 
     jobscript.sh
         Bash script created by command :option:`sobjects submit` and passed to corresponding cluster engine command (i.e., 'sbash' for slurm or 'qsub' for sge). Its location is in `<project_directory>`.
