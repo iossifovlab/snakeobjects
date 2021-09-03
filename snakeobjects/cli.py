@@ -190,8 +190,6 @@ def cli(args=None):
             proj.write_main_snakefile()
             proj.create_symbolic_links()
             proj.objectGraph.print_stats()
-    elif command in ["prepareObjects"]:
-        proj.create_symbolic_links()
     elif command == "run":
         sargs = ['snakemake',
                 '-s', proj.get_pipeline_directory() + '/Snakefile', 
@@ -295,10 +293,10 @@ def cli(args=None):
             if val == 'y':
                 os.remove(os.path.abspath(og))
                         
-        val = input('Delete all object directories? (y/n):')
-        if val == 'y':   
-            for ot in proj.objectGraph.get_object_types():
-                if os.path.exists(proj.directory+'/'+ot):
+        for ot in proj.objectGraph.get_object_types():
+            if os.path.exists(proj.directory+'/'+ot):
+               val = input(f'Delete  {proj.directory+"/"+ot}? (y/n):')
+               if val == 'y':
                     shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
     else:
         print("Don't know the command:", command)

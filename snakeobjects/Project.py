@@ -154,29 +154,35 @@ class Project:
     
     def ensure_object_type_snakefile_exists(self,ot):
         sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
-        if not os.path.exists(sfile): 
+        if not os.path.exists(sfile):
+            print(f'WARNING: creating dummy snakefile {sfile.split("/")[-1]}')
             with open(sfile, 'w') as f:
                 f.write(f'add_targets()\n')
         return sfile
         
     def write_main_snakefile(self):
+        from glob import glob
         mf=self.get_pipeline_directory() + "/Snakefile"
         from snakeobjects import __version__
-        o_types = ','.join(sorted(self.objectGraph.get_object_types()))
+        o_types = set(self.objectGraph.get_object_types())
+        o_list = set([x.split('/')[-1][:-10] for x in
+                      glob(self.get_pipeline_directory() + '/*.snakefile')])
+        all_o_types = sorted(set.union(o_types,o_list))
+
         if os.path.exists(mf):
             with open(mf) as f:
                 old_version = f.readline().strip('\n\r').split(' ')[1]
                 old_o_types = f.readline().strip('\n\r').split(' ')[2]
-            if old_version == __version__ and old_o_types == o_types:
+            if old_version == __version__ and old_o_types == ','.join(all_o_types):
                 return 
         header = importlib_resources.read_text(__package__,'header.snakefile')
         with open(mf, 'w') as f:
             
             f.write(f'#snakeobjects {__version__}\n')
-            f.write(f'#Snakeobjects types: {o_types}\n')
+            f.write(f'#Snakeobjects types: {all_o_types}\n')
             f.write(header)
 
-            for ot in self.objectGraph.get_object_types():
+            for ot in all_o_types:
                
                 sfile = self.ensure_object_type_snakefile_exists(ot) 
                 sfile = ot + ".snakefile"
