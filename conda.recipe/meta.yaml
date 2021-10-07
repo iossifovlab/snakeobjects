@@ -25,11 +25,14 @@ requirements:
     - snakemake-minimal
 
 test:
-  imports:
-    - snakeobjects
+  source_files:
+    - tests
+  requires:
+    - pytest
+    - pytest-cov
+    - snakemake-minimal
   commands:
-    - sobjects --help
-    - sobjects version
+    - pytest tests
 
 about:
   home: https://github.com/iossifovlab/snakeobjects
