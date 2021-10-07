@@ -1,27 +1,21 @@
-
 {% set data = load_setup_py_data() %}
 
 package:
   name: snakeobjects
-  
-  #version: {{ data['version'] }}
-  version: {{ GIT_DESCRIBE_TAG }}
+  version: {{ data.get('version') }}
 
 source:
-  path: ..
+  git_url: https://github.com/iossifovlab/snakeobjects.git
+  git_rev: HEAD
+  git_deps: 1
 
 build:
   script: {{ PYTHON }} -m pip install --no-deps --ignore-installed -vv .
   noarch: python
-
+  number: 0
   entry_points:
     - sobjects = snakeobjects.cli:cli
-  #entry_points:
-  #  {% for entry in data['entry_points']['console_scripts'] %}
-  #    - {{ entry.split('=')[0].strip() }} = {{ entry.split('=')[1].strip() }}
-  #  {% endfor %}
   
-
 requirements:
   host:
     - python
@@ -29,24 +23,20 @@ requirements:
   run:
     - python
     - snakemake-minimal
-    # dependencies are defined in setup.py
-    {% for dep in data['install_requires'] %}
-    - {{ dep.lower() }}
-    {% endfor %}
-    {# raw is for ignoring templating with cookiecutter, leaving it for use with conda-build #}
 
 test:
-  source_files:
-    - tests
-  requires:
-    - pytest
-    - pytest-cov
-    - snakemake-minimal
+  imports:
+    - snakeobjects
   commands:
-    - pytest tests
+    - sobjects --help
+    - sobjects version
 
 about:
   home: https://github.com/iossifovlab/snakeobjects
-  summary: Our pipeline infrastructure.
-  license: {{ data.get('license') }}
+  summary: Snakeobjects, an object-oriented workflow management system based on snakemake
+  license: MIT
   license_file: LICENSE
+
+extra:
+  maintainers:
+   - yamrom

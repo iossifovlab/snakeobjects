@@ -9,7 +9,7 @@ setup(
     name='snakeobjects',
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
-    description="Our pipeline infrastructure.",
+    description="Snakeobjects, an object-oriented workflow management system based on snakemake.",
     license="MIT",
     author="Ivan Iossifov",
     author_email='iossifov@cshl.edu',
