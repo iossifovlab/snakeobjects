@@ -1,2 +1,2 @@
-pipes/_version.py export-subst
+snakeobjects/_version.py export-subst
 * text=auto eol=lf
