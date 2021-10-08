@@ -127,9 +127,7 @@ class Project:
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
-            #if not os.path.isabs(ppd):
-            #    ppd = self.directory + "/" + ppd
-        elif "SO_PIPELINE" in os.environ:
+         elif "SO_PIPELINE" in os.environ:
             ppd = os.environ['SO_PIPELINE']
         elif os.path.exists("workflow"):
             return os.path.abspath("workflow")
@@ -137,14 +135,6 @@ class Project:
             ppd = self.directory
         return os.path.abspath(ppd)
 
-    def ensure_snakeobject_private_directory(self):
-        #sopd = self.directory + "/objects/.snakeobjects"
-        #if not os.path.exists(sopd):
-        #    os.makedirs(sopd)
-        #return sopd
-        #return self.directory
-        return self.get_pipeline_directory()
-    
     def save_object_graph(self):
         self.objectGraph.save(self._objectGraphFileName)
 

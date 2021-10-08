@@ -19,7 +19,7 @@ Installation
 With mamba ready, installing ``snakeobjects`` is simple::
 
   $ conda activate base
-  $ mamba create -c iossifovlab -c bioconda -c conda-forge -n snakeobjects snakeobjects
+  $ mamba create -c bioconda -c conda-forge -n snakeobjects snakeobjects
 
 After ``conda install`` finishes,
 you can use the :option:`sobjects version` command to check  if the
