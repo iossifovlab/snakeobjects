@@ -127,7 +127,7 @@ class Project:
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
-         elif "SO_PIPELINE" in os.environ:
+        elif "SO_PIPELINE" in os.environ:
             ppd = os.environ['SO_PIPELINE']
         elif os.path.exists("workflow"):
             return os.path.abspath("workflow")
