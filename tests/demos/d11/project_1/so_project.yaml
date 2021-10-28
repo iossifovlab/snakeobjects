@@ -1,0 +1,4 @@
+so_pipeline: "[D:project]/../pipeline_1"
+project_1_A: "Ivan"
+a: "[D:project]/A/o/a.txt"
+b: "[D:project]/A/o/b.txt"

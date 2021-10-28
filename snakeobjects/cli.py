@@ -203,12 +203,21 @@ def cli(args=None):
             exit(1)
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=",proj.directory,sep="") 
-        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
-        print("export PATH=$SO_PIPELINE:$PATH",sep="")
+        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="")
+        pipelines = ""
+        if "so_parents" in proj.parameters:
+            pl = [Project(x[1]).get_pipeline_directory() for x in proj.parameters['so_parents']]
+            pipelines = ':'.join(pl)
+            print(f"export PATH=$SO_PIPELINE:{pipelines}:$PATH",sep="")
+            print(f"export PYTHONPATH=$SO_PIPELINE:{pipelines}:$PYTHONPATH",sep="")
+        else:
+            print("export PATH=$SO_PIPELINE:$PATH",sep="")
+            print("export PYTHONPATH=$SO_PIPELINE:$PYTHONPATH",sep="")
         print("RUNNING:", " ".join(sargs))
         os.environ['SO_PROJECT']  = proj.directory
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
-        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
+        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + pipelines+":" + os.environ['PATH']
+        os.environ['PYTHONPATH'] = proj.get_pipeline_directory() +":" + pipelines + (":" + os.environ['PYTHONPATH']) if 'PYTHONPATH' in os.environ else ''
 
         default_remote_provider = get_arg_value(sargs,'--default-remote-provider')
         default_remote_prefix = get_arg_value(sargs,'--default-remote-prefix')
@@ -247,12 +256,22 @@ def cli(args=None):
 
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=",proj.directory,sep="") 
-        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="") 
-        print("export PATH=$SO_PIPELINE:$PATH",sep="")
+        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="")
+        pipelines = ""
+        if "so_parents" in proj.parameters:
+            pl = [Project(x[1]).get_pipeline_directory() for x in proj.parameters['so_parents']]
+            pipelines = ':'.join(pl)
+            print(f"export PATH=$SO_PIPELINE:{pipelines}:$PATH",sep="")
+            print(f"export PYTHONPATH=$SO_PIPELINE:{pipelines}:$PYTHONPATH",sep="")
+        else:
+            print("export PATH=$SO_PIPELINE:$PATH",sep="")
+            print("export PYTHONPATH=$SO_PIPELINE:$PYTHONPATH",sep="")
         print("RUNNING:", " ".join(sargs))
         os.environ['SO_PROJECT']  = proj.directory
         os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
-        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + os.environ['PATH']
+        os.environ['PATH'] = proj.get_pipeline_directory() + ":" + pipelines+":" + os.environ['PATH']
+        os.environ['PYTHONPATH'] = proj.get_pipeline_directory() +":" + pipelines + (":" + os.environ['PYTHONPATH']) if 'PYTHONPATH' in os.environ else ''
+
         if os.system('sobjects jobscript.sh >$SO_PROJECT/jobscript.sh'):
             raise ProjectException("sobjects jobscript.sh failed")
         with open(proj.directory+'/jobscript.sh', 'a') as js:
