@@ -124,7 +124,7 @@ class Project:
                     if len(dir) == 0:
                         raise ProjectException('The path to parent is not specified')
                     P = Project(dir[0])
-                    O = O.replace(s[0], P.parameters[s[4]])
+                    O = O.replace(s[0], str(P.parameters[s[4]]))
                 else:
                     raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D|NP.' % iType)
             return O
