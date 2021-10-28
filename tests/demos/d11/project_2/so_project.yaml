@@ -1,7 +1,6 @@
 so_pipeline: "[D:project]/../pipeline_2"
-#default_snakemake_args: -j all
-default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
-so_parents: [["p1", "/gpfs/commons/home/byamrom/work/snakeobjects/tests/demos/d11/project_1"]]
+#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
+so_parents: [["p1", "[D:project]/../project_1"]]
 project_2_A: "Boris"
 A: "[NP:p1:project_1_A]"
 a: "[NP:p1:a]"
