@@ -80,7 +80,7 @@ class Project:
             self.objectGraph = ObjectGraph()
 
     def interpolate(self,O,oo=None):
-        ptn = re.compile(r'(\[(\w+)\:(\w+)\])(\w*)')
+        ptn = re.compile(r'(\[(\w+)\:(\w+)(\:(\w+))?\])(\w*)')
         
         
         if type(O) == int or type(O) == float:
@@ -115,8 +115,18 @@ class Project:
                     else:
                         raise ProjectException('The project property %s is unknonw.' % name)
                     O = O.replace(s[0],pv)
+                elif iType == 'NP':
+                    if 'so_parents' in self.parameters:
+                        so_parents = self.parameters['so_parents']
+                    else:
+                        raise ProjectException('NP present, but there is no so_parents parameter')
+                    dir = [x[1] for x in self.parameters['so_parents'] if x[0] == name]
+                    if len(dir) == 0:
+                        raise ProjectException('The path to parent is not specified')
+                    P = Project(dir[0])
+                    O = O.replace(s[0], P.parameters[s[4]])
                 else:
-                    raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D.' % iType)
+                    raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D|NP.' % iType)
             return O
 
     def _run_parameter_interpolation(self):

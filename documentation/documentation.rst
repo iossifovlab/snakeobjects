@@ -172,8 +172,21 @@ project and may include:
   :option:`sobjects run`. 
 
 
-Parameter values may contain expressions ``[E:<env_variable_name>]``,
- ``[PP:parameter]``, ``[D:project]``, and ``[D:pipeline]``.  These meta expressions are replaced with ``interpolation`` function.  In the first case the expression is replaced by the value of environment variable called ``env_variable_name``; in the second case the expression is replaced with the value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the third and the fourth cases the expression is replaced correspondingly with the ``project directory`` and the ``pipline directory``.  Interpolation is applied to all project parameters. If parameter does not contain the above meta expressions, it remains unaffected; parameters represented by lists and dictionaries are processed recursively by applying interpolation to all its members. Parameters that are defined for objects in the build_object_graph.py can be referred to in the snakefile rules with the expressions ``[P:parameter]`` or with functions (:py:func:`.P`).
+Parameter values may contain expressions ``[E:<env_variable_name>]``, ``[PP:parameter]``, ``[D:project]``, and ``[D:pipeline]``.  These meta expressions are replaced with ``interpolation`` function.  In the first case the expression is replaced by the value of environment variable called ``env_variable_name``; in the second case the expression is replaced with the value of parameter called ``parameter`` in the ``so_project.yaml`` file; in the third and the fourth cases the expression is replaced correspondingly with the ``project directory`` and the ``pipline directory``.  Interpolation is applied to all project parameters. If parameter does not contain the above meta expressions, it remains unaffected; parameters represented by lists and dictionaries are processed recursively by applying interpolation to all its members. Parameters that are defined for objects in the build_object_graph.py can be referred to in the snakefile rules with the expressions ``[P:parameter]`` or with functions (:py:func:`.P`).
+
+Snakeobjects also allows for hierarchy of projects. In this case ``so_project.yaml`` file of a nested project should have the parameter ``so_parents``, for example:
+
+.. code-block:: python
+
+   so_parents: [["projectA", "path to projectA directory"], ["projectB", "path to projectctB directory"]]
+
+and this allows for interpolation of nested projects paameters with the values of the parent project parameters, for example:
+
+.. code-block:: python
+
+   par_nested: "[NP:projectA:par_parent]"
+
+The value of par_nested will be the same as the value of parameter par_parent in the projectA. Here the ``NP`` signifies that nested project has a parent project ``projectA`` with its parameter ``par_parent``.
   
 
 ``objects`` subdirectories
