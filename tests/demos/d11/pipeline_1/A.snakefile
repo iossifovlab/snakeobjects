@@ -1,10 +1,17 @@
-add_targets("a.txt","b.txt")
-p = PP("project_1_A")
-rule a:
-  output: T("a.txt")
-  shell: "a.sh {p}':' 'Once upon a time' >{output}"
+add_targets("a.txt","b.txt", "e.txt")
+a = PP("P1_a")
+b = PP("P1_b")
 
-rule b:
+rule a_:
+  output: T("a.txt")
+  shell: "echo {a} >{output}"
+
+rule b_:
   output: T("b.txt")
-  shell: "b.py 'there lived an old man and an old woman' >{output}"
+  shell: "echo {b} >{output}"
+
+rule e:
+  output: T("e.txt")
+  shell: " echo 'PATH' $PATH '\n\n' >{output} && echo 'PYTHONPATH' $PYTHONPATH >>{output}"
+
 

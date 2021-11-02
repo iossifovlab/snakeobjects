@@ -106,20 +106,23 @@ def set_environment(proj,sargs):
     print("UPDATING ENVIRONMENT:")
     print("export SO_PROJECT=",proj.directory,sep="") 
     print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="")
-    pipelines = ""
-    if "so_parents" in proj.parameters:
-        pl = [Project(x[1]).get_pipeline_directory() for x in proj.parameters['so_parents']]
-        pipelines = ':'.join(pl)
-        print(f"export PATH=$SO_PIPELINE:{pipelines}:$PATH",sep="")
-        print(f"export PYTHONPATH=$SO_PIPELINE:{pipelines}:$PYTHONPATH",sep="")
-    else:
-        print("export PATH=$SO_PIPELINE:$PATH",sep="")
-        print("export PYTHONPATH=$SO_PIPELINE:$PYTHONPATH",sep="")
+
+    so_path = proj.get_pipeline_directory()
+    so_pythonpath = ''
+    for x in 'bin python R'.split(' '):
+        path = proj.get_path(x)
+        so_path += (':'+ path) if path else ''
+        if x == 'python':
+            so_pythonpath = path
+            if so_pythonpath:
+                print(f"export PYTHONPATH={so_pythonpath}:$PYTHONPATH",sep="")
     print("RUNNING:", " ".join(sargs))
     os.environ['SO_PROJECT']  = proj.directory
     os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
-    os.environ['PATH'] = proj.get_pipeline_directory() + ":" + pipelines+":" + os.environ['PATH']
-    os.environ['PYTHONPATH'] = proj.get_pipeline_directory() +":" + pipelines + (":" + os.environ['PYTHONPATH']) if 'PYTHONPATH' in os.environ else ''
+    os.environ['PATH'] = so_path + ":" + os.environ['PATH']
+
+    if so_pythonpath:
+        os.environ['PYTHONPATH'] = so_pythonpath + (":" + os.environ['PYTHONPATH']) if 'PYTHONPATH' in os.environ else ''
     
 def cli(args=None):
     if not args:

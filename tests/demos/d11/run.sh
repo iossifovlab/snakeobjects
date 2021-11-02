@@ -7,3 +7,9 @@ sobjects run -j
 cd ../project_2
 sobjects prepare
 sobjects run -j
+cd ../project_3
+sobjects prepare
+sobjects run -j
+cd ../project_4
+sobjects prepare
+sobjects run -j

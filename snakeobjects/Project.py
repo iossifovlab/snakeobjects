@@ -55,6 +55,12 @@ class Project:
 
            a key value dictionary for global project level parameters
 
+        .. py:attribute:: subprojects
+           :type: dict[str,str] 
+
+           a key value dictionary for subprojects names
+
+
         .. py:attribute:: objectGraph 
            :type: ObjectGraph
 
@@ -72,6 +78,8 @@ class Project:
         else:
             self.parameters = {}
 
+        self.parent_projects = {}
+        
         self._run_parameter_interpolation()
 
         if os.path.isfile(self._objectGraphFileName):
@@ -80,7 +88,7 @@ class Project:
             self.objectGraph = ObjectGraph()
 
     def interpolate(self,O,oo=None):
-        ptn = re.compile(r'(\[(\w+)\:(\w+)(\:(\w+))?\])(\w*)')
+        ptn = re.compile(r'(\[(\w+)\:([\w\/]+)(\:(\w+))?\])(\w*)')
         
         
         if type(O) == int or type(O) == float:
@@ -93,6 +101,7 @@ class Project:
             for s in ptn.findall(O):
                 iType = s[1]
                 name = s[2]
+                #print("AAA",O,s)
                 if iType == 'P':
                     if not oo:
                         raise ProjectException("object interpolation requires an object")
@@ -116,19 +125,38 @@ class Project:
                         raise ProjectException('The project property %s is unknonw.' % name)
                     O = O.replace(s[0],pv)
                 elif iType == 'NP':
-                    if 'so_parents' in self.parameters:
-                        so_parents = self.parameters['so_parents']
+                    if 'so_parent_projects' in self.parameters:
+                        so_parent_projects = self.parameters['so_parent_projects']
                     else:
                         raise ProjectException('NP present, but there is no so_parents parameter')
-                    dir = [x[1] for x in self.parameters['so_parents'] if x[0] == name]
-                    if len(dir) == 0:
-                        raise ProjectException('The path to parent is not specified')
-                    P = Project(dir[0])
-                    O = O.replace(s[0], str(P.parameters[s[4]]))
+                    if not '/' in name:
+                        if name in so_parent_projects:
+                            dir = so_parent_projects[name]
+                            if not os.path.exists(dir):
+                                raise ProjectException('The path to parent does not exist')
+                            self.parent_projects[name] = Project(dir)
+                            O = O.replace(s[0], str(self.parent_projects[name].parameters[s[4]]))
+                        else:
+                            raise ProjectException(f'Project {name} is not in so_parent_projects')
+                    else:
+                        cs = name.split('/')
+                        if not cs[0] in so_parent_projects:
+                            raise ProjectException(f'Project {cs[0]} is not in so_parent_projects')
+                        else:
+                            dir = so_parent_projects[cs[0]]
+                            if not os.path.exists(dir):
+                                raise ProjectException(f'The path {dir} to parent does not exist')
+                            self.parent_projects[cs[0]] = Project(dir)
+                            P = self.parent_projects[cs[0]]
+                        for p in cs[1:]:
+                            P = P.parent_projects[p]
+                        O = O.replace(s[0], str(P.parameters[s[4]]))
                 else:
                     raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D|NP.' % iType)
+            
             return O
 
+        
     def _run_parameter_interpolation(self):
         for k,v in self.parameters.items():
             self.parameters[k] = self.interpolate(v)
@@ -145,6 +173,17 @@ class Project:
             ppd = self.directory
         return os.path.abspath(ppd)
 
+    def get_path(self,x='python'):
+        path = ''
+        name = 'so_extra_' + x + '_path'
+        if name in self.parameters:
+            v = self.parameters[name]
+            path += ':'.join(v) if type(v) == list else v 
+        for p in self.parent_projects.values():
+            v = p.get_path(x)
+            path += ':'+v if len(path) > 0 else v
+        return path
+        
     def save_object_graph(self):
         self.objectGraph.save(self._objectGraphFileName)
 

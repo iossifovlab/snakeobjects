@@ -1,14 +1,13 @@
-add_targets("c.txt","d.txt")
-p = PP("A")
-a = PP("a")
-b = PP("b")
+add_targets("c.txt")
+a = PP("P2_a")
+b = PP("P2_b")
+c = PP("P2_c")
+d = PP("P2_d")
+
 rule c:
   output: T("c.txt")
-  shell: "cat {a} >{output} && c.sh {p}':' 'I am here too' >>{output}"
+  shell: "echo {a} {b} {c} {d} >{output}"
 
-rule d:
-  output: T("d.txt")
-  shell: "cat {b} > {output} && b.py 'coo coo' >>{output}"
 
 rule e:
   output: T("e.txt")
