@@ -1,0 +1,4 @@
+so_pipeline: "[D:project]/../pipeline_3"
+#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
+P3_a: "a of project_3"
+P3_b: "b of project_3"
