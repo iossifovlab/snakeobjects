@@ -1,6 +1,4 @@
+
 so_pipeline: "[D:project]/../pipeline_1"
 project_1_A: "Ivan"
-P1_a: "[D:project]/A/o/a.txt"
-P1_b: "[D:project]/A/o/b.txt"
-so_extra_python_path: "[D:project]/../pipeline_1/python"
-so_extra_bin_path: "[D:project]/../pipeline_1/bin"
+

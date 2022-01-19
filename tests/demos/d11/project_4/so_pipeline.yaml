@@ -1,2 +1,3 @@
-so_extra_pythonpath: "[D:project]/../pipeline_4/python"
-so_extra_bin_path: "[D:project]/../pipeline_4/bin"
+so_extra_python_path: "[D:project]/../pipeline_4"
+so_extra_bin_path: "[D:project]/../pipeline_4"
+

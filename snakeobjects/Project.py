@@ -173,16 +173,41 @@ class Project:
             ppd = self.directory
         return os.path.abspath(ppd)
 
-    def get_path(self,x='python'):
-        path = ''
-        name = 'so_extra_' + x + '_path'
-        if name in self.parameters:
-            v = self.parameters[name]
-            path += ':'.join(v) if type(v) == list else v 
+    def get_paths(self):
+        so_path = self.get_pipeline_directory()
+        path = [so_path]
+        pythonpath = []
+        perl5lib = []
+
+        for x in 'bin python R perl'.split(' '):
+            name = so_path + '/' + x
+            if os.path.exists(name):
+                path.append(name)
+                if x == 'python':
+                    pythonpath.append(name)
+                if x == 'perl':
+                    perl5lib.append(name)
+            xname = 'so_extra_' + x + '_path'
+            if xname in self.parameters:
+                v = self.parameters[xname]
+                path.append(v)
+                if x == 'python':
+                    pythonpath.append(v)
+
         for p in self.parent_projects.values():
-            v = p.get_path(x)
-            path += ':'+v if len(path) > 0 else v
-        return path
+            v = p.get_paths()
+            #print(f"v: {v}")
+            if 'PATH' in v:
+                path.append(v['PATH'])
+            if 'PYTHONPATH' in v:
+                pythonpath.append(v['PYTHONPATH'])
+            if 'PERL5LIB' in v:
+                perl5lib.append(v['PERL5LIB'])
+                
+        return {'PATH': ':'.join(path),
+                'PYTHONPATH': ':'.join(pythonpath),
+                'PERL5LIB': ':'.join(perl5lib)
+                }
         
     def save_object_graph(self):
         self.objectGraph.save(self._objectGraphFileName)

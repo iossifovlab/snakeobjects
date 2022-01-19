@@ -107,22 +107,17 @@ def set_environment(proj,sargs):
     print("export SO_PROJECT=",proj.directory,sep="") 
     print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="")
 
-    so_path = proj.get_pipeline_directory()
-    so_pythonpath = ''
-    for x in 'bin python R'.split(' '):
-        path = proj.get_path(x)
-        so_path += (':'+ path) if path else ''
-        if x == 'python':
-            so_pythonpath = path
-            if so_pythonpath:
-                print(f"export PYTHONPATH={so_pythonpath}:$PYTHONPATH",sep="")
     print("RUNNING:", " ".join(sargs))
     os.environ['SO_PROJECT']  = proj.directory
     os.environ['SO_PIPELINE'] = proj.get_pipeline_directory() 
-    os.environ['PATH'] = so_path + ":" + os.environ['PATH']
 
-    if so_pythonpath:
-        os.environ['PYTHONPATH'] = so_pythonpath + (":" + os.environ['PYTHONPATH']) if 'PYTHONPATH' in os.environ else ''
+    paths = proj.get_paths()
+    
+    for x in ['PATH', 'PYTHONPATH', 'PERL5LIB']:
+        if paths[x]:
+            P = paths[x]
+            print(f"export {x}={P}:${x}")
+            os.environ[x] = (paths[x] + ":" + os.environ[x]) if x in os.environ else paths[x]
     
 def cli(args=None):
     if not args:

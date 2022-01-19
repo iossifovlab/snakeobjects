@@ -1,8 +1,4 @@
 so_pipeline: "[D:project]/../pipeline_2"
-#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
 so_parent_projects:
   "p1": "[D:project]/../project_1"
-P2_a: "[NP:p1:P1_a]"
-P2_b: "[NP:p1:P1_b]"
-P2_c: "DNA from project_1"
-P2_d: "RNA from project_1"
+project_2_A: "[NP:p1:project_1_A]"

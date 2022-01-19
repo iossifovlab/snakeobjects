@@ -1,13 +1,11 @@
 so_pipeline: "[D:project]/../pipeline_4"
-#default_snakemake_args: --profile /gpfs/commons/groups/iossifov_lab/snakeprofiles/slurm-nygc
+
 so_parent_projects:
   "p2": "[D:project]/../project_2"
   "p3": "[D:project]/../project_3"
 
-P4_a: "[NP:p2/p1:P1_a]"
-P4_b: "[NP:p2:P2_b]"
-P4_c: "[NP:p3:P3_a]"
-P4_d: "[NP:p3:P3_b]"
+P4_a: "[NP:p2/p1:project_1_A]"
+P4_b: "[NP:p2:project_2_A]"
 
-so_extra_python_path: "[D:project]/../pipeline_4/python"
-so_extra_bin_path: "[D:project]/../pipeline_4/bin"
+so_extra_python_path: "[D:project]/../pipeline_4"
+so_extra_bin_path:    "[D:project]/../pipeline_4"

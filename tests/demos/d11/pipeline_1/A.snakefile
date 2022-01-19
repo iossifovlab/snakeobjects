@@ -1,17 +1,17 @@
-add_targets("a.txt","b.txt", "e.txt")
-a = PP("P1_a")
-b = PP("P1_b")
+add_targets("a.txt","b.txt", "c.txt")
+name = PP("project_1_A")
 
-rule a_:
+rule a:
   output: T("a.txt")
-  shell: "echo {a} >{output}"
+  shell: "a.sh $1 {name} >{output}"
 
-rule b_:
+rule b:
   output: T("b.txt")
-  shell: "echo {b} >{output}"
+  shell: "b.py `pwd`>{output}"
 
-rule e:
-  output: T("e.txt")
+rule c:
+  output: T("c.txt")
   shell: " echo 'PATH' $PATH '\n\n' >{output} && echo 'PYTHONPATH' $PYTHONPATH >>{output}"
+
 
 

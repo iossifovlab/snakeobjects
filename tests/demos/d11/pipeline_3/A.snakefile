@@ -1,12 +1,11 @@
 add_targets("c.txt","e.txt")
 a = PP("P3_a")
-b = PP("P3_b")
 
 rule c:
   output: T("c.txt")
-  shell: "echo {a} {b} >{output}"
+  shell: "echo {a} >{output}"
 
 rule e:
   output: T("e.txt")
-  shell: " echo 'PATH' $PATH '\n\n' >{output} && echo 'PYTHONPATH' $PYTHONPATH >>{output}"
+  shell: " c.sh 'PATH' $PATH '\n\n' >{output}"
 
