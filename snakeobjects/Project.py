@@ -196,7 +196,7 @@ class Project:
 
         for p in self.parent_projects.values():
             v = p.get_paths()
-            #print(f"v: {v}")
+
             if 'PATH' in v:
                 path.append(v['PATH'])
             if 'PYTHONPATH' in v:
