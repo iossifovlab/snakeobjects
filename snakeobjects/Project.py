@@ -160,8 +160,28 @@ class Project:
     def _run_parameter_interpolation(self):
         for k,v in self.parameters.items():
             self.parameters[k] = self.interpolate(v)
-            
 
+    def get_parent_project(self, parent_project_id):
+	parent_project_ids = parent_project_id.split("/")
+	proj = self
+        for id in parent_project_ids:
+            proj = proj.parent_projects[id]
+        return proj
+        
+
+    def get_parameter(self, name, parent_project_id=None):
+        if parent_project_id:
+            proj = self.get_parent_project(parent_project_id)
+	    return proj.parameters[name] 
+        if name in self.parameters:
+            return self.parameters[name]
+        for proj in self.parent_projects.values():
+            v = proj.get_parameter(name)
+            if v:
+                 return v 
+        return None
+	
+		
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
@@ -265,6 +285,9 @@ class Project:
 
     def get_object_directory(self,o):
         return f'{self.directory}/{o.oType}/{o.oId}'
+
+    def get_object_path(self,oType,oId):
+        return Path(self.get_object_directory(self.objectGraph[oType,oId]))
 
     def create_symbolic_links(self):
         for tp in sorted(self.objectGraph.get_object_types()):
