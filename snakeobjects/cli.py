@@ -118,7 +118,7 @@ def set_environment(proj,sargs):
             P = paths[x]
             print(f"export {x}={P}:${x}")
             os.environ[x] = (paths[x] + ":" + os.environ[x]) if x in os.environ else paths[x]
-    
+
 def cli(args=None):
     if not args:
         args = sys.argv[1:]
