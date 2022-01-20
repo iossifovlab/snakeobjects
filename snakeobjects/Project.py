@@ -75,6 +75,7 @@ class Project:
 
         if os.path.isfile(self._porojectFileName):
             self.parameters = load_yaml(self._porojectFileName)
+            self.parameters['directory'] = self.directory
         else:
             self.parameters = {}
 
@@ -160,10 +161,13 @@ class Project:
     def _run_parameter_interpolation(self):
         for k,v in self.parameters.items():
             self.parameters[k] = self.interpolate(v)
+        if 'so_parent_projects' in self.parameters and not self.parent_projects:
+            for k,v in self.parameters['so_parent_projects'].items():
+                self.parent_projects[k] = Project(v)
 
     def get_parent_project(self, parent_project_id):
-	parent_project_ids = parent_project_id.split("/")
-	proj = self
+        parent_project_ids = parent_project_id.split("/")
+        proj = self
         for id in parent_project_ids:
             proj = proj.parent_projects[id]
         return proj
@@ -172,7 +176,7 @@ class Project:
     def get_parameter(self, name, parent_project_id=None):
         if parent_project_id:
             proj = self.get_parent_project(parent_project_id)
-	    return proj.parameters[name] 
+            return proj.parameters[name] 
         if name in self.parameters:
             return self.parameters[name]
         for proj in self.parent_projects.values():
@@ -180,8 +184,8 @@ class Project:
             if v:
                  return v 
         return None
-	
-		
+
+
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
