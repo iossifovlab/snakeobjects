@@ -37,7 +37,7 @@ def get_targets(ot):
 
 def PP(p,subproject_id=None):
     """Value of the project parameter ``p``."""
-    return _project.get_parameter(p,subprojet_id)
+    return _project.get_parameter(p,subproject_id)
 
 def T(t): 
     """The file name for target ``t`` of the current object."""
