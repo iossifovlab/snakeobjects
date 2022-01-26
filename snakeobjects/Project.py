@@ -55,16 +55,35 @@ class Project:
 
            a key value dictionary for global project level parameters
 
-        .. py:attribute:: subprojects
+        .. py:attribute:: parent_projects
            :type: dict[str,str] 
 
-           a key value dictionary for subprojects names
+           a key value dictionary for parent project names
 
 
         .. py:attribute:: objectGraph 
            :type: ObjectGraph
 
            the objectGraph for the project
+
+        Project useful functions are:
+
+        .. py:attribute:: get_object_directory(object_instance)
+
+           returns directory of object
+
+        .. py:attribute:: get_objects_path(type_name, object_name)
+
+           return path to the objects of type `type_name`, and object name `object_name`
+
+        .. py:attribute:: get_pipeline_directory( )
+
+           returns path to the project pipeline directory
+
+        .. py:attribute:: get_parameter(name, parent_project_id=None)
+
+           If `parent_project_id` is given returns the value of parameter in that project, otherwise, if `name` is in project parameters, returns its value. Finally, if `name` is not in the project parameters, returns the value of named parameters in the first project recursively folowing parent projects. 
+
     """
 
     def __init__(self,directory=None):
@@ -102,6 +121,7 @@ class Project:
             for s in ptn.findall(O):
                 iType = s[1]
                 name = s[2]
+                prnt = s[4]
                 #print("AAA",O,s)
                 if iType == 'P':
                     if not oo:
@@ -113,10 +133,6 @@ class Project:
                     if not name in os.environ:
                         raise ProjectException("Varianble %s is not defined" % name)
                     O = O.replace(s[0],os.environ[name])
-                elif iType == 'PP':
-                    if not name in self.parameters:
-                        raise ProjectException('Parameter %s is not defined' % name)
-                    O = O.replace(s[0],self.parameters[name])
                 elif iType == 'D':
                     if name == "project":
                         pv = self.directory
@@ -125,45 +141,47 @@ class Project:
                     else:
                         raise ProjectException('The project property %s is unknonw.' % name)
                     O = O.replace(s[0],pv)
-                elif iType == 'NP':
-                    if 'so_parent_projects' in self.parameters:
-                        so_parent_projects = self.parameters['so_parent_projects']
+                elif iType == 'PP':
+                    if not prnt:
+                        if not name in self.parameters:
+                            raise ProjectException('Parameter %s is not defined' % name)
+                        O = O.replace(s[0],self.parameters[name])
+                    elif not '/' in prnt:
+                        if not '/' in prnt:
+                            if prnt in self.parent_projects:
+                                dir = self.parent_projects[prnt].directory
+                                if not os.path.exists(dir):
+                                    raise ProjectException('The path to parent does not exist')
+                                self.parent_projects[prnt] = Project(dir)
+                                O = O.replace(s[0], str(self.parent_projects[prnt].parameters[name]))
+                            else:
+                                raise ProjectException(f'Project {prnt} is not in so_parent_projects')
+                    elif '/' in prnt:
+                            cs = prnt.split('/')
+                            if not cs[0] in self.parent_projects:
+                                raise ProjectException(f'Project {cs[0]} is not in so_parent_projects')
+                            else:
+                                dir = self.parent_projects[cs[0]]
+                                if not os.path.exists(dir):
+                                    raise ProjectException(f'The path {dir} to parent does not exist')
+                                self.parent_projects[cs[0]] = Project(dir)
+                                P = self.parent_projects[cs[0]]
+                            for p in cs[1:]:
+                                P = P.parent_projects[p]
+                            O = O.replace(s[0], str(P.parameters[name]))
                     else:
-                        raise ProjectException('NP present, but there is no so_parents parameter')
-                    if not '/' in name:
-                        if name in so_parent_projects:
-                            dir = so_parent_projects[name]
-                            if not os.path.exists(dir):
-                                raise ProjectException('The path to parent does not exist')
-                            self.parent_projects[name] = Project(dir)
-                            O = O.replace(s[0], str(self.parent_projects[name].parameters[s[4]]))
-                        else:
-                            raise ProjectException(f'Project {name} is not in so_parent_projects')
-                    else:
-                        cs = name.split('/')
-                        if not cs[0] in so_parent_projects:
-                            raise ProjectException(f'Project {cs[0]} is not in so_parent_projects')
-                        else:
-                            dir = so_parent_projects[cs[0]]
-                            if not os.path.exists(dir):
-                                raise ProjectException(f'The path {dir} to parent does not exist')
-                            self.parent_projects[cs[0]] = Project(dir)
-                            P = self.parent_projects[cs[0]]
-                        for p in cs[1:]:
-                            P = P.parent_projects[p]
-                        O = O.replace(s[0], str(P.parameters[s[4]]))
-                else:
-                    raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D|NP.' % iType)
+                        raise ProjectException('Interpolation type [%s: ...] is unknown; can be only E|P|PP|D.' % iType)
             
             return O
 
         
     def _run_parameter_interpolation(self):
-        for k,v in self.parameters.items():
-            self.parameters[k] = self.interpolate(v)
         if 'so_parent_projects' in self.parameters and not self.parent_projects:
             for k,v in self.parameters['so_parent_projects'].items():
                 self.parent_projects[k] = Project(v)
+        for k,v in self.parameters.items():
+            self.parameters[k] = self.interpolate(v)
+        
 
     def get_parent_project(self, parent_project_id):
         parent_project_ids = parent_project_id.split("/")

@@ -69,6 +69,11 @@ The available commands are described below:
 
     $ sobjects help submit 
 
+.. option:: printEnv
+.. runblock:: console
+
+    $ sobjects help printEnv
+
 .. option:: graph
 .. runblock:: console
 

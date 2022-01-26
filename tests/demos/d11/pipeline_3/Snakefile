@@ -1,4 +1,4 @@
-#snakeobjects 3.0.4+9.g7afd5aa.dirty
+#snakeobjects 3.0.4+16.gb40546c.dirty
 #Snakeobjects types: ['A']
 shell.prefix("set -o pipefail; ")
 from snakeobjects import Project 

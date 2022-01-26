@@ -35,9 +35,9 @@ def get_targets(ot):
         return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,"obj.flag") for d in _OG[ot,wc.oid].deps]
     return [_GT] + ["%s%s/{oid}/%s" % (_targetPrefix,ot,t) for t in _objectTypeTargets[ot]] 
 
-def PP(p,subproject_id=None):
-    """Value of the project parameter ``p``."""
-    return _project.get_parameter(p,subproject_id)
+def PP(p,parent_project_id=None):
+    """Value of the project parameter ``p`` in current project, if parent_project_id is not specified, otherwise the value of parameter ``p`` in ``parent_project_id``. If parameter ``p`` is not in the project parameters, then the value of this parameter in the first recusively searched parameters of parent projects. """
+    return _project.get_parameter(p,parent_project_id)
 
 def T(t): 
     """The file name for target ``t`` of the current object."""

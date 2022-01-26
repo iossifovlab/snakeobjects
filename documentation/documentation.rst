@@ -182,27 +182,29 @@ Snakeobjects also allows for hierarchy of projects. In this case ``so_project.ya
      "projectA": "path to projectA directory"
      "projectB": "path to projectctB directory"
 
-and this allows for interpolation of nested projects paameters with the values of the parent project parameters, for example:
+and this allows for interpolation of nested projects parameters with the values of the parent project parameters, for example:
 
 .. code-block:: python
 
-   par_nested: "[NP:projectA:par_parent]"
+   par_nested: "[PP:par_name:parent_name]"
 
-The value of par_nested will be the same as the value of parameter par_parent in the projectA. Here the ``NP`` signifies that nested project has a parent project ``projectA`` with its parameter ``par_parent``.
-If ``projectA`` has its own parent project ``projectC`` and we would like to transfer the ``par_parent`` parameter from the ``projectC`` to our project, then the last line may become:
+The value of par_nested parameter will be the same as the value of parameter par_name in the parent project parent_name. Here the ``PP`` signifies that nested project has a parent project ``projectA`` with its parameter ``par_name``.
+If ``projectA`` has its own parent project ``projectC`` and we would like to transfer the ``par_name`` parameter from the ``projectC`` to our project, then the last line may become:
 
 .. code-block:: python
 
-   par_nested: "[NP:projectA/projectC:par_parent]"
-   
+   par_nested: "[PP:par_name:projectA/projectC]"
+
+The ``parent_name`` in PP is optional. If it is not present the the value of par_name in the current project will be used.
+
 Apart from conda environment and ``so_pipeline`` directory, the project may need some extra directories with shell, python, etc. scripts. In this case ``so_project.yaml`` file should have parameters so_extra_bin_path, so_extra_python_path, etc., for example:
 
 .. code-block:: python
 
-   so_extra_bin_path: "[D:pipeline]/bin"
-   so_extra_python_path: "[D:pipeline]/python"
+   so_extra_bin_path: "<path to bin directory>"
+   so_extra_python_path: "<path to python directory>"
 
-These paths are added to PATH and PYTHONPATH environment variables when ``sobjects`` executes ``run`` and ``submit`` commands.
+These paths are added to PATH and PYTHONPATH environment variables when ``sobjects`` executes ``run`` and ``submit`` commands. If ``so_pipeline`` directory has subdirectories bin, and/or python, these directories are added to the PATH and PYTHONPATH without need to specify them in so_project.yaml.
 
 
 

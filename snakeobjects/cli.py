@@ -65,6 +65,10 @@ profile specified in default_snakemake_args directive of so_project.yaml. The
 <arguments to snakemake> determine which targets will be created and what
 resources will be used.''',
 
+    "printEnv": '''sobjects printEnv
+
+Prints out on the standart output the shell commands defining shell environment variables, such as PATH, PYTHONPATH, etc.''',
+    
     "graph": '''sobject graph [-w width] [-p penwidth] [-a arrowsize] [-l legend] [-o out] [-i id] [-s shape]
 
 optional arguments:
@@ -208,6 +212,12 @@ def cli(args=None):
             proj.write_main_snakefile()
             proj.create_symbolic_links()
             proj.objectGraph.print_stats()
+    elif command == "printEnv":
+        paths = proj.get_paths()
+        for x in ['PATH', 'PYTHONPATH', 'PERL5LIB']:
+            if paths[x]:
+                P = paths[x]
+                print(f"export {x}={P}:${x}")
     elif command == "run":
         sargs = ['snakemake',
                 '-s', proj.get_pipeline_directory() + '/Snakefile', 
