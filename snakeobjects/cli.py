@@ -174,8 +174,7 @@ def cli(args=None):
     from importlib.util import spec_from_file_location, module_from_spec
 
     proj = Project()
-    print("# WORKING ON PROJECT", proj.directory)
-    print("# WITH PIPELINE", proj.get_pipeline_directory())
+
     def buildObjectGraph():
         bldObjGraphPy = proj.get_pipeline_directory() + "/build_object_graph.py"
         if os.path.isfile(bldObjGraphPy):
@@ -197,6 +196,8 @@ def cli(args=None):
     elif command == "createSymbolicLinks":
         proj.create_symbolic_links()
     elif command in ["prepare","prepareTest"]:
+        print("# WORKING ON PROJECT", proj.directory)
+        print("# WITH PIPELINE", proj.get_pipeline_directory())
         newObjectGraph = buildObjectGraph()
         if command == "prepareTest":
             print("Current graph stats")
@@ -219,6 +220,8 @@ def cli(args=None):
                 P = paths[x]
                 print(f"export {x}={P}:${x}")
     elif command == "run":
+        print("# WORKING ON PROJECT", proj.directory)
+        print("# WITH PIPELINE", proj.get_pipeline_directory())
         sargs = ['snakemake',
                 '-s', proj.get_pipeline_directory() + '/Snakefile', 
                 '-d', proj.directory]
@@ -246,6 +249,8 @@ def cli(args=None):
             sargs += ["--envvars SO_REMOTE "]
         os.execvp('snakemake',sargs)
     elif command == "submit":
+        print("# WORKING ON PROJECT", proj.directory)
+        print("# WITH PIPELINE", proj.get_pipeline_directory())
         from snakeobjects.Project import ProjectException
         if not os.path.exists(proj.directory + '/OG.json'):
             print("OG.json doesn't exist in " +
@@ -280,6 +285,8 @@ def cli(args=None):
         os.system("%s/%s" % (profile,cmd)+ " $SO_PROJECT/jobscript.sh")
         #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/jobscript.sh"])        
     elif command == "describe":
+        print("# WORKING ON PROJECT", proj.directory)
+        print("# WITH PIPELINE", proj.get_pipeline_directory())
         print("Project parameters:")
         for k,v in proj.parameters.items():
             print(f"\t{k}: {v}")
