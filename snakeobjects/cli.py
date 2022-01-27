@@ -214,6 +214,8 @@ def cli(args=None):
             proj.create_symbolic_links()
             proj.objectGraph.print_stats()
     elif command == "printEnv":
+        print("export SO_PROJECT=",proj.directory,sep="") 
+        print("export SO_PIPELINE=",proj.get_pipeline_directory(),sep="")
         paths = proj.get_paths()
         for x in ['PATH', 'PYTHONPATH', 'PERL5LIB']:
             if paths[x]:
