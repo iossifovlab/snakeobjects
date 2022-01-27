@@ -142,6 +142,10 @@ class Project:
                         raise ProjectException('The project property %s is unknonw.' % name)
                     O = O.replace(s[0],pv)
                 elif iType == 'PP':
+                    if ('so_parent_projects' in self.parameters
+                        and not self.parent_projects):
+                        for k,v in self.parameters['so_parent_projects'].items():
+                            self.parent_projects[k] = Project(v)                    
                     if not prnt:
                         if not name in self.parameters:
                             raise ProjectException('Parameter %s is not defined' % name)
@@ -176,10 +180,7 @@ class Project:
 
         
     def _run_parameter_interpolation(self):
-        if 'so_parent_projects' in self.parameters and not self.parent_projects:
-            for k,v in self.parameters['so_parent_projects'].items():
-                self.parent_projects[k] = Project(v)
-        for k,v in self.parameters.items():
+        for k,v in sorted(self.parameters.items(), key=lambda x: not '[D:' in x):
             self.parameters[k] = self.interpolate(v)
         
 

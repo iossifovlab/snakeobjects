@@ -1,5 +1,4 @@
 so_pipeline: "[D:project]/../pipeline_2"
 so_parent_projects:
-#  "p1": "[D:project]/../project_1"
-   "p1": "/Users/yamrom/work/snakeobjects/tests/demos/d11/project_1"
+  "p1": "[D:project]/../project_1"
 project_2_A: "[PP:project_1_A:p1]"
