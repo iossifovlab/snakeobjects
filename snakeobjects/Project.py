@@ -101,6 +101,10 @@ class Project:
         self.parent_projects = {}
         
         self._run_parameter_interpolation()
+        
+        if 'so_parent_projects' in self.parameters and not self.parent_projects:
+            for p,d in self.parameters['so_parent_projects'].items():
+                self.parent_projects[p] = Project(d)
 
         if os.path.isfile(self._objectGraphFileName):
             self.objectGraph = load_object_graph(self._objectGraphFileName)
