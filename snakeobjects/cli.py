@@ -297,6 +297,8 @@ def cli(args=None):
         print(args, file=sys.stderr)
         graph.driver(proj.objectGraph, args)
     elif command == "cleanProject":
+        print("# WORKING ON PROJECT", proj.directory)
+        print("# WITH PIPELINE", proj.get_pipeline_directory())
         import shutil
         sm = proj.directory+'/.snakemake'
         og = proj.directory+'/OG.json'
