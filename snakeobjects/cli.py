@@ -300,17 +300,22 @@ def cli(args=None):
         print("# WORKING ON PROJECT", proj.directory)
         print("# WITH PIPELINE", proj.get_pipeline_directory())
         import shutil
+
         sm = proj.directory+'/.snakemake'
         og = proj.directory+'/OG.json'
         if "-f" in sys.argv:
-            if os.path.exists(sm):
-                shutil.rmtree(os.path.abspath(sm))
-            if os.path.exists(og):
-                os.remove(os.path.abspath(og))
-            for ot in proj.objectGraph.get_object_types():
-                if os.path.exists(proj.directory+'/'+ot):
-                    shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
-            return 0
+            val = input(f'\033[91m  \nDO YOU REALLY WANT TO DELETE EVERYTHING IN {proj.directory} ? (Y/n):\033[00m')
+            if val == 'Y':
+                if os.path.exists(sm):
+                    shutil.rmtree(os.path.abspath(sm))
+                if os.path.exists(og):
+                    os.remove(os.path.abspath(og))
+                for ot in proj.objectGraph.get_object_types():
+                    if os.path.exists(proj.directory+'/'+ot):
+                        shutil.rmtree(os.path.abspath(proj.directory+'/'+ot))
+                return 0
+            else:
+                return 0
         if os.path.exists(sm):
             val = input('Delete .snakemake? (y/n):')
             if val == 'y':
