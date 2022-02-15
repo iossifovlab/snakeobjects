@@ -1,4 +1,5 @@
-import os,sys
+import os
+import sys
 
 helpData = {
     "version": "prints the version",
@@ -93,8 +94,8 @@ def load_yaml(file_name):
     CF = open(file_name, 'r')
     config = yaml.safe_load(CF)
     CF.close()
-
     return config  
+
 
 def get_arg_value(args,arg):
             try:
@@ -104,6 +105,7 @@ def get_arg_value(args,arg):
             if i+1 >= len(args):    
                 return None
             return args[i+1]
+
 
 def set_environment(proj,sargs):
     from snakeobjects import Project, ObjectGraph, load_object_graph, graph
@@ -122,6 +124,7 @@ def set_environment(proj,sargs):
             P = paths[x]
             print(f"export {x}={P}:${x}")
             os.environ[x] = (paths[x] + ":" + os.environ[x]) if x in os.environ else paths[x]
+
 
 def cli(args=None):
     if not args:
@@ -162,7 +165,6 @@ def cli(args=None):
             print("Help accepts at most one argument.")
             return 1
         return
-
 
     if command == "version":
         print(__version__)

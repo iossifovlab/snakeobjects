@@ -24,24 +24,31 @@ def set_project(project):
     _project = project
     _OG = project.objectGraph
 
+
 def add_targets(*targets):
     global _objectTypeTargets
     _objectTypeTargets[_find_object_type()] += targets
+
 
 def get_targets(ot):
     global _objectTypeTargets, _OG
 
     def _GT(wc):
-        return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,"obj.flag") for d in _OG[ot,wc.oid].deps]
-    return [_GT] + ["%s%s/{oid}/%s" % (_targetPrefix,ot,t) for t in _objectTypeTargets[ot]] 
+        return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,"obj.flag")
+                for d in _OG[ot,wc.oid].deps]
+    return [_GT] + ["%s%s/{oid}/%s" % (_targetPrefix,ot,t)
+                    for t in _objectTypeTargets[ot]] 
+
 
 def PP(p,parent_project_id=None):
     """Value of the project parameter ``p`` in current project, if parent_project_id is not specified, otherwise the value of parameter ``p`` in ``parent_project_id``. If parameter ``p`` is not in the project parameters, then the value of this parameter in the first recusively searched parameters of parent projects. """
     return _project.get_parameter(p,parent_project_id)
 
+
 def T(t): 
     """The file name for target ``t`` of the current object."""
     return _targetPrefix + _find_object_type() + "/{oid}/"  + t
+
 
 def TE(t): 
     """
@@ -49,6 +56,7 @@ def TE(t):
     argument to the expand function (a.k.a. the curly brackets are doubled).
     """
     return _targetPrefix + _find_object_type() + "/{{oid}}/"  + t
+
 
 def EF(s): 
     """
@@ -61,6 +69,7 @@ def EF(s):
         o = _OG[ot,wc.oid]
         return _project.interpolate(s,o)
     return _DT 
+
 
 def DT(t, dot=None, level=1, mode='equal'): 
     """
@@ -87,6 +96,7 @@ def DT(t, dot=None, level=1, mode='equal'):
         dp = _OG[ot,wc.oid].deepDeps(dot,level,mode)
         return ["%s%s/%s/%s" % (_targetPrefix,d.oType,d.oId,t) for d in dp]
     return _DT 
+
 
 def P(p):
     """Value of the parameter ``p`` of the current object."""
@@ -119,6 +129,7 @@ def DP(p,dot=None, level=1, mode='equal'):
         return [d.params[p] for d in dp]
     return _DP
     
+
 def LFS(t):
     """
     A set of three log files, log.O, log.E, and log.T, named after target ``t`` to be used in a rule. 
@@ -134,6 +145,7 @@ def LFS(t):
         'T': a + '-time.txt'
     }
     return r
+
 
 def B(t):
     a = _targetPrefix + _find_object_type() + "/{oid}/log/" + t 

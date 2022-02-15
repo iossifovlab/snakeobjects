@@ -3,7 +3,8 @@
 from snakemake.io import _IOFile as SIO
 import os
 from pathlib import Path
-'''
+
+"""
 <pipeline directory>
 typeA.snakefile
 Snakefile
@@ -21,7 +22,8 @@ Snakefile
         O.A.2
     typeB
         O.B.1
-'''
+"""
+
 def get_remote_provider(provider): 
     if provider == "GS":
         from snakemake.remote.GS import RemoteProvider
@@ -31,9 +33,11 @@ def get_remote_provider(provider):
         raise Exception(f"Unknown provider {provider}")
     return RemoteProvider()
 
+
 def get_project_files():
     # We may add additional project files through project configuratio option like, so_project_files=<glob 1>,<glob 2>,
     return ["OG.json","so_project.yaml"]
+
 
 def upload_project_files_to_remote(provider,prefix):
     RP = get_remote_provider(provider)
@@ -43,6 +47,7 @@ def upload_project_files_to_remote(provider,prefix):
     for f in get_project_files():
         os.system(f"cp {f} {prefix}/{f}")
         SIO(RP.remote(f"{prefix}/{f}")).upload_to_remote()
+
 
 def download_project_files_from_remote(provider,prefix):
     RP = get_remote_provider(provider)

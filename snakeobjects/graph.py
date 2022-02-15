@@ -1,7 +1,9 @@
 #!/bin/env python
 
 from snakeobjects import Project, ObjectGraph, load_object_graph
-import random,sys,argparse
+import random
+import sys
+import argparse
 
 # project = Project("variants/batch3")
 # OG = project.objectGraph
@@ -25,7 +27,15 @@ palegreen slategrey
 colors = clrsStr.split()
 colors = [x for x in colors if x[-1] not in "012345689"]
 
-def plotGraph(OG, width=0.75, penwidth=1, arrowsize=1, legend=0, out='graph', text='id', shape='circle'):
+def plotGraph(OG,
+              width=0.75,
+              penwidth=1,
+              arrowsize=1,
+              legend=0,
+              out='graph',
+              text='id',
+              shape='circle'):
+
     O = open(out+'.dot', 'w') if not out == 'stdout' else sys.stdout
     print("graph:",width, penwidth, arrowsize, legend, out, file=sys.stderr)
     print("digraph digraphname {", file=O)
@@ -142,26 +152,57 @@ def driver(OG, data):
     print(data, file=sys.stderr)
     parser = argparse.ArgumentParser(prog='graph.py')
 
-    parser.add_argument("-w", "--width", dest="width", default=.75, type=float, action='store',
-        metavar="width", help="width of node, default is 0.75" )
+    parser.add_argument("-w", "--width",
+                        dest="width",
+                        default=.75,
+                        type=float,
+                        action='store',
+                        metavar="width",
+                        help="width of node, default is 0.75" )
 
-    parser.add_argument("-p", "--penwidth", dest="penwidth", default=1, type=float, action='store',
-        metavar="penwidth", help="thickness of edges, default is 1.0" )
+    parser.add_argument("-p", "--penwidth",
+                        dest="penwidth",
+                        default=1,
+                        type=float,
+                        action='store',
+                        metavar="penwidth",
+                        help="thickness of edges, default is 1.0" )
 
-    parser.add_argument("-a", '--arrowsize', dest='arrowsize', default=1, type=float, metavar='arrowsize',
-        help='multiplicative scale factor for arrowheads, default is 1.0' )
+    parser.add_argument("-a", '--arrowsize',
+                        dest='arrowsize',
+                        default=1,
+                        type=float,
+                        metavar='arrowsize',
+                        help='multiplicative scale factor for arrowheads, default is 1.0' )
 
-    parser.add_argument("-l", '--legend', dest='legend', default="", type=str, metavar='legend',
-        help='Name of the output legend file, default is no legend' )
+    parser.add_argument("-l", '--legend',
+                        dest='legend',
+                        default="",
+                        type=str,
+                        metavar='legend',
+                        help='Name of the output legend file, default is no legend' )
 
-    parser.add_argument("-o", '--out', dest='out', default='stdout', type=str, metavar='out',
-        help='name of the output file, default is stdout' )
+    parser.add_argument("-o", '--out',
+                        dest='out',
+                        default='stdout',
+                        type=str,
+                        metavar='out',
+                        help='name of the output file, default is stdout' )
 
-    parser.add_argument("-t", '--text', dest='text', default='', type=str, metavar='text',
-        help='place text in nodes: [|oId|oType:oId|params], default no text' )
+    parser.add_argument("-t", '--text',
+                        dest='text',
+                        default='',
+                        type=str,
+                        metavar='text',
+                        help='place text in nodes: [|oId|oType:oId|params], default no text' )
 
-    parser.add_argument("-s", '--shape', dest='shape', default='circle', type=str, metavar='shape',
-        help='shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html' )
+    parser.add_argument("-s", '--shape',
+                        dest='shape',
+                        default='circle',
+                        type=str,
+                        metavar='shape',
+                        help='shape of the node, default is circle, for all shape names see https://www.graphviz.org/doc/info/shapes.html' )
+    
     args = parser.parse_args(data[1:])
 
     width = args.width
@@ -172,7 +213,13 @@ def driver(OG, data):
     text = args.text
     shape = args.shape
     
-    plotGraph(OG, width=width, penwidth=penwidth, arrowsize=arrowsize, legend=legend, out=out, text=text, shape=shape)
+    plotGraph(OG, width=width,
+              penwidth=penwidth,
+              arrowsize=arrowsize,
+              legend=legend,
+              out=out,
+              text=text,
+              shape=shape)
 
 
 

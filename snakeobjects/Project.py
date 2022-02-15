@@ -1,4 +1,7 @@
-import os,sys,yaml,re
+import os
+import sys
+import yaml
+import re
 from pathlib import Path
 import importlib.resources as importlib_resources
 from snakeobjects.ObjectGraph import ObjectGraph, load_object_graph
@@ -33,8 +36,10 @@ def find_so_project_directory():
             return str(d)
     return os.getcwd()
 
+
 class ProjectException(Exception):
     pass
+
 
 class Project:
     """
@@ -114,7 +119,6 @@ class Project:
     def interpolate(self,O,oo=None):
         ptn = re.compile(r'(\[(\w+)\:([\w\/]+)(\:(\w+))?\])(\w*)')
         
-        
         if type(O) == int or type(O) == float:
             return O
         elif type(O) == list:
@@ -182,19 +186,16 @@ class Project:
             
             return O
 
-        
     def _run_parameter_interpolation(self):
         for k,v in sorted(self.parameters.items(), key=lambda x: not '[D:' in x):
             self.parameters[k] = self.interpolate(v)
         
-
     def get_parent_project(self, parent_project_id):
         parent_project_ids = parent_project_id.split("/")
         proj = self
         for id in parent_project_ids:
             proj = proj.parent_projects[id]
         return proj
-        
 
     def get_parameter(self, name, parent_project_id=None):
         if parent_project_id:
@@ -207,7 +208,6 @@ class Project:
             if v:
                  return v 
         return None
-
 
     def get_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
@@ -258,11 +258,11 @@ class Project:
         
     def save_object_graph(self):
         self.objectGraph.save(self._objectGraphFileName)
-
+        
     def prepare_objects(self):
         self.write_main_snakefile()
         self.create_object_directories()
-    
+
     def ensure_object_type_snakefile_exists(self,ot):
         sfile = self.get_pipeline_directory() + "/" + ot + ".snakefile"
         if not os.path.exists(sfile):
@@ -330,7 +330,6 @@ class Project:
                     src = v
                     os.system("ln -sf %s %s" % (src,dst))
                     os.system("touch -h -r %s %s" % (src,dst))
-                    
 
     def get_all_object_flags(self,oType=None):
         OG = self.objectGraph
