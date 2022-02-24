@@ -1,6 +1,5 @@
-add_targets('ref.fa', 'index.flag')
+add_targets('index.flag')
 rule indexRef:
-  input:  EF('[PP:reference]')
-  output: T('ref.fa'),touch(T('index.flag'))
-  shell:  "ln -s {input} {output[0]} &&    \
-           bwa index {output[0]} -a bwtsw"
+  input:  T("ref.fa")
+  output: touch(T('index.flag'))
+  shell:  "bwa index {input} -a bwtsw"
