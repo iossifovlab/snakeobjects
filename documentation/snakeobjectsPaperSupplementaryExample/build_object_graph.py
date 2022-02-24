@@ -2,7 +2,9 @@ import pandas as pd
 def run(proj, OG):
   PED = pd.read_table(proj.parameters['pedigree'], 
                       sep='\t', header=0)
-  OG.add('reference','hg38')
+  OG.add('reference','hg38', {"symlink.ref.fa":
+                              proj.parameters["reference"], "symlink.ref.fa.fai":
+                              proj.parameters["refIndex"]})
   for i, r in PED.iterrows():
     OG.add('individual',r['personId'], 
                {'fqId':r['fastqId']},OG['reference'])
