@@ -42,7 +42,7 @@ Next execute following commands:
 	export SO_PROJECT=/private/tmp/snakeobjectsPaperSupplementaryExample
 	export SO_PIPELINE=/private/tmp/snakeobjectsPaperSupplementaryExample
 	export PATH=$SO_PIPELINE:$PATH
-	RUNNING: snakemake -s /private/tmp/snakeobjectsPaperSupplementaryExample/Snakefile -d /private/tmp/snakeobjectsPaperSupplementaryExample -j -q
+	RUNNING: Snakemake -s /private/tmp/snakeobjectsPaperSupplementaryExample/Snakefile -d /private/tmp/snakeobjectsPaperSupplementaryExample -j -q
 	Job counts:
 		count	jobs
 		6	align
@@ -70,14 +70,14 @@ Snakemake Tutorial Example
 
 This section explains how to load and execute the small project reimplementing
 in snakeobject
-`snakemake Tutorial example <https://snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_.
+`Snakemake Tutorial example <https://Snakemake.readthedocs.io/en/stable/tutorial/tutorial.html>`_.
 We assume that you will work or a Linux or Mac. In addition, we assume that you
 have conda or miniconda installed (`Conda
 Installation
 <https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
 Everything else needed is inclucded in the
-:download:`snakemakeTutorialExample.tgz <./snakemakeTutorialExample.tgz>`. When you
-download and extract (``tar xzf snakemakeTutorialExample.tgz``) file, you will
+:download:`SnakemakeTutorialExample.tgz <./SnakemakeTutorialExample.tgz>`. When you
+download and extract (``tar xzf SnakemakeTutorialExample.tgz``) file, you will
 get a directory called ``snakeomakeTutorialExample``. We assume here that this directory is placed in /tmp, but you can place it elsewhere.
 You can then follow the same steps as described in the ``Paper Supplementary example`` above.
 

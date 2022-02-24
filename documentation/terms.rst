@@ -33,13 +33,13 @@ Glossary
         File containing json representation of `object graph`. It is created by command :option:`sobjects prepare` or :option:`sobjects buildObjectGraph` .
 
     Snakefile
-        File passed to snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare` or  :option:`sobjects createSnakefile`.
+        File passed to Snakemake by command :option:`sobjects run`. It is created by command :option:`sobjects prepare` or  :option:`sobjects createSnakefile`.
 
     jobscript.sh
         Bash script created by command :option:`sobjects submit` and passed to corresponding cluster engine command (i.e., 'sbash' for slurm or 'qsub' for sge). Its location is in `<project_directory>`.
 
     .snakemake
-        Subdirectory of `<project_directory>` directory that is created by running snakemake. 
+        Subdirectory of `<project_directory>` directory that is created by running Snakemake. 
 
     sobjects commands
         See full list of command in :ref:`sobjects-commands`.
@@ -48,10 +48,10 @@ Glossary
         An `object type` is characterized by a set of `targets` that need to be created for each `object` of the given object type together with the rules for creating the targets.
 
     object's parameters
-        Parameters derived from project `metadata`, specific to concrete object and accessible in snakemake rules.
+        Parameters derived from project `metadata`, specific to concrete object and accessible in Snakemake rules.
 
     project parameters
-        Parameters derived from project `metadata` common to all objects and accessible in snakemake rules.
+        Parameters derived from project `metadata` common to all objects and accessible in Snakemake rules.
 
     object name
         Each object has a proper name. A name is a character string satisfying conventions of file names and json entities names. 

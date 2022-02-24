@@ -8,13 +8,13 @@ snakeobjects
 Overview
 --------
 
-**snakeobjects** is a workflow management framework based on ``snakemake`` that
+**Snakeobjects** is a workflow management framework based on ``Snakemake`` that
 uses an object-oriented abstraction of workflows. ``snakeobjects`` workflows
 are easier to develop, to maintain and to adopt compared to the equivallent
 workflows written in ``stanakemake``, but inherit all the powerful features of
-``snakemake``. These include the portability, efficient resource usage, the
+``Snakemake``. These include the portability, efficient resource usage, the
 large expressive power due to the tight python integration, and the large
-community of the ``snakemake`` users.
+community of the ``Snakemake`` users.
 
 .. toctree::
     :maxdepth: 1

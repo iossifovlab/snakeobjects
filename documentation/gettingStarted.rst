@@ -91,7 +91,7 @@ the ``sobjects`` command-line utility from within our project directory.
     total                 3              1              1
 
 The :option:`sobjects prepare` performs a few initialization steps.
-:option:`sobjects run` does the 'heavy lifting' using the ``snakemake`` to
+:option:`sobjects run` does the 'heavy lifting' using the ``Snakemake`` to
 execute the rules for creating the object targets. The execution of our
 helloWorld pipeline should finish instantly, and we can find the file for the
 result.txt target in the directory ``hello`` creates for our single

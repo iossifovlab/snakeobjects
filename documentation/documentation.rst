@@ -5,20 +5,20 @@ Documentation
 Overview
 --------
 
-**snakeobjects** is a workflow management framework based on ``snakemake`` that
+**Snakeobjects** is a workflow management framework based on ``Snakemake`` that
 uses an object-oriented abstraction of workflows. ``snakeobjects`` workflows
 are easier to develop, to maintain and to adopt compared to the equivalent
-workflows written in ``snakemake``, but inherit all the powerful features of
-``snakemake``. These include the portability, efficient resource usage, the
+workflows written in ``Snakemake``, but inherit all the powerful features of
+``Snakemake``. These include the portability, efficient resource usage, the
 large expressive power due to the tight python integration, and the large
-community of the ``snakemake`` users. 
+community of the ``Snakemake`` users. 
 
 Workflow object-oriented abstraction
 ------------------------------------
 
-The ``snakeobjects`` introduces an abstraction of workflows inspired by
+The ``Snakeobjects`` introduces an abstraction of workflows inspired by
 object-oriented design that replaces the low-level input-output relationships
-between files that are at the core of snakemakes rules. A *pipeline* (workflow)
+between files that are at the core of Snakemakes rules. A *pipeline* (workflow)
 in snakeobjects operates on *projects* and projects are composed of *objects*. The
 objects within a project are connected with *dependency relationships* organized
 in a directed acyclic graph called *object graph* in which each object has a list
@@ -27,7 +27,7 @@ specified *object type* and an object type is characterized by a set of *targets
 that need to be created for each object of the given object type together with
 the rules for creating the targets. The rules for building targets for an
 object type are included in a snakefile named after the object type and are written
-using snakemake's syntax where the inputs and outputs specify targets instead of
+using Snakemake's syntax where the inputs and outputs specify targets instead of
 files. Crucially, inputs can refer to targets in the current object and to
 targets in objects the current object depends on as specified in the object
 graph. Finally, projects and objects can be associated with a set of key-value
@@ -40,7 +40,7 @@ In ``snakeobjects``, pipelines reside in a *pipeline directory*. The pipeline
 directory and its content are created by the *workflow designer* and define the
 workflow. The pipeline directory usually contains a python script called
 ``build_object_graph.py`` that  uses *meta data* associated with a given project
-to create the project's object graph and one snakemake file for each object type 
+to create the project's object graph and one Snakemake file for each object type 
 used in the object graph.  The pipeline directory can also contain scripts, conda 
 environment definitions, or other artifacts used by the pipeline.
 
@@ -75,7 +75,7 @@ Object-type snakefiles
 
 Each object-type snakefiles declares the list the targets for the object type and the rules for creating the targets.
 The workflow designer uses the :py:func:`.add_targets` function to declare the targets and uses the
-snakemake's syntax to create the rules.
+Snakemake's syntax to create the rules.
 
 For example, the following rule in the object type snakefile ``sample.snakefile``
 
@@ -86,7 +86,7 @@ For example, the following rule in the object type snakefile ``sample.snakefile`
 , decleares that each of the objects of type ``sample`` need two targets
 created (``T("A.txt")`` and ``T("B.txt")``).  
 
-All the rules are written using the ``snakemake``'s syntax (https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html) 
+All the rules are written using the ``Snakemake``'s syntax (https://snakemake.readthedocs.io/en/stable/snakefiles/rules.html) 
 and use a set of ``snakeobjects`` extension functions (see
 :ref:`snake-extensions`)  for referring to:
 
@@ -148,12 +148,12 @@ The :option:`sobjects prepare` performs the following steps:
 2. creates in the project directory an *object directory* for
    all objects in the *object graph* that have ``symlink.<name>`` parameters (``<project directory>/<object type>/<object id>``);
 3. creates the ``<pipeline directory>/Snakefile`` that
-   is subsequently used by ``snakemake``; and 
+   is subsequently used by ``Snakemake``; and 
 4. creates the symbolic links for all object that have ``symlink.<name>`` parameters. 
 
 The targets and the log files created during the execution of the pipeline (:option:`sobjects run`) are 
-stored in the *object directories*. If object directory is not created in the step 2. of `sobjects prepare` command, snakemake creates them automaticly. 
-In addition, ``snakemake`` creates its standard internal 
+stored in the *object directories*. If object directory is not created in the step 2. of `sobjects prepare` command, Snakemake creates them automaticly. 
+In addition, ``Snakemake`` creates its standard internal 
 subdirectory ``<project directory>/.snakemake``.
 
 ``so_project.yaml`` file
@@ -168,7 +168,7 @@ project and may include:
 * parameters pointing to the input data that will be used by the project; 
 * parameters pointing to the meta-data describing the projects input; 
 * a ``default_snakemake_args`` parameter that specifies the command line 
-  arguments that are passed to ``snakemake`` at every invocation of 
+  arguments that are passed to ``Snakemake`` at every invocation of 
   :option:`sobjects run`. 
 
 
