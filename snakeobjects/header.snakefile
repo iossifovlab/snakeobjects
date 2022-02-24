@@ -1,4 +1,4 @@
-shell.prefix("set -euo pipefail; ")
+shell.prefix("set -o pipefail; ")
 from snakeobjects import Project 
 from snakeobjects.snakeUtils import set_project, T, TE, DT, LFS, P, DP, PP, B, EF, add_targets, get_targets
 from snakeobjects.remoteProjects import download_project_files_from_remote
