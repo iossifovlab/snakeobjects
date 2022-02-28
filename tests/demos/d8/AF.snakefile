@@ -17,7 +17,7 @@ rule create_t:
     output: T("t.txt")
     shell: """
            echo PATH is $PATH > {output}
-           echo PYTHONPATH is $PYTHONPATH >> {output}
+           echo PYTHONPATH is ${{PYTHONPATH:-undefined}} >> {output}
            echo SO_PROEJCT is $SO_PROJECT >> {output}
            echo SO_PIPELINE is $SO_PIPELINE >> {output}
            s1.py >> {output}

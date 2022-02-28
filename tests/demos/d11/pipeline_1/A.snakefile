@@ -3,7 +3,7 @@ name = PP("project_1_A")
 
 rule a:
   output: T("a.txt")
-  shell: "a.sh $1 {name} >{output}"
+  shell: "a.sh {name} >{output}"
 
 rule b:
   output: T("b.txt")
