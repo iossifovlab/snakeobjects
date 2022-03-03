@@ -40,6 +40,122 @@ def find_so_project_directory():
 class ProjectException(Exception):
     pass
 
+class Pipeline:
+    """
+        Each objects of the Pipeline class represents a snakeobject pipeline. 
+        
+        A snakeobject pipeline attributes are:
+
+        .. py:attribute:: snakefile_directory
+           :type: str
+
+           the snakefiles directory
+
+        .. py:attribute:: environment_variables
+           :type: dict[str,str] 
+
+           a key value dictionary for environment variables
+
+        .. py:attribute:: descrition
+           :type: str
+
+           a description of the pipeline
+
+        Pipeline useful functions are:
+
+        .. py:attribute:: get_snakefile_directory(object_instance)
+
+           returns path to the Snakefile directory
+
+        .. py:attribute:: get_environment_variables(object_instance)
+
+           return returns dictionary with keys PATH, PYTHONPATH, etc.
+
+        .. py:attribute:: get_description(object_instance )
+
+           returns description of the pipeline
+    """
+        
+    def __init__(self):
+        self.snakefile_directory = None
+        self.environment_variables = None    
+        self.descriptions = "Pipeline contains location of snakefiles for the project"
+        self.project = None
+        
+    def set_environment_variables(self):
+        pass
+
+    def get_snakefile_directory(self):
+        return self.snakefile_directory
+    
+    def get_environment_variables(self):
+        return self.environment_variables
+
+    def get_description(self):
+        return self.description
+
+    
+class DirectoryPipeline(Pipeline):
+    """
+    Subclass of the Pipeline class defined by directory path.
+    """
+    def __init__(self, dir, proj):
+        super().__init__()
+        self.snakefile_directory = dir
+        self.project = proj
+        self.set_environment_variables()
+        
+    def set_environment_variables(self):
+        so_path = self.snakefile_directory
+        path = [so_path]
+        pythonpath = []
+        perl5lib = []
+
+        for x in 'bin python R perl'.split(' '):
+            name = so_path + '/' + x
+            if os.path.exists(name):
+                path.append(name)
+                if x == 'python':
+                    pythonpath.append(name)
+                if x == 'perl':
+                    perl5lib.append(name)
+            xname = 'so_extra_' + x + '_path'
+            if xname in self.project.parameters:
+                v = self.project.parameters[xname]
+                path.append(v)
+                if x == 'python':
+                    pythonpath.append(v)
+
+        for p in self.project.parent_projects.values():
+            v = p.get_paths()
+
+            if 'PATH' in v:
+                path.append(v['PATH'])
+            if 'PYTHONPATH' in v:
+                pythonpath.append(v['PYTHONPATH'])
+            if 'PERL5LIB' in v:
+                perl5lib.append(v['PERL5LIB'])
+                
+        self.environment_variables = {'PATH': ':'.join(path),
+                'PYTHONPATH': ':'.join(pythonpath),
+                'PERL5LIB': ':'.join(perl5lib)
+                }        
+        
+class PackagePipeline(Pipeline):
+    """
+    Subclass of Pipeline class defined by python package.
+    """
+    def __init__(self, config_string, proj):
+        super().__init__()
+        self.project = proj
+
+        if not config_string.startswith('package:'):
+            print(f"no package string {config_string}, should start with 'package:'")
+            exit(1)
+        else:
+            import pkg_resources
+            pkg_name, data_name = config_string.split(':')[1:]
+            self.snakefile_directory=pkg_resources.resource_filename(pkg_name, data_name)
 
 class Project:
     """
@@ -115,6 +231,8 @@ class Project:
             self.objectGraph = load_object_graph(self._objectGraphFileName)
         else:
             self.objectGraph = ObjectGraph()
+
+        self.set_pipeline_directory()
 
     def interpolate(self,O,oo=None):
         ptn = re.compile(r'(\[(\w+)\:([\w\/]+)(\:(\w+))?\])(\w*)')
@@ -209,16 +327,45 @@ class Project:
                  return v 
         return None
 
-    def get_pipeline_directory(self):
+    def set_pipeline_directory(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
+            if ppd.startswith('directory:'):
+                ppd = os.path.abspath(ppd.split(':')[1])
+                self.pipeline = DirectoryPipeline(ppd, self)
+            elif ppd.startswith('package'):
+                self.pipeline = PackagePipeline(ppd, self)
+            else:
+                self.pipeline = DirectoryPipeline(os.path.abspath(ppd), self)
         elif "SO_PIPELINE" in os.environ:
-            ppd = os.environ['SO_PIPELINE']
+            self.pipeline = DirectoryPipeline(os.path.abs.path(os.environ['SO_PIPELINE']))
         elif os.path.exists("workflow"):
-            return os.path.abspath("workflow")
+            self.pipeline = DirectoryPipeline(os.path.abspath("workflow"), self)
         else:
-            ppd = self.directory
-        return os.path.abspath(ppd)
+            self.pipeline = DirectoryPipeline(os.path.abspath(self.directory))
+            
+    def get_pipeline_directory(self):
+        
+        if "so_pipeline" in self.parameters:
+            ppd = self.parameters['so_pipeline']
+            if ppd.startswith('directory:'):
+                ppd = os.path.abspath(ppd.split(':')[1])
+            elif ppd.startswith('package'):
+                pclass = PackagePipeline(ppd, self)
+                ppd = pclass.get_snakefile_directory()
+            else:
+                ppd = os.path.abspath(ppd)
+        elif "SO_PIPELINE" in os.environ:
+            ppd = os.path.abs.path(os.environ['SO_PIPELINE'])
+        elif os.path.exists("workflow"):
+            ppd = os.path.abspath("workflow")
+        else:
+            ppd = os.path.abspath(self.directory)
+        if os.path.exists(ppd):
+            return ppd
+        else:
+            print(f"so_pipeline file {ppd} does not exists")
+            exit(1)
 
     def get_paths(self):
         so_path = self.get_pipeline_directory()
