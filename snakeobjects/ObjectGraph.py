@@ -15,7 +15,7 @@ class OGO:
 
        the object type of the object
 
-    .. py:attribute:: oOid
+    .. py:attribute:: oId
        :type: str
 
        the object id of the object

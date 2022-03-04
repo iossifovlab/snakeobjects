@@ -101,7 +101,11 @@ class DirectoryPipeline(Pipeline):
     """
     def __init__(self, dir, proj):
         super().__init__()
-        self.snakefile_directory = dir
+        
+        if os.path.exists(dir):
+            self.snakefile_directory = os.path.abspath(dir)
+        else:
+            print(f"snakefile directory {dir} does not exist'")
         self.project = proj
         self.set_environment_variables()
         
@@ -193,9 +197,9 @@ class Project:
 
            returns directory of object
 
-        .. py:attribute:: get_objects_path(type_name, object_name)
+        .. py:attribute:: get_object_path(type_name, object_name)
 
-           return path to the objects of type `type_name`, and object name `object_name`
+           return path to the object of type `type_name`, and object name `object_name`
 
         .. py:attribute:: get_pipeline_directory( )
 
@@ -232,7 +236,7 @@ class Project:
         else:
             self.objectGraph = ObjectGraph()
 
-        self.set_pipeline_directory()
+        self.set_pipeline()
 
     def interpolate(self,O,oo=None):
         ptn = re.compile(r'(\[(\w+)\:([\w\/]+)(\:(\w+))?\])(\w*)')
@@ -327,7 +331,7 @@ class Project:
                  return v 
         return None
 
-    def set_pipeline_directory(self):
+    def set_pipeline(self):
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
             if ppd.startswith('directory:'):
@@ -338,34 +342,14 @@ class Project:
             else:
                 self.pipeline = DirectoryPipeline(os.path.abspath(ppd), self)
         elif "SO_PIPELINE" in os.environ:
-            self.pipeline = DirectoryPipeline(os.path.abs.path(os.environ['SO_PIPELINE']))
+            self.pipeline = DirectoryPipeline(os.path.abspath(os.environ['SO_PIPELINE']), self)
         elif os.path.exists("workflow"):
             self.pipeline = DirectoryPipeline(os.path.abspath("workflow"), self)
         else:
-            self.pipeline = DirectoryPipeline(os.path.abspath(self.directory))
+            self.pipeline = DirectoryPipeline(os.path.abspath(self.directory), self)
             
     def get_pipeline_directory(self):
-        
-        if "so_pipeline" in self.parameters:
-            ppd = self.parameters['so_pipeline']
-            if ppd.startswith('directory:'):
-                ppd = os.path.abspath(ppd.split(':')[1])
-            elif ppd.startswith('package'):
-                pclass = PackagePipeline(ppd, self)
-                ppd = pclass.get_snakefile_directory()
-            else:
-                ppd = os.path.abspath(ppd)
-        elif "SO_PIPELINE" in os.environ:
-            ppd = os.path.abs.path(os.environ['SO_PIPELINE'])
-        elif os.path.exists("workflow"):
-            ppd = os.path.abspath("workflow")
-        else:
-            ppd = os.path.abspath(self.directory)
-        if os.path.exists(ppd):
-            return ppd
-        else:
-            print(f"so_pipeline file {ppd} does not exists")
-            exit(1)
+        return self.pipeline.get_snakefile_directory()
 
     def get_paths(self):
         so_path = self.get_pipeline_directory()
