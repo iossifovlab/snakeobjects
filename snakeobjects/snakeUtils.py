@@ -79,7 +79,7 @@ def DT(t, dot=None, level=1, mode='equal'):
     :param str t: the name of the target in the dependency objects.
 
     :param str dot: the object type of the dependency objects to be used. If None, 
-        dependency objects of all object types will be used.
+        dependency objects of all object types will be used, if not None, the level and model values are ignored.
 
     :param int level: how many levels down the dependency graph to explore. 
         The default value of 1 indicates that only the objects that the current object
