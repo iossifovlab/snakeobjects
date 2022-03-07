@@ -349,6 +349,7 @@ class Project:
             self.pipeline = DirectoryPipeline(os.path.abspath(self.directory), self)
             
     def get_pipeline_directory(self):
+        self.set_pipeline()
         return self.pipeline.get_snakefile_directory()
 
     def get_paths(self):
