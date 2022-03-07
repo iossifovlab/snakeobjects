@@ -55,11 +55,11 @@ class OGO:
 
             if x.k() in seen: continue
             seen.add(x.k())
-            if (mode == 'lessOrEqual' and xl <= level) or \
-               (mode == 'equal' and xl == level):
+            if ((mode == 'lessOrEqual' and xl <= level) or \
+               (mode == 'equal' and xl == level)) or x.oType == dot:
                 dps.append(x)
             for y in x.deps:
-                queue.append((y,xl+1)) 
+                queue.append((y,xl+1))
         if dot:
             dps = [dp for dp in dps if dp.oType == dot]    
         return dps
