@@ -77,6 +77,7 @@ def test_deepDeps_bug(OG):
     c = OG.add("C", "o", deps=[OG['A', 'o'], OG['B', 'o']])
 
     assert s(c.deepDeps('A', level=2)) == "A:o"
+    assert s(c.deepDeps(level=2)) == "A:o"
 
 
 def test_deepDeps(OG):

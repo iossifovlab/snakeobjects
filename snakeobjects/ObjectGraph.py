@@ -48,21 +48,30 @@ class OGO:
         dps = []
         queue = []
         seen = set()
+        out = []
         for d in o.deps:
             queue.append((d,1))
         while queue:
             x,xl = queue.pop(0)
 
-            if x.k() in seen: continue
+            if x.k() in seen:
+                if (mode == 'equal' and xl == level):
+                    dps.append(x)
+                continue
             seen.add(x.k())
             if ((mode == 'lessOrEqual' and xl <= level) or \
                (mode == 'equal' and xl == level)) or x.oType == dot:
                 dps.append(x)
             for y in x.deps:
                 queue.append((y,xl+1))
+
+        # this is done to keep the order of objects, but output only unique
+        for x in dps:
+            if not x in out:
+                out.append(x)
         if dot:
-            dps = [dp for dp in dps if dp.oType == dot]    
-        return dps
+            out = [dp for dp in out if dp.oType == dot]
+        return out
 
 class ObjectGraphException(Exception):
     pass
