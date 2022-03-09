@@ -190,6 +190,7 @@ def cli(args=None):
             print(f'ERROR: There is no {bldObjGraphPy}')
             exit(1)
     if command == "buildObjectGraph":
+        set_environment(proj,args)
         newObjectGraph = buildObjectGraph()
         proj.objectGraph = newObjectGraph 
         proj.save_object_graph()
