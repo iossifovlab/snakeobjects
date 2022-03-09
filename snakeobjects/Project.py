@@ -181,7 +181,7 @@ class Project:
            a key value dictionary for global project level parameters
 
         .. py:attribute:: parent_projects
-           :type: dict[str,str] 
+           :type: dict[str,Project] 
 
            a key value dictionary for parent project names
 
