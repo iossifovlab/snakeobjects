@@ -158,8 +158,8 @@ class PackagePipeline(Pipeline):
             exit(1)
         else:
             import pkg_resources
-            pkg_name, data_name = config_string.split(':')[1:]
-            self.snakefile_directory=pkg_resources.resource_filename(pkg_name, data_name)
+            pkg_name = config_string.split(':')[1]
+            self.snakefile_directory=pkg_resources.resource_filename(pkg_name, 'snakefiles')
 
 class Project:
     """
