@@ -21,8 +21,6 @@ if ("SO_CONTAINER" in os.environ and
 project = Project()
 so_pipeline=project.get_pipeline_directory()
 
-os.environ['PATH']=so_pipeline + ":" + os.environ['PATH']
-
 set_project(project)
 
 rule so_all_targets:
