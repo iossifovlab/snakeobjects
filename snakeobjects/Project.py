@@ -55,10 +55,19 @@ class Pipeline(ABC):
     def get_snakefile_directory(self) -> Path:
         raise Exception("Should not be called!")
 
+    def get_main_snakefile_path(self) -> Path:
+        raise Exception("Should not be called!")
+
     def get_environment_variables(self) -> Dict[str, List[str]]:
         raise Exception("Should not be called!")
 
     def get_definition(self) -> str:
+        '''
+        Definitions is a string of the form:
+             "directory:<dir>" OR
+             "package:<package>" OR
+             "<dir>" which is equivallent to "directory:<dir>"
+        '''
         raise Exception("Should not be called!")
 
     def build_object_graph(self, project: Project, args: List[str]) \
@@ -79,6 +88,9 @@ class DirectoryPipeline(Pipeline):
 
     def get_snakefile_directory(self) -> Path:
         return self.snakefile_directory
+
+    def get_main_snakefile_path(self) -> Path:
+        return self.snakefile_directory / "Snakefile"
 
     DIR_TO_ENV = {
         "bin": ["PATH"],
@@ -102,6 +114,7 @@ class DirectoryPipeline(Pipeline):
 
     def get_definition(self) -> str:
         return self.definition_dir
+        # return f"directory:{self.definition_dir}"
 
     def build_object_graph(self, project: Project, args: List[str]) \
             -> ObjectGraph:
@@ -140,6 +153,9 @@ class PackagePipeline(Pipeline):
     def get_snakefile_directory(self) -> Path:
         return self.snake_file_dir
 
+    def get_main_snakefile_path(self) -> Path:
+        return self.snake_file_dir / "Snakefile"
+
     def get_environment_variables(self) -> Dict[str, List[str]]:
         return {}
 
@@ -154,12 +170,26 @@ class PackagePipeline(Pipeline):
         return new_object_graph
 
 
+def build_pipeline(pipeline_definition: str) -> Pipeline:
+    if pipeline_definition.startswith('directory:'):
+        dir_path = pipeline_definition.split(':')[1]
+        return DirectoryPipeline(dir_path)
+
+    if pipeline_definition.startswith('package'):
+        package_name = pipeline_definition.split(':')[1]
+        return PackagePipeline(package_name)
+
+    return DirectoryPipeline(pipeline_definition)
+
+
 class Project:
     """
         Each objects of the Project class represents a snakeobject project.
 
-        The project directory is given as the ``directory`` parameter. If ``directory`` is none,
-        the :py:func:`find_so_project_directory` function is used to determine the project directory.
+        The project directory is given as the ``directory`` parameter. If 
+        ``directory`` is none,
+        the :py:func:`find_so_project_directory` function is used to determine 
+        the project directory.
 
         A snakeobject project attributes are:
 
@@ -200,7 +230,11 @@ class Project:
 
         .. py:attribute:: get_parameter(name, parent_project_id=None)
 
-           If `parent_project_id` is given returns the value of parameter in that project, otherwise, if `name` is in project parameters, returns its value. Finally, if `name` is not in the project parameters, returns the value of named parameters in the first project recursively folowing parent projects.
+           If `parent_project_id` is given returns the value of parameter in
+           that project, otherwise, if `name` is in project parameters, returns
+           its value. Finally, if `name` is not in the project parameters,
+           returns the value of named parameters in the first project
+           recursively folowing parent projects.
 
     """
 
@@ -231,17 +265,17 @@ class Project:
 
         self.set_pipeline()
 
-    def interpolate(self, O, oo=None):
+    def interpolate(self, obj, oo=None):
         ptn = re.compile(r'(\[(\w+)\:([\w\/]+)(\:(\w+))?\])(\w*)')
 
-        if type(O) == int or type(O) == float:
-            return O
-        elif type(O) == list:
-            return [self.interpolate(x) for x in O]
-        elif type(O) == dict:
-            return {k: self.interpolate(v) for k, v in O.items()}
-        elif type(O) == str:
-            for s in ptn.findall(O):
+        if type(obj) == int or type(obj) == float:
+            return obj
+        elif type(obj) == list:
+            return [self.interpolate(x) for x in obj]
+        elif type(obj) == dict:
+            return {k: self.interpolate(v) for k, v in obj.items()}
+        elif type(obj) == str:
+            for s in ptn.findall(obj):
                 iType = s[1]
                 name = s[2]
                 prnt = s[4]
@@ -252,11 +286,11 @@ class Project:
                     if name not in oo.params:
                         raise ProjectException(
                             "parameter %s is not defined for the object %s" % (name, oo.k()))
-                    O = O.replace(s[0], oo.params[name])
+                    obj = obj.replace(s[0], oo.params[name])
                 elif iType == 'E':
-                    if not name in os.environ:
+                    if name not in os.environ:
                         raise ProjectException("Varianble %s is not defined" % name)
-                    O = O.replace(s[0], os.environ[name])
+                    obj = obj.replace(s[0], os.environ[name])
                 elif iType == 'D':
                     if name == "project":
                         pv = self.directory
@@ -264,24 +298,24 @@ class Project:
                         pv = str(self.get_pipeline_directory())
                     else:
                         raise ProjectException('The project property %s is unknonw.' % name)
-                    O = O.replace(s[0], pv)
+                    obj = obj.replace(s[0], pv)
                 elif iType == 'PP':
-                    if ('so_parent_projects' in self.parameters
-                            and not self.parent_projects):
+                    if ('so_parent_projects' in self.parameters and
+                            not self.parent_projects):
                         for k, v in self.parameters['so_parent_projects'].items():
                             self.parent_projects[k] = Project(v)
                     if not prnt:
-                        if not name in self.parameters:
+                        if name not in self.parameters:
                             raise ProjectException('Parameter %s is not defined' % name)
-                        O = O.replace(s[0], self.parameters[name])
-                    elif not '/' in prnt:
-                        if not '/' in prnt:
+                        obj = obj.replace(s[0], self.parameters[name])
+                    elif '/' not in prnt:
+                        if '/' not in prnt:
                             if prnt in self.parent_projects:
                                 dir = self.parent_projects[prnt].directory
                                 if not os.path.exists(dir):
                                     raise ProjectException('The path to parent does not exist')
                                 self.parent_projects[prnt] = Project(dir)
-                                O = O.replace(
+                                obj = obj.replace(
                                     s[0], str(self.parent_projects[prnt].parameters[name]))
                             else:
                                 raise ProjectException(
@@ -298,12 +332,12 @@ class Project:
                             P = self.parent_projects[cs[0]]
                         for p in cs[1:]:
                             P = P.parent_projects[p]
-                        O = O.replace(s[0], str(P.parameters[name]))
+                        obj = obj.replace(s[0], str(P.parameters[name]))
                     else:
                         raise ProjectException(
                             'Interpolation type [%s: ...] is unknown; can be only E|P|PP|D.' % iType)
 
-            return O
+            return obj
 
     def _run_parameter_interpolation(self):
         for k, v in sorted(self.parameters.items(), key=lambda x: not '[D:' in x):
@@ -329,6 +363,14 @@ class Project:
         return None
 
     def set_pipeline(self):
+        pipeline_definition = f"directory:{self.directory}"
+        if "SO_PIPELINE" in os.environ:
+            pipeline_definition = os.environ['SO_PIPELINE']
+        if "so_pipeline" in self.parameters:
+            pipeline_definition = self.parameters["so_pipeline"]
+        self.pipeline = build_pipeline(pipeline_definition)
+
+        '''
         if "so_pipeline" in self.parameters:
             ppd = self.parameters['so_pipeline']
             if ppd.startswith('directory:'):
@@ -344,11 +386,11 @@ class Project:
             self.pipeline = DirectoryPipeline(os.path.abspath("workflow"))
         else:
             self.pipeline = DirectoryPipeline(os.path.abspath(self.directory))
+        '''
 
-    def get_pipeline_directory(self):
+    def get_pipeline_directory(self) -> Path:
         self.set_pipeline()
-        return self.pipeline.get_snakefile_directory()\
-
+        return self.pipeline.get_snakefile_directory()
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
         vars: Dict[str, List[str]] = {}
@@ -466,10 +508,10 @@ class Project:
     def set_environment(self):
         print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=", self.directory, sep="")
-        print("export SO_PIPELINE=", self.get_pipeline_directory(), sep="")
+        print("export SO_PIPELINE=", self.pipeline.get_definition(), sep="")
 
         os.environ['SO_PROJECT'] = self.directory
-        os.environ['SO_PIPELINE'] = str(self.get_pipeline_directory())
+        os.environ['SO_PIPELINE'] = str(self.pipeline.get_definition())
 
         vars = self.get_environment_variables()
 
@@ -496,4 +538,4 @@ if __name__ == "__main__":
     print("Number of object types in object graph", len(p.objectGraph.O))
     print("Number of objects in object graph",
         sum([len(x) for x in p.objectGraph.O.values()]))
-    print("Pipeline directory is", p.get_pipeline_directory())
+    print("Pipeline directory is", p.pipeline.get_definition())

@@ -1,3 +1,3 @@
 #!/bin/bash
 cd $(dirname "$0")
-rm -r Snakefile && sobjects cleanProject -f
+rm -rf Snakefile && sobjects cleanProject -f

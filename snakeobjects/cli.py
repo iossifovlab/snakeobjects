@@ -158,18 +158,6 @@ def cli(args: Optional[List[str]] = None):
 
     proj = Project()
 
-    def buildObjectGraph():
-        bldObjGraphPy = proj.get_pipeline_directory() / "build_object_graph.py"
-        if os.path.isfile(bldObjGraphPy):
-            spec = spec_from_file_location("build_object_graph", bldObjGraphPy)
-            foo = module_from_spec(spec)
-            spec.loader.exec_module(foo)
-            newObjectGraph = ObjectGraph()
-            foo.run(proj, newObjectGraph, *args[1:])
-            return newObjectGraph
-        else:
-            print(f'ERROR: There is no {bldObjGraphPy}')
-            exit(1)
     if command == "buildObjectGraph":
         proj.buildObjectGraph(args[1:])
         proj.save_object_graph()
@@ -179,7 +167,7 @@ def cli(args: Optional[List[str]] = None):
         proj.create_symbolic_links()
     elif command in ["prepare", "prepareTest"]:
         print("# WORKING ON PROJECT", proj.directory)
-        print("# WITH PIPELINE", proj.get_pipeline_directory())
+        print("# WITH PIPELINE", proj.pipeline.get_definition())
         proj.buildObjectGraph(args[1:])
         if command == "prepareTest":
             print("Current graph stats")
@@ -195,14 +183,12 @@ def cli(args: Optional[List[str]] = None):
             proj.create_symbolic_links()
             proj.objectGraph.print_stats()
     elif command == "printEnv":
-        print("export SO_PROJECT=", proj.directory, sep="")
-        print("export SO_PIPELINE=", proj.get_pipeline_directory(), sep="")
         proj.set_environment()
     elif command == "run":
         print("# WORKING ON PROJECT", proj.directory)
-        print("# WITH PIPELINE", proj.get_pipeline_directory())
+        print("# WITH PIPELINE", proj.pipeline.get_definition())
         sargs = ['snakemake',
-                '-s', str(proj.get_pipeline_directory() / 'Snakefile'),
+                '-s', str(proj.pipeline.get_main_snakefile_path()),
                 '-d', proj.directory]
         if "default_snakemake_args" in proj.parameters:
             sargs += proj.parameters["default_snakemake_args"].split()
@@ -229,7 +215,7 @@ def cli(args: Optional[List[str]] = None):
         os.execvp('snakemake', sargs)
     elif command == "submit":
         print("# WORKING ON PROJECT", proj.directory)
-        print("# WITH PIPELINE", proj.get_pipeline_directory())
+        print("# WITH PIPELINE", proj.pipeline.get_definition())
         from snakeobjects.Project import ProjectException
         if not os.path.exists(proj.directory + '/OG.json'):
             print("OG.json doesn't exist in " +
@@ -265,7 +251,7 @@ def cli(args: Optional[List[str]] = None):
         #os.execvp('python', [profile + "/" +cmd, "$SO_PROJECT/jobscript.sh"])
     elif command == "describe":
         print("# WORKING ON PROJECT", proj.directory)
-        print("# WITH PIPELINE", proj.get_pipeline_directory())
+        print("# WITH PIPELINE", proj.pipeline.get_definition())
         print("Project parameters:")
         for k, v in proj.parameters.items():
             print(f"\t{k}: {v}")
@@ -275,7 +261,7 @@ def cli(args: Optional[List[str]] = None):
         graph.driver(proj.objectGraph, args)
     elif command == "cleanProject":
         print("# WORKING ON PROJECT", proj.directory)
-        print("# WITH PIPELINE", proj.get_pipeline_directory())
+        print("# WITH PIPELINE", proj.pipeline.get_definition())
         import shutil
 
         sm = proj.directory + '/.snakemake'
