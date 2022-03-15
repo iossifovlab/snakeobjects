@@ -377,7 +377,7 @@ class Project:
                 ppd = os.path.abspath(ppd.split(':')[1])
                 self.pipeline = DirectoryPipeline(ppd)
             elif ppd.startswith('package'):
-                self.pipeline = PackagePipeline(ppd)
+                self.pipeline = PackagePipeline(ppd.split(':')[1])
             else:
                 self.pipeline = DirectoryPipeline(ppd)
         elif "SO_PIPELINE" in os.environ:
