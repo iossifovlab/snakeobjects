@@ -8,6 +8,7 @@ from abc import ABC
 import importlib.resources as importlib_resources
 from importlib.util import spec_from_file_location, module_from_spec
 import yaml
+from collections import defaultdict
 
 from snakeobjects.ObjectGraph import ObjectGraph, load_object_graph
 
@@ -157,7 +158,17 @@ class PackagePipeline(Pipeline):
         return self.snake_file_dir / "Snakefile"
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
-        return {}
+        env = {'python':['PATH', 'PYTHONPATH'], 'bin':'PATH', 'perl':['PATH','PERL5LIB']}
+        vars = defaultdict(list)
+        for key,value in env.items():
+            pa = self.snake_file_dir / key
+            if pa.resolve().exists():
+                if type(value) == list:
+                    for v in value:
+                        vars[v].append(str(pa))
+                else:
+                    vars[value].append(str(pa))
+        return vars
 
     def get_definition(self) -> str:
         return f"pacakage:{self.definition_package}"
@@ -393,8 +404,8 @@ class Project:
         return self.pipeline.get_snakefile_directory()
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
-        vars: Dict[str, List[str]] = {}
-
+        #vars: Dict[str, List[str]] = {}
+        vars = defaultdict(list)
         def add_vars(extra_vars: Dict[str, List[str]]):
             for var, values in extra_vars.items():
                 try:
@@ -408,10 +419,11 @@ class Project:
             match = add_env_re.match(param_key)
             if match:
                 env_name = match.group(1)
-                try:
+                if type(param_value) == list:
+                    for pv in param_value:
+                        vars[env_name].append(pv)
+                else:
                     vars[env_name].append(param_value)
-                except KeyError:
-                    vars[env_name] = [param_value]
 
         add_vars(self.pipeline.get_environment_variables())
 
