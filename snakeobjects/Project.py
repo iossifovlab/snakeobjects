@@ -131,9 +131,9 @@ class PackagePipeline(Pipeline):
         self.pipeline_package = importlib.import_module(self.definition_package)
 
         if self.pipeline_package.__file__ is None:
-            raise Exception(f"{definition_package} should be a python pacakge 1")
-        if not self.pipeline_package.__file__.endswith('__init__'):
-            raise Exception(f"{definition_package} should be a python pacakge 2")
+            raise Exception(f"{definition_package} should be a python package 1")
+        if not self.pipeline_package.__file__.endswith('__init__.py'):
+            raise Exception(f"{definition_package} should be a python package 2")
 
         self.snake_file_dir = Path(self.pipeline_package.__file__).parent
 
@@ -335,7 +335,7 @@ class Project:
                 ppd = os.path.abspath(ppd.split(':')[1])
                 self.pipeline = DirectoryPipeline(ppd)
             elif ppd.startswith('package'):
-                self.pipeline = PackagePipeline(ppd)
+                self.pipeline = PackagePipeline(ppd.split(':')[1])
             else:
                 self.pipeline = DirectoryPipeline(ppd)
         elif "SO_PIPELINE" in os.environ:
