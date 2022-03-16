@@ -158,18 +158,8 @@ class PackagePipeline(Pipeline):
         return self.snake_file_dir / "Snakefile"
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
-        env = {'python':['PATH', 'PYTHONPATH'], 'bin':'PATH', 'perl':['PATH','PERL5LIB']}
-        vars = defaultdict(list)
-        for key,value in env.items():
-            pa = self.snake_file_dir / key
-            if pa.resolve().exists():
-                if type(value) == list:
-                    for v in value:
-                        vars[v].append(str(pa))
-                else:
-                    vars[value].append(str(pa))
-        return vars
-
+        return self.pipeline_package.get_environment_variables()
+    
     def get_definition(self) -> str:
         return f"pacakage:{self.definition_package}"
 
@@ -404,7 +394,7 @@ class Project:
         return self.pipeline.get_snakefile_directory()
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
-        #vars: Dict[str, List[str]] = {}
+
         vars = defaultdict(list)
         def add_vars(extra_vars: Dict[str, List[str]]):
             for var, values in extra_vars.items():
