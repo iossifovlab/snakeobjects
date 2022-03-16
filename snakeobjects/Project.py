@@ -158,8 +158,11 @@ class PackagePipeline(Pipeline):
         return self.snake_file_dir / "Snakefile"
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
-        return self.pipeline_package.get_environment_variables()
-    
+        try:
+            return self.pipeline_package.get_environment_variables()
+        except NameError:
+            return {}
+        
     def get_definition(self) -> str:
         return f"pacakage:{self.definition_package}"
 
