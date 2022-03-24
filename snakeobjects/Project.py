@@ -510,8 +510,9 @@ class Project:
             return [self.get_object_flag(o) for o in OG[oType]]
         return [self.get_object_flag(o) for oType in OG.get_object_types() for o in OG[oType]]
 
-    def set_environment(self):
-        print("UPDATING ENVIRONMENT:")
+    def set_environment(self,update_environment=True):
+        if update_environment:
+            print("UPDATING ENVIRONMENT:")
         print("export SO_PROJECT=", self.directory, sep="")
         print("export SO_PIPELINE=", self.pipeline.get_definition(), sep="")
 
@@ -521,13 +522,13 @@ class Project:
         vars = self.get_environment_variables()
 
         for var, values in vars.items():
-            my_val = ":".join(values)
+            my_val = os.pathsep.join(values)
             if var in ['PATH', 'PYTHONPATH', 'PERL5LIB'] and var in os.environ:
-                print(f"export {var}={my_val}:${var}")
+                print(f"export {var}={my_val}{os.pathsep}${var}")
                 values.append(os.environ[var])
             else:
                 print(f"export {var}={my_val}")
-            full_val = ":".join(values)
+            full_val = os.pathsep.join(values)
             os.environ[var] = full_val
 
     def buildObjectGraph(self, args: List[str]):
