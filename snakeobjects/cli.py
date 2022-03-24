@@ -183,7 +183,7 @@ def cli(args: Optional[List[str]] = None):
             proj.create_symbolic_links()
             proj.objectGraph.print_stats()
     elif command == "printEnv":
-        proj.set_environment()
+        proj.set_environment(update_environment=False)
     elif command == "run":
         print("# WORKING ON PROJECT", proj.directory)
         print("# WITH PIPELINE", proj.pipeline.get_definition())
