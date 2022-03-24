@@ -106,7 +106,7 @@ class ObjectGraph:
             ot,oi = key
             return self.O[ot][oi]
         else:
-            return self.oOrder[key]
+            return self.oOrder[key] if key in self.oOrder else []
 
     
     def get_object_types(self):
