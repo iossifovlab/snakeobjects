@@ -81,6 +81,33 @@ class Pipeline(ABC):
 class DirectoryPipeline(Pipeline):
     """
     Subclass of the Pipeline class defined by directory path.
+
+    A snakeobject DirectoryPipeline attributes are:
+
+    .. py:attribute:: definition_dir
+           :type: str
+
+    .. py:attribute:: snakefile_directory
+           :type: str
+
+    DirecoryPipeline useful functions are:
+
+    .. py:attribute:: get_snakefile_directory()
+
+           returns directory of Snakefile
+
+    .. py:attribute:: get_main_snakefile_path()
+
+           returns path to the Snakefile
+
+    .. py:attribute:: get_environment_variables()
+
+           returns dictionary with keys PATH, PYTHPONPATH, etc.
+
+    .. py:attribute:: build_object_graph(proj: Project, args: List[str])
+
+           returns instance of and ObjectGraph
+
     """
 
     def __init__(self, definition_dir: str):
@@ -115,7 +142,6 @@ class DirectoryPipeline(Pipeline):
 
     def get_definition(self) -> str:
         return self.definition_dir
-        # return f"directory:{self.definition_dir}"
 
     def build_object_graph(self, project: Project, args: List[str]) \
             -> ObjectGraph:
@@ -138,6 +164,33 @@ class DirectoryPipeline(Pipeline):
 class PackagePipeline(Pipeline):
     """
     Subclass of Pipeline class defined by python package.
+
+    A snakeobject PackagePipeline attributes are:
+
+    .. py:attribute:: definition_package
+           :type: str
+
+    .. py:attribute:: snake_file_dir
+           :type: str
+
+    PackagePipeline useful functions are:
+
+    .. py:attribute:: get_snakefile_directory()
+
+           returns directory of Snakefile
+
+    .. py:attribute:: get_main_snakefile_path()
+
+           returns path to the Snakefile
+
+    .. py:attribute:: get_environment_variables()
+
+           returns dictionary with keys PATH, PYTHPONPATH, etc.
+
+    .. py:attribute:: build_object_graph(proj: Project, args: List[str])
+
+           returns instance of and ObjectGraph
+
     """
 
     def __init__(self, definition_package: str):
@@ -226,7 +279,7 @@ class Project:
 
         .. py:attribute:: get_object_path(type_name, object_name)
 
-           return path to the object of type `type_name`, and object name `object_name`
+           returns path to the object of type `type_name`, and object name `object_name`
 
         .. py:attribute:: get_pipeline_directory( )
 

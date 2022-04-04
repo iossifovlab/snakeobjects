@@ -7,6 +7,21 @@ Project class
 .. autoclass :: snakeobjects.Project
    :members: 
 
+Pipeline class
+--------------
+.. autoclass :: snakeobjects.Project.Pipeline
+   :members: 
+
+DirectoryPipeline class
+-----------------------
+.. autoclass :: snakeobjects.Project.DirectoryPipeline
+   :members: 
+
+PackagePipeline class
+---------------------
+.. autoclass :: snakeobjects.Project.PackagePipeline
+   :members: 
+
 ObjectGraph class
 -----------------
 .. autoclass :: snakeobjects.ObjectGraph
