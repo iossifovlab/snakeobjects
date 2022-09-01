@@ -212,10 +212,10 @@ class PackagePipeline(Pipeline):
 
     def get_environment_variables(self) -> Dict[str, List[str]]:
         try:
-            return self.pipeline_package.get_environment_variables()
-        except:
+            self.pipeline_package.get_environment_variables()
+        except NameError:
             return {}
-        
+
     def get_definition(self) -> str:
         return f"pacakage:{self.definition_package}"
 
