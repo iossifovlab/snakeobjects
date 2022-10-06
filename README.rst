@@ -7,7 +7,7 @@ Our pipeline infrastructure.
 Documentation
 +++++++++++++
 
-https://www.iossifovlab.com/snakeobjects
+http://snakeobjects.readthedocs.io/
 
 Source
 ++++++
