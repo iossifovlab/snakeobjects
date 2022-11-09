@@ -31,12 +31,12 @@ def test_dep_par(OG):
     assert OG['B', 'o'].deps == [OG['A', '2'], OG['A', '1'], OG['A', '3']]
 
 
-def test_dep_par(OG):
+def test_dep_par_1(OG):
     OG.add('t', 'o', params={'p': 'v'})
     assert OG['t', 'o'].params == {'p': 'v'}
 
 
-def test_dep_par(OG):
+def test_dep_par_2(OG):
     OG.add('t', 'o')
     with pytest.raises(ObjectGraphException) as excinfo:
         OG.add('t', 'o')
@@ -64,10 +64,7 @@ def test_save_load(tmp_path):
     assert os.system('diff %s %s' % (str(tmp_path / 'a.OG'), str(tmp_path / 'b.OG'))) == 0
 
 
-def test_deepDeps_bug(OG):
-    def p(name, ol):
-        return print(name, ",".join([f"{o.oType}:{o.oId}" for o in ol]))
-
+def test_deepDeps_bug_1(OG):
     def s(ol):
         return ",".join([f"{o.oType}:{o.oId}" for o in ol])
 
@@ -80,10 +77,20 @@ def test_deepDeps_bug(OG):
     assert s(c.deepDeps(level=2)) == "A:o"
 
 
-def test_deepDeps(OG):
-    def p(name, ol):
-        return print(name, ",".join([f"{o.oType}:{o.oId}" for o in ol]))
+def test_deepDeps_bug_2(OG):
+    def s(ol):
+        return ",".join([f"{o.oType}:{o.oId}" for o in ol])
 
+    OG = ObjectGraph()
+    a = OG.add("A", "o")
+    b = OG.add("B", "o")
+    c = OG.add("C", "o", deps=[a, b])
+
+    print("DDDDDD", c.deps)
+    assert s(c.deepDeps()) == "A:o,B:o"
+
+
+def test_deepDeps(OG):
     def s(ol):
         return ",".join([f"{o.oType}:{o.oId}" for o in ol])
 
