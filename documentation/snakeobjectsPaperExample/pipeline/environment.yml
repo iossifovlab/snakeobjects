@@ -1,4 +1,4 @@
-name: snakeobjectsPaperSupplementaryExample
+name: snakeobjectsPaperExample
 channels:
   - bioconda
   - conda-forge
