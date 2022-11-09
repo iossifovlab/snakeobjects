@@ -26,12 +26,12 @@ snakeobjectsTutorial.tgz:
 	for d in `find snakeobjectsTutorial -name objects`; do rm -r $$d; done
 	tar czf $@ snakeobjectsTutorial
 
-snakeobjectsPaperSupplementaryExample.tgz: 
-	for d in `find snakeobjectsPaperSupplementaryExample -name __pycache__`; do rm -r $$d; done
+snakeobjectsPaperyExample.tgz: 
+	for d in `find snakeobjectsPaperExample -name __pycache__`; do rm -r $$d; done
 	OLDPWD=`pwd`
-	cd snakeobjectsPaperSupplementaryExample && sobjects cleanProject -f
+	cd snakeobjectsPaperExample && sobjects cleanProject -f
 	cd $$OLDPWD
-	tar czf $@ snakeobjectsPaperSupplementaryExample
+	tar czf $@ snakeobjectsPaperExample
 
 snakemakeTutorialExample.tgz: 
 	for d in `find snakemakeTutorialExample -name __pycache__`; do rm -r $$d; done
@@ -49,6 +49,6 @@ deploy: html
 clean:
 	rm -rf _build
 	rm -rf snakeobjectsTutorial.tgz
-	rm -rf snakeobjectsPaperSupplementaryExample.tgz
+	rm -rf snakeobjectsPaperExample.tgz
 	rm -rf snakemakeTutorialExample.tgz
 	rm -rf helloWorld.tgz
