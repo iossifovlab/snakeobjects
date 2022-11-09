@@ -1,6 +1,0 @@
-so_pipeline:    "[D:project]"
-inputDir:       "[D:project]/input"
-reference:      "[PP:inputDir]/chrAll.fa"
-pedigree:       "[PP:inputDir]/collection.ped"
-fqDir:          "[PP:inputDir]/fastq/"
-targetRegions:  "[PP:inputDir]/targetRegions.txt"

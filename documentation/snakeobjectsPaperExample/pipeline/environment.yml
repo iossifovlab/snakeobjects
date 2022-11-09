@@ -1,6 +1,5 @@
 name: snakeobjectsPaperSupplementaryExample
 channels:
-  - iossifovlab 
   - bioconda
   - conda-forge
   - defaults

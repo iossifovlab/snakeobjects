@@ -1,0 +1,6 @@
+so_pipeline: '[D:project]/../pipeline'
+inputDir:    '[D:project]/../input'
+reference:   '[PP:inputDir]/chrAll.fa'
+pedigree:    '[PP:inputDir]/collection.ped'
+fqDir:       '[PP:inputDir]/fastq'
+regions:     '[PP:inputDir]/regions.txt'

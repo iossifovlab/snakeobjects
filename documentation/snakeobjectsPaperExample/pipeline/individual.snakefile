@@ -1,8 +1,8 @@
 add_targets('sample.bam', 'sample.bam.bai')
 rule align:
   input:  ref=DT('ref.fa'), idx=DT('index.flag'),         \
-  	      r1=EF("[PP:fqDir][P:fqId]_1.fqz"),              \
-          r2=EF("[PP:fqDir][P:fqId]_2.fqz")
+          r1=EF("[PP:fqDir]/[P:fqId]_1.fqz"),              \
+          r2=EF("[PP:fqDir]/[P:fqId]_2.fqz")
   output: temp(T('fastq.bam'))
   shell:  "bwa mem -R '@RG\\tID:RG1\\tSM:{wildcards.oid}' \
                {input.ref} {input.r1} {input.r2} |        \
