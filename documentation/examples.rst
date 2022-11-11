@@ -19,15 +19,17 @@ Next execute following commands:
 
 .. code-block:: bash
 		
-	(base) .............$ cd /tmp/snakeobjectsPaperExample
+	(base) .............$ cd /tmp/snakeobjectsPaperExample/pipeline
 
-	(base) /tmp/snakeobjectsPaperExample$ conda env create
+	(base) /tmp/snakeobjectsPaperExample/pipeline$ conda env create
 
-	(base) /tmp/snakeobjectsPaperExample$ conda activate snakeobjectsPaperExample
+	(base) /tmp/snakeobjectsPaperExample/pipeline$ conda activate snakeobjectsPaperExample
 
-        (snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample$ sobjects prepare
+        (snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample/pipeline$ cd ../project
+	
+	(snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample/project$ sobjects prepare
 
-        (snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample$ sobjects run -j -q
+        (snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample/project$ sobjects run -j -q
 
 In the subdirectory denovo/all you will find allDenovoCalls.txt file.
 Opening it in excel with a little formatting can get:
