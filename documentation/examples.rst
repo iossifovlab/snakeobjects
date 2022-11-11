@@ -10,7 +10,7 @@ Paper Example
 
 This section explains how to load and execute small project described Supplementary of ``snakeobjects`` paper. We assume that you will work or a Linux or Mac. In addition, we assume that you have a conda or miniconda installed (`Conda
 Installation
-<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_).
+<https://docs.conda.io/projects/conda/en/latest/user-guide/install>`_, to speed up the environment createtion `install Mamba <https://mamba.readthedocs.io/en/latest/installation.html>`_ ).
 Everything else needed is inclucded in the
 :download:`snakeobjectsPaperExample.tgz <./snakeobjectsPaperExample.tgz>`. When you
 download and extract (``tar xzf snakeobjectsPaperExample.tgz``) file, you will
@@ -21,7 +21,7 @@ Next execute following commands:
 		
 	(base) .............$ cd /tmp/snakeobjectsPaperExample/pipeline
 
-	(base) /tmp/snakeobjectsPaperExample/pipeline$ conda env create
+	(base) /tmp/snakeobjectsPaperExample/pipeline$ mamba env create
 
 	(base) /tmp/snakeobjectsPaperExample/pipeline$ conda activate snakeobjectsPaperExample
 
