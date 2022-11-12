@@ -31,7 +31,7 @@ Next execute following commands:
 
         (snakeobjectsPaperExample) /tmp/snakeobjectsPaperExample/project$ sobjects run -j -q
 
-In the subdirectory denovo/all you will find allDenovoCalls.txt file.
+In the subdirectory denovos/all you will find allDenovoCalls.txt file.
 Opening it in excel with a little formatting can get:
 
 .. image:: _static/paperExample-allDenovoCalls.png

@@ -12,4 +12,4 @@ def run(project, OG):
     OG.add('trio',r['personId'], {},
            [OG['individual',r[i]] 
             for i in ['fatherId', 'motherId','personId']])
-  OG.add('denovo','all', {}, OG['trio'])
+  OG.add('denovos','all', {}, OG['trio'])
