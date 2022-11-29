@@ -1,6 +1,6 @@
 .snakemake/
 OG.json
-denovo/
+denovos/
 individual/
 reference/
 trio/
