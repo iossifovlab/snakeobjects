@@ -1,6 +1,5 @@
 .snakemake/
 OG.json
-Snakefile
 denovo/
 individual/
 reference/
