@@ -4,8 +4,8 @@
 Additional Examples
 *******************
 
-Paper Example
-=============
+Snakeobjects Paper Example
+==========================
 
 
 This section explains how to load and execute small project described Supplementary of ``snakeobjects`` paper. We assume that you will work or a Linux or Mac. In addition, we assume that you have a conda or miniconda installed (`Conda
