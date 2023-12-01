@@ -41,7 +41,7 @@ def get_targets(ot):
 
 
 def PP(p,parent_project_id=None):
-    """Value of the project parameter ``p`` in current project, if parent_project_id is not specified, otherwise the value of parameter ``p`` in ``parent_project_id``. If parameter ``p`` is not in the project parameters, then the value of this parameter in the first recusively searched parameters of parent projects. """
+    """Value of the project parameter ``p`` in current project, if parent_project_id is not specified, otherwise the value of parameter ``p`` in ``parent_project_id``. If parameter ``p`` is not in the project parameters, then the value of this parameter in the first recusively searched parameters of parent projects. If none is found returns None."""
     return _project.get_parameter(p,parent_project_id)
 
 
@@ -99,14 +99,14 @@ def DT(t, dot=None, level=1, mode='equal'):
 
 
 def P(p):
-    """Value of the parameter ``p`` of the current object."""
+    """Value of the parameter ``p`` of the current object or None, if ``p`` is not in the list of parameters."""
     ot = _find_object_type()
-    return lambda wc: _OG[ot,wc.oid].params[p]
+    return lambda wc: _OG[ot,wc.oid].params[p] if p in _OG[ot,wc.oid].params else None
 
 def DP(p,dot=None, level=1, mode='equal'):
     """
     List of values of the parameter ``p`` of the dependency objects (the objects the 
-    current object depends on).
+    current object depends on, the values are None, if ``p`` is not in the parameters ).
 
     :param str p: the name of the parameter of the dependency objects.
 
@@ -126,7 +126,7 @@ def DP(p,dot=None, level=1, mode='equal'):
     ot = _find_object_type()
     def _DP(wc):
         dp = _OG[ot,wc.oid].deepDeps(dot,level,mode)
-        return [d.params[p] for d in dp]
+        return [d.params[p] if p in d.params else None for d in dp]
     return _DP
     
 
