@@ -165,6 +165,7 @@ project and may include:
 * a ``so_pipeline`` parameter that points to the *pipeline directory* for the
   pipeline that will operate on the project (a relative paths are relative 
   based on the project directory);
+* parameters pointing to extra directories with shell, python, etc. scripts;
 * parameters pointing to the input data that will be used by the project; 
 * parameters pointing to the meta-data describing the projects input; 
 * a ``default_snakemake_args`` parameter that specifies the command line 
@@ -197,12 +198,12 @@ If ``projectA`` has its own parent project ``projectC`` and we would like to tra
 
 The ``parent_name`` in PP is optional. If it is not present the the value of par_name in the current project will be used.
 
-Apart from conda environment and ``so_pipeline`` directory, the project may need some extra directories with shell, python, etc. scripts. In this case ``so_project.yaml`` file should have parameters so_extra_bin_path, so_extra_python_path, etc., for example:
+Apart from conda environment and ``so_pipeline`` directory, the project may need some extra directories with shell, python, etc. scripts. In this case ``so_project.yaml`` file should have parameters so_environment_*_set or so_environment_*_add, etc., for example:
 
 .. code-block:: python
 
-   so_extra_bin_path: "<path to bin directory>"
-   so_extra_python_path: "<path to python directory>"
+   so_environment_bin_add: "<path to bin directory>"
+   so_environment_python_add: "<path to python directory>"
 
 These paths are added to PATH and PYTHONPATH environment variables when ``sobjects`` executes ``run`` and ``submit`` commands. If ``so_pipeline`` directory has subdirectories bin, and/or python, these directories are added to the PATH and PYTHONPATH without need to specify them in so_project.yaml.
 
