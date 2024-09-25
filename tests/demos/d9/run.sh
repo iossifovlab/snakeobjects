@@ -2,4 +2,4 @@
 set -e
 cd $(dirname "$0")
 sobjects prepare
-sobjects run -j --use-conda --conda-frontend conda 
+sobjects run -j 1 --use-conda --conda-frontend conda 
