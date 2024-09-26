@@ -267,12 +267,12 @@ Step 1.5. Execute the dummy project
 After we have *prepared* the project, it is time to execute it. This is done by
 :option:`sobjects run` command. This command requires at least one argument to
 that we use to control how to execute the pipeline:  ``-j`` means that we can
-use all the available local cores to execute the pipeline; ``-j 1`` means that
+use all the available local cores to execute the pipeline (only for snakemake versions before 8.0); ``-j 1`` means that
 we can use only one of the local cores; ``-j 2`` means that we can use 2 local
 cores, etc. Alternatively, we can add ``--profile <cluster profile>`` option
 which indicate that we will execute the pipeline by submitting jobs to the
 computation cluster defined by the ``<cluster profile>``.  Executing pipelines
-on cluster will be covered later. For now, we would use the simplest ``-j`` form
+on cluster will be covered later. For now, we would use the simplest ``-j 1`` form
 to execute the *dummy* pipeline we have developed so far. We can specify more
 options to the :option:`sobjects run` command that control the execution of the
 pipeline and here we would use the ``-q`` command that instructs the underlying
@@ -280,14 +280,14 @@ pipeline and here we would use the ``-q`` command that instructs the underlying
 
 .. code-block:: bash
 
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j 1 -q
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j 1 -q
     Job counts:
         count	jobs
         1	so_all_targets
@@ -432,14 +432,14 @@ projects:
     (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
-    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j -q
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j 1 -q
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile  -d /tmp/snakeobjectsTutorial/projectTest -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile  -d /tmp/snakeobjectsTutorial/projectTest -j 1 -q
     Job counts:
         count	jobs
         15	countReads
@@ -494,14 +494,14 @@ pair numbers for the complete project:
 .. code-block:: bash
 
     (snakeobjectsDev) /tmp/snakeobjectsTutorial/projectTest$ cd ../project
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j 1 -q
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j 1 -q
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ cat fastq/*/pairNumber.txt | head
     cat: 'fastq/*/pairNumber.txt': No such file or directory
 
@@ -512,14 +512,14 @@ is to run ``Snakemake`` in verbose mode, by removing the ``-q`` flag:
 .. code-block:: bash
     :emphasize-lines: 10
 
-    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j 1
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j 1
     Building DAG of jobs...
     Nothing to be done.
     Complete log: /tmp/snakeobjectsTutorial/project/.snakemake/log/2021-02-25T114732.563671.snakemake.log
@@ -532,14 +532,14 @@ force ``Snakemake`` to create all targets built by the new rule:
 
 .. code-block:: bash
 
-    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j -R countReads
+    (snakeobjectsDev) /tmp/snakeobjectsTutorial/project$ sobjects run -j 1 -R countReads
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -R countReads
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j 1 -R countReads
     Building DAG of jobs...
     Using shell: /bin/bash
     Provided cores: 192
@@ -635,14 +635,14 @@ scratch to make sure that the complete pipeline functions properly:
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j 1 -q
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d  /tmp/snakeobjectsTutorial/projectTest -j 1 -q
     Job counts:
         count	jobs
         15	countReads
@@ -664,14 +664,14 @@ This is done with ``-f`` option of the command :option:`sobjects cleanProject`. 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects prepare
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j -q
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/project$ sobjects run -j 1 -q
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/project
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/project
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j -q
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/project -j 1 -q
     Job counts:
         count	jobs
         1	gatherPairNumbers
@@ -860,14 +860,14 @@ Now let's run the :option:`sobjects run` and examine the results:
 .. code-block:: bash
     :emphasize-lines: 10, 11
 
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j 1
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j 1
     Building DAG of jobs...
     Creating conda environment /tmp/snakeobjectsTutorial/pipeline/env-bwa.yaml...
     Downloading and installing remote packages.
@@ -997,14 +997,14 @@ complete object.
 .. code-block:: bash
 
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects prepare
-    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j -R align
+    (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/projectTest$ sobjects run -j 1 -R align
     # WORKING ON PROJECT /tmp/snakeobjectsTutorial/projectTest
     # WITH PIPELINE /tmp/snakeobjectsTutorial/pipeline
     UPDATING ENVIRONMENT:
     export SO_PROJECT=/tmp/snakeobjectsTutorial/projectTest
     export SO_PIPELINE=/tmp/snakeobjectsTutorial/pipeline
     export PATH=$SO_PIPELINE:$PATH
-    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j -R align
+    RUNNING: snakemake -s /tmp/snakeobjectsTutorial/pipeline/Snakefile -d /tmp/snakeobjectsTutorial/projectTest --use-conda -j 1 -R align
     Building DAG of jobs...
     Using shell: /bin/bash
     Provided cores: 192
@@ -1042,7 +1042,7 @@ configured, you may also consider adding the ``--profile=<cluster profile>`` to
 the ``default_snakemake_args`` project parameter. Every time that you use
 :option:`sobjects run` for that project the ``Snakemake`` will submit jobs to the
 cluster instead of running them locally on your computer as it does when you
-pass the ``-j`` option.
+pass the ``-j 1`` option.
 
 Step 2.3. Target coverage by sample and globally
 ------------------------------------------------
@@ -1177,7 +1177,7 @@ By now, it should be clear how execute the updated pipeline for the two
 projects: change the working directory to the project directory; do ``sobjects
 prepare`` (we need to run prepare because we updated the
 ``build_object_graph.py`` script and we need to create a new object graph); do
-``sobjects run -j``.
+``sobjects run -j 1``.
 
 Once you have successfully run the two projects you should have a figure like
 
