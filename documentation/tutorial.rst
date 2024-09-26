@@ -1347,7 +1347,7 @@ the large ``projects``.
     (snakeobjectsTutorial) .................$ cd /tmp/snakeobjectsTutorial/solutions
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/solutions$ for s in step-1.8 step-1.9 step-2.1 step-2.2 step-2.3 final; do
         (cd $s/projectTest; sobjects prepare;
-         sobjects graph -i 1 -s box -l lgnd.dot | dot -Tpng > g.png;
+         sobjects graph -t oId -s box -l lgnd.dot | dot -Tpng > g.png;
          cat lgnd.dot | dot -Tpng > lgnd.png);
     done
     (snakeobjectsTutorial) /tmp/snakeobjectsTutorial/solutions$ for s in step-1.8 step-1.9 step-2.1 step-2.2 step-2.3 final; do
